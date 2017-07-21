@@ -1,0 +1,80 @@
+h2 {
+  position: absolute;
+  top: 0px;
+  left: 65px;
+}
+
+p {
+  font-size: 16px;
+}
+
+label {
+  margin-top: 10px;
+  margin-bottom: 0px;
+  font-size: 17px;
+  color: #a01e20;
+}
+
+.table {
+  margin-left: -10px;
+}
+
+#main {
+  position: absolute;
+  top: 60px;
+  left: 0px;
+  width: 100%;
+}
+
+.btn-usuario {
+  text-align: center;
+  padding-top: 5px;
+}
+
+#dropdownMenu1 {
+  width: 100%;
+  text-align: left;
+}
+
+#btn_guardar, #btn_cancelar {
+  margin-top: 25px;
+}
+
+.btn-lg .caret {
+  float: right;
+  margin-top: 10px;
+}
+
+.btn-usuario-l, .btn-usuario-r {
+  text-align: center;
+  padding-top: 5px;
+}
+
+.usuario-inactivo {
+  color: #aaa;
+}
+
+@media only screen and (min-width: 768px) {
+  #main {
+    position: absolute;
+    top: 60px;
+    left: 300px;
+    width: inherit;
+  }
+  .table {
+    cursor: pointer;
+  }
+  h2 {
+    position: absolute;
+    top: 0px;
+    left: 315px;
+  }
+  .btn-usuario-l {
+    text-align: right;
+    padding-top: 5px;
+  }
+  .btn-usuario-r {
+    text-align: left;
+    padding-top: 5px;
+  }
+}

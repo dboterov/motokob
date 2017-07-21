@@ -1,0 +1,134 @@
+<motokob-sidenav></motokob-sidenav>
+<h2>Administrar Clientes</h2>
+<div class="container" id="main">
+  <div class="alert alert-danger" role="alert" *ngIf="errorMessage">{{errorMessage}}</div>
+  <div class="alert alert-success" role="alert" *ngIf="successMessage">{{successMessage}}</div>
+  <div class="form-customers" id="formCustomers">
+    <form>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-6 ">
+          <label for="name">Nombre</label>
+          <input class="form-control input-lg" id="name" placeholder="Ingresa el nombre" type="text" name="name" [(ngModel)]="customer.name" />
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 ">
+          <label for="surname">Apellido</label>
+          <input class="form-control input-lg" id="surname" placeholder="Ingresa el apellido" type="text" name="surname" [(ngModel)]="customer.surname" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-6 ">
+          <label for="dropdownMenu1">Tipo Documento</label>
+          <select id="dropdownMenu1" name="selectedDocType" [(ngModel)]="customer.documentType">
+            <option style="display:none" disabled selected value>Selecciona un tipo de documento</option>
+            <option [selected]="customer.documentType === 'CC'" value="CC" >Cédula de ciudadanía</option>
+          </select>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6">
+          <label for="username">Documento</label>
+          <input class="form-control input-lg" id="documentNumber" placeholder="Ingresa el número de documento" type="text" name="documentNumber" [(ngModel)]="customer.documentNumber" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-6 ">
+          <label for="dropdownMenu2">Departamento</label>
+          <select id="dropdownMenu2" (change)="seleccionarDepartamento()" name="selectedState" [(ngModel)]="departamentoSeleccionado">
+            <option style="display:none" disabled selected value>Selecciona un departamento</option>
+            <option [selected]="departamentoSeleccionado == dpto._id" value="{{dpto._id}}" *ngFor="let dpto of states">{{dpto.name}}</option>
+          </select>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 ">
+          <label for="dropdownMenu3">Ciudad</label>
+          <select id="dropdownMenu3" (change)="seleccionarCiudad()" name="selectedCity" [(ngModel)]="ciudadSeleccionada" [disabled]="cities.length == 0">
+            <option style="display:none" disabled selected value>Selecciona una ciudad</option>
+            <option [selected]="ciudadSeleccionada == ciudad._id" value="{{ciudad._id}}" *ngFor="let ciudad of cities">{{ciudad.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-6">
+          <label for="surname">Dirección</label>
+          <input class="form-control input-lg" id="surname" placeholder="Ingresa la dirección" type="text" name="address" [(ngModel)]="customer.address" />
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 ">
+          <label for="surname">Teléfono fijo</label>
+          <input class="form-control input-lg" id="surname" placeholder="Ingresa el teléfono fijo" type="text" name="landLineNumber" [(ngModel)]="customer.landLineNumber" />
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 ">
+          <label for="surname">Celular</label>
+          <input class="form-control input-lg" id="surname" placeholder="Ingresa el celular" type="text" name="cellphoneNumber" [(ngModel)]="customer.cellphoneNumber" />
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 ">
+          <label for="surname">Correo</label>
+          <input class="form-control input-lg" id="surname" placeholder="Ingresa el correo electrónico" type="email" name="email" [(ngModel)]="customer.email" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-4 btn-cliente-l" *ngIf="validarCliente()">
+          <button id="btn_guardar" type="button" class="btn btn-primary btn-lg" (click)="guardar()">Guardar</button>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-4 btn-cliente-r" *ngIf="validarCliente()">
+          <button id="btn_cancelar" type="button" class="btn btn-danger btn-lg" (click)="limpiarFormulario()">Cancelar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <hr/>
+  <div class="row">
+    <div class="col-xs-12">
+      <h3>Lista de clientes</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div>
+        <span class="tamano-pagina">
+          <form>
+            Mostrar
+            <select id="tamanoPagina" (change)="cambioTamanoPagina()" name="tamanoPagina" [(ngModel)]="pageSize">
+              <option [selected]="pageSize == 10" value="10">10</option>
+              <option [selected]="pageSize == 30" value="30">30</option>
+              <option [selected]="pageSize == 50" value="50">50</option>
+              <option [selected]="pageSize == 100" value="100">100</option>
+              <option [selected]="pageSize == 50000" value="50000">Todos</option>
+            </select>
+            x pág.
+          </form>
+        </span>
+        <ul class="paginador">
+          <li (click)="mostrarPagina(page-1)">&laquo;</li>
+          <li (click)="mostrarPagina(pagina)" *ngFor="let pagina of pages" [class.active]="pagina == page">{{pagina}}</li>
+          <li (click)="mostrarPagina(page+1)">&raquo;</li>
+        </ul>
+        <div class="txt-busqueda pull-right">
+          <form (submit)="filtrarClientes()">
+            <input class="form-control input-lg" [(ngModel)]="filtroBusqueda" placeholder="Buscar..." name="busqueda" type="search"/>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12">
+      <div class="table-responsive">
+        <table class="table table-hover ">
+          <tr>
+            <th style="text-align: right; width: 40px;">&#35;</th>
+            <th style="width: 50px;">T.D.</th>
+            <th style="text-align: right; width: 120px;">Cédula</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Celular</th>
+            <th>Correo</th>
+          </tr>
+          <tr *ngFor="let customerRow of customers; let i = index" (click)="seleccionarCliente(customerRow)" [class.info]="customerRow._id === customer._id">
+            <td style="text-align: right;">{{i+1}}</td>
+            <td>{{customerRow.documentType}}</td>
+            <td style="text-align: right;">{{customerRow.documentNumber}}</td>
+            <td>{{customerRow.name}}</td>
+            <td>{{customerRow.surname}}</td>
+            <td>{{customerRow.cellphoneNumber}}</td>
+            <td>{{customerRow.email}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

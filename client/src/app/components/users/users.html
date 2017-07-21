@@ -1,0 +1,125 @@
+<motokob-sidenav></motokob-sidenav>
+<div class="modal fade" tabindex="-1" role="dialog" id="modalPassword">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Cambiar contraseña</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <label for="password1">Ingresa la nueva contraseña</label>
+            <input class="form-control input-lg" id="password1" placeholder="Contraseña..." type="password" name="password1" [(ngModel)]="password1" required/>
+          </div>
+          <div class="col-xs-12">
+            <label for="password2">Confirma la contraseña</label>
+            <input class="form-control input-lg" id="password2" placeholder="Confirma..." type="password" name="password2" [(ngModel)]="password2" required/>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-lg" (click)="cambiarContrasena()" data-dismiss="modal">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modalDesactivar">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <p>¿Estás seguro de que deseas <b>{{activar ? 'activar' : 'desactivar'}}</b> el usuario <b>{{user.name}}</b>?</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal" data-target="#modalDesactivar">No</button>
+        <button type="button" class="btn btn-primary btn-lg" (click)="cambiarEstadoUsuario()" data-dismiss="modal">Si</button>
+      </div>
+    </div>
+  </div>
+</div>
+<h2>Administrar Usuarios</h2>
+<div class="container" id="main">
+  <div class="alert alert-danger" role="alert" *ngIf="errorMessage">{{errorMessage}}</div>
+  <div class="alert alert-success" role="alert" *ngIf="successMessage">{{successMessage}}</div>
+  <div class="form-users">
+    <form>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4 ">
+          <label for="name">Nombre</label>
+          <input class="form-control input-lg" id="name" placeholder="Ingresa el nombre" type="text" name="name" [(ngModel)]="user.name" required/>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 ">
+          <label for="surname">Apellido</label>
+          <input class="form-control input-lg" id="surname" placeholder="Ingresa el apellido" type="text" name="surname" [(ngModel)]="user.surname" required/>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 ">
+          <label for="username">Usuario</label>
+          <input class="form-control input-lg" id="username" placeholder="Ingresa el usuario" type="text" name="username" [(ngModel)]="user.username" required/>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 ">
+          <label for="password">Contraseña</label>
+          <div class="input-group">
+            <input class="form-control input-lg" id="password" placeholder="Ingresa la contraseña" type="password" name="password" [(ngModel)]="user.password" [disabled]="user._id === '' ? false : true" required/>
+            <span class="input-group-btn">
+              <button class="btn btn-default btn-lg" type="button" [disabled]="user._id === '' ? true : false" data-toggle="modal" data-target="#modalPassword">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+            </span>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 ">
+          <label>Perfil</label>
+          <div class="dropdown">
+            <button class="btn btn-default btn-lg dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" [disabled]="identity.role != 'ROLE_ADMIN'">
+              {{perfilSeleccionado}}
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+              <li><a href="javascript:void(0);" (click)="seleccionarPerfil('ROLE_ADMIN')">Administrador</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="javascript:void(0);" (click)="seleccionarPerfil('ROLE_COORD')">Coordinador</a></li>
+              <li><a href="javascript:void(0);" (click)="seleccionarPerfil('ROLE_USER')">Asesor</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-4 btn-usuario-l" *ngIf="validarUsuario()">
+          <button id="btn_guardar" type="button" class="btn btn-primary btn-lg" (click)="guardar()">Guardar</button>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-4 btn-usuario-r" *ngIf="validarUsuario()">
+          <button id="btn_cancelar" type="button" class="btn btn-danger btn-lg" (click)="limpiarFormulario()">Cancelar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="identity.role === 'ROLE_ADMIN'">
+    <hr/>
+    <h3>Lista de usuarios</h3>
+    <table class="table table-hover table-responsive ">
+      <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Usuario</th>
+        <th>Perfil</th>
+        <th>&nbsp;</th>
+      </tr>
+      <tr *ngFor="let userRow of users" (click)="seleccionarUsuario(userRow)" [class.info]="userRow._id === user._id" [class.usuario-inactivo]="!userRow.active">
+        <td>{{userRow.name}}</td>
+        <td>{{userRow.surname}}</td>
+        <td>{{userRow.username}}</td>
+        <td>{{userRow.role}}</td>
+        <td>
+          <span *ngIf="userRow.active" class="glyphicon glyphicon-ban-circle" title="Inactivar usuario" (click)="seleccionarUsuarioCambioEstado(userRow, false)" data-toggle="modal" data-target="#modalDesactivar"></span>
+          <span *ngIf="!userRow.active" class="glyphicon glyphicon-off" title="Activar usuario" (click)="seleccionarUsuarioCambioEstado(userRow, true)" data-toggle="modal" data-target="#modalDesactivar"></span>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
