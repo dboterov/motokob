@@ -9,6 +9,7 @@ var app = express();
 var user_routes = require('./routes/user');
 var customer_routes = require('./routes/customer');
 var region_routes = require('./routes/region');
+var prueba_routes = require('./routes/prueba');
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -29,5 +30,6 @@ app.use((req, res, next) => {
 app.use('/api/user', user_routes);
 app.use('/api/customer', customer_routes);
 app.use('/api/region', region_routes);
+app.use('/api/prueba', prueba_routes);
 
 module.exports = app;

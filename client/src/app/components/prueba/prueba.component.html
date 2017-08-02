@@ -1,0 +1,10 @@
+<h3>prueba imagen</h3>
+<div class="image-for-edit" *ngIf="image">
+  <img src="{{url + 'prueba/getimage/' + image}}" />
+</div>
+
+<form (ngSubmit)="submit()">
+  <label>selecciona una imagen</label>
+  <input type="file" (change)="fileChangeEvent($event)" />
+  <input type="submit" value="Subir"/>
+</form>

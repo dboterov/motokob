@@ -9,6 +9,7 @@ import { HomeComponent } from './components/home/home.component';
 import { SideNavComponent } from './components/sidenav/sidenav.component';
 import { UsersComponent } from './components/users/users.component';
 import { CustomersComponent } from './components/customers/customers.component';
+import { PruebaComponent } from './components/prueba/prueba.component';
 
 import { routing, appRoutingProviders } from './app.routing';
 
@@ -19,7 +20,8 @@ import { routing, appRoutingProviders } from './app.routing';
     HomeComponent,
     UsersComponent,
     SideNavComponent,
-    CustomersComponent
+    CustomersComponent,
+    PruebaComponent
   ],
   imports: [
     BrowserModule,
