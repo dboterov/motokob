@@ -38,7 +38,7 @@ export class CustomersComponent implements OnInit {
     this.customers = new Array<Customer>();
     this.cities = new Array<City>();
     this.states = new Array<State>();
-    this.customer = new Customer('', '', '', '', '', '', '', '', '', '', '');
+    this.customer = new Customer();
     this.departamentoSeleccionado = '';
     this.ciudadSeleccionada = '';
   }
@@ -47,6 +47,7 @@ export class CustomersComponent implements OnInit {
     console.log('iniciando componente de administracion de clientes');
     this.identity = this._customerService.getItentity();
     this.token = this._customerService.getToken();
+    console.log(this.token);
     if (this.identity === null) {
       this._router.navigate(['/']);
     }
@@ -56,7 +57,8 @@ export class CustomersComponent implements OnInit {
 
   listarClientes() {
     this.customers = new Array<Customer>();
-    this._customerService.list(this.page, this.pageSize).subscribe(
+    this.limpiarFormulario();
+    this._customerService.list(this.page, this.pageSize, this.filtroBusqueda).subscribe(
       response => {
         this.customers = response.customers;
         this.totalRecords = response.records;
@@ -119,23 +121,30 @@ export class CustomersComponent implements OnInit {
     }
   }
 
-  seleccionarCliente(cliente) {
-    this.customer = new Customer(cliente._id, cliente.name, cliente.surname, cliente.documentType, cliente.documentNumber,
+  seleccionarCliente(cliente: Customer) {
+    this.customer = new Customer();
+    this.customer.setParams(cliente._id, cliente.name, cliente.surname, cliente.companyName, cliente.documentType, cliente.documentNumber,
       cliente.stateCode, cliente.cityCode, cliente.address, cliente.landLineNumber, cliente.cellphoneNumber, cliente.email);
+    this.departamentoSeleccionado = this.customer.stateCode;
+    this.seleccionarDepartamento();
   }
 
   validarCliente() {
     if (this.customer.name.length > 0 && this.customer.surname.length > 0 &&
       this.customer.documentType.length > 0 && this.customer.documentNumber.length > 0 &&
       this.customer.stateCode.length > 0 && this.customer.cityCode.length > 0 &&
-      this.customer.address.length > 0 && this.customer.cellphoneNumber.length > 0) {
+      this.customer.address.length > 0 && this.customer.cellphoneNumber.length > 0 &&
+      this.customer.landLineNumber.length > 0) {
       return true;
     }
     return false;
   }
 
   limpiarFormulario() {
-    this.customer = new Customer('', '', '', '', '', '', '', '', '', '', '');
+    this.departamentoSeleccionado = null;
+    this.ciudadSeleccionada = null;
+    this.cities = new Array<City>();
+    this.customer = new Customer();
   }
 
   guardar() {
@@ -150,7 +159,7 @@ export class CustomersComponent implements OnInit {
             this.errorMessage = 'No se pudo actualizar el cliente';
           } else {
             this.successMessage = 'Se actualizó el cliente ' + this.customer.name + " satisfactoriamente";
-            this.customer = new Customer('', '', '', '', '', '', '', '', '', '', '');
+            this.customer = new Customer();
             this.listarClientes();
           }
         },
@@ -171,7 +180,7 @@ export class CustomersComponent implements OnInit {
             this.errorMessage = 'No se pudo crear el cliente';
           } else {
             this.successMessage = 'Se creó el cliente ' + this.customer.name + " satisfactoriamente";
-            this.customer = new Customer('', '', '', '', '', '', '', '', '', '', '');
+            this.customer = new Customer();
             this.listarClientes();
           }
         },
@@ -192,6 +201,9 @@ export class CustomersComponent implements OnInit {
     this._regionService.listCities(this.departamentoSeleccionado).subscribe(
       response => {
         this.cities = response.cities;
+        if (this.customer.cityCode) {
+          this.ciudadSeleccionada = this.customer.cityCode;
+        }
       },
       error => {
         const errorResponse = <any>error;
@@ -221,9 +233,5 @@ export class CustomersComponent implements OnInit {
   cambioTamanoPagina() {
     console.log('tamano pagina ' + this.pageSize);
     this.listarClientes();
-  }
-
-  filtrarClientes() {
-    console.log(this.filtroBusqueda);
   }
 }

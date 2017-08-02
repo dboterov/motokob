@@ -32,8 +32,29 @@ function list(req, res) {
   console.log('listando clientes registrados');
   var page = parseInt(req.query.page ? req.query.page : 1);
   var pageSize = parseInt(req.query.pageSize ? req.query.pageSize : 10);
-  Customer.find({}).count({}, function(err, count) {
-    Customer.find({}).sort('name').sort('surname').paginate(page, pageSize).populate({
+  var strFilter = req.query.strFilter;
+  var queryObject = {};
+  if (strFilter) {
+    queryObject = {
+      $or: [{
+        "name": new RegExp(strFilter, "i")
+      }, {
+        "surname": new RegExp(strFilter, "i")
+      }, {
+        "email": new RegExp(strFilter, "i")
+      }, {
+        "cellphoneNumber": new RegExp(strFilter, "i")
+      }, {
+        "landLineNumber": new RegExp(strFilter, "i")
+      }, {
+        "documentNumber": new RegExp(strFilter, "i")
+      }]
+    };
+  }
+  console.log('queryObject:');
+  console.log(queryObject);
+  Customer.find(queryObject).count({}, function(err, count) {
+    Customer.find(queryObject).sort('name').sort('surname').paginate(page, pageSize).populate({
       path: 'customer'
     }).exec(function(err, customers) {
       if (err) {
@@ -55,7 +76,6 @@ function list(req, res) {
 }
 
 function saveCustomer(req, res) {
-  console.log(req);
   var customer = new Customer();
   var params = req.body;
 
@@ -69,6 +89,9 @@ function saveCustomer(req, res) {
   customer.landLineNumber = params.landLineNumber;
   customer.cellphoneNumber = params.cellphoneNumber;
   customer.email = params.email;
+  customer.companyName = params.companyName;
+
+  console.log('guardando nuevo cliente: ' + JSON.stringify(customer));
 
   //TODO: validar campos obligatorios
   customer.save((err, customerStored) => {

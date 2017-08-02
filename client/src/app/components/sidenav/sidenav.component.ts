@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { UserService } from '../../services/user.service';
 
+declare var $: any;
+
 @Component({
   selector: 'motokob-sidenav',
   templateUrl: './sidenav.html',
@@ -36,13 +38,14 @@ export class SideNavComponent implements OnInit {
 
   openNav() {
     document.getElementById("mySidenav").style.width = "350px";
-    //document.getElementById("main").style.marginLeft = "250px";
-    //document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+    document.getElementById("overlay").style.display = "inline-block";
+    //$('#overlay').toggleClass('overlay-visible');
+    //console.log($('#overlay').class('overlay-visible'));
+    //$('.body-overlay').css('display: inline-block');
   }
 
   closeNav() {
     document.getElementById("mySidenav").style.width = "0";
-    //document.getElementById("main").style.marginLeft = "0";
-    //document.body.style.backgroundColor = "white";
+    document.getElementById("overlay").style.display = "none";
   }
 }

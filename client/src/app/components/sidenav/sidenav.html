@@ -1,3 +1,5 @@
+<span class="glyphicon glyphicon-menu-hamburger" (click)="openNav()"></span>
+
 <div id="mySidenav" class="sidenav" *ngIf="identity">
   <div>
     <img src="assets/img/encabezado.jpg" class="img-sidenav" />
@@ -17,4 +19,5 @@
   </div>
 </div>
 
-<span class="glyphicon glyphicon-menu-hamburger" (click)="openNav()"></span>
+<div class="body-overlay" id="overlay" (click)="closeNav()">
+</div>

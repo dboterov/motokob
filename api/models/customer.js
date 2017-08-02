@@ -6,6 +6,7 @@ var Schema = mongoose.Schema;
 var CustomerSchema = Schema({
   name: String,
   surname: String,
+  companyName: String,
   documentType: String,
   documentNumber: String,
   stateCode: String,

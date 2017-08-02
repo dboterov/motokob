@@ -1,11 +1,7 @@
 @-moz-document url-prefix() {
-  fieldset { display: table-cell; }
-}
-
-h2 {
-  position: absolute;
-  top: 0px;
-  left: 65px;
+  fieldset {
+    display: table-cell;
+  }
 }
 
 p {
@@ -19,23 +15,12 @@ label {
   color: #a01e20;
 }
 
-.table {
-  /*margin-left: -10px;*/
-}
-
-#main {
-  position: absolute;
-  top: 60px;
-  left: 0px;
-  width: 100%;
-}
-
 .btn-cliente {
   text-align: center;
   padding-top: 5px;
 }
 
-#dropdownMenu1, #dropdownMenu2, #dropdownMenu3 {
+#documentType, #dropdownMenu2, #dropdownMenu3 {
   width: 100%;
   text-align: left;
 }
@@ -54,15 +39,20 @@ label {
   padding-top: 5px;
 }
 
+.icono-llamar, .icono-llamar a {
+  float: right;
+  display: inline-block;
+  font-size: 18px;
+  padding-top: 4px;
+  padding-left: 15px;
+  padding-bottom: 4px;
+  text-decoration: none;
+}
+
 .tamano-pagina {
   font-size: 18px;
   display: inline-block;
   margin-bottom: 5px;
-  /*padding-left: 5px;
-  padding-bottom: 5px;
-  margin-left: 5px;
-  border-left: 1px solid #a01e20;
-  border-bottom: 1px solid #a01e20;*/
 }
 
 select {
@@ -76,8 +66,8 @@ select {
 }
 
 select[disabled] {
-    color: #999;
-    background-color: #eee;
+  color: #999;
+  background-color: #eee;
 }
 
 .paginador {
@@ -111,28 +101,13 @@ select[disabled] {
 }
 
 @media only screen and (min-width: 768px) {
-  #main {
-    position: absolute;
-    top: 60px;
-    left: 300px;
-    width: inherit;
-  }
-
-  .table td{
+  .table td {
     cursor: pointer;
   }
-
-  h2 {
-    position: absolute;
-    top: 0px;
-    left: 315px;
-  }
-
   .btn-cliente-l {
     text-align: right;
     padding-top: 5px;
   }
-
   .btn-cliente-r {
     text-align: left;
     padding-top: 5px;

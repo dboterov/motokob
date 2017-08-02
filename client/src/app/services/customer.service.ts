@@ -50,13 +50,18 @@ export class CustomerService {
       .map(res => res.json());
   }
 
-  list(page, pageSize) {
+  list(page, pageSize, strFilter) {
     const headers = new Headers({
       'Content-Type': 'application/json',
       'Authorization': this.getToken()
     });
-    return this._http.get(this.url + 'customer/list/?page=' + page + '&pageSize=' + pageSize, { headers: headers })
-      .map(res => res.json());
+    if (strFilter) {
+      return this._http.get(this.url + 'customer/list/?page=' + page + '&pageSize=' + pageSize + '&strFilter=' + strFilter, { headers: headers })
+        .map(res => res.json());
+    } else {
+      return this._http.get(this.url + 'customer/list/?page=' + page + '&pageSize=' + pageSize, { headers: headers })
+        .map(res => res.json());
+    }
   }
 
   find(documentNumber) {
