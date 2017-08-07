@@ -8,3 +8,18 @@ body {
   top: 0px;
   left: 65px;
 }
+
+.head-table {
+  background: #A01E20;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.head-table:hover {
+  background: #A01E20 !important;
+  color: #FFFFFF !important;
+}
+
+.head-table th {
+  text-align: center;
+}

@@ -1,0 +1,186 @@
+@-moz-document url-prefix() {
+  fieldset { display: table-cell; }
+}
+
+h2 {
+  position: absolute;
+  top: 0px;
+  left: 65px;
+}
+
+p {
+  font-size: 16px;
+}
+
+label {
+  margin-top: 10px;
+  margin-bottom: 0px;
+  font-size: 17px;
+  color: #a01e20;
+}
+
+.btn-cliente {
+  text-align: center;
+  padding-top: 5px;
+}
+
+#dropdownMenu1, #dropdownMenu2, #dropdownMenu3 {
+  width: 100%;
+  text-align: left;
+}
+
+#btn_guardar, #btn_cancelar {
+  margin-top: 25px;
+}
+
+.btn-lg .caret {
+  float: right;
+  margin-top: 10px;
+}
+
+.btn-producto-l, .btn-producto-r {
+  text-align: center;
+  padding-top: 5px;
+}
+
+.tamano-pagina {
+  font-size: 18px;
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+select {
+  padding-top: 12px;
+  padding-bottom: 10px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding-left: 10px;
+  font-size: 18px;
+}
+
+select[disabled] {
+    color: #999;
+    background-color: #eee;
+}
+
+.paginador {
+  list-style: none;
+  margin-top: 15px;
+  display: inline-block;
+  font-size: 18px;
+  padding-left: 5px;
+}
+
+.paginador li {
+  padding-top: 2px;
+  text-align: center;
+  vertical-align: middle;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #fff;
+  cursor: pointer;
+}
+
+.active, .paginador li:hover {
+  border: 1px solid #bbb;
+  background-color: #ddd;
+  color: #a01e20;
+}
+
+.txt-busqueda {
+  max-width: 200px;
+  display: inline-block;
+}
+
+.btn-nueva-marca {
+  margin-left: 10px;
+  border-radius: 6px;
+}
+
+td {
+  text-align: center;
+}
+
+.input-file {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+
+.input-file + .label-file {
+  border: 1px solid #CCCCCC;
+  padding: 0;
+  min-width: 100%;
+  font-size: 16px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  margin-top: 0px;
+  border-radius: 6px;
+}
+
+.input-file + .label-file span {
+  width: 89%;
+  min-height: 2em;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;;
+  vertical-align: top;
+}
+
+.input-file + .label-file strong {
+  height: 100%;
+  color: #FFFFFF;
+  background-color: #A01E20;
+  display: inline-block;
+  padding: 2px 1.25rem;
+  font-weight: bold;
+  width: 48px;
+  text-align: center;
+}
+
+.input-file + .label-file .span-file {
+  vertical-align: middle;
+  fill: currentColor;
+  margin-right: 0.25em;
+  overflow: hidden;
+  top: 9px;
+  font-size: 20px;
+}
+
+.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid #337AB7;
+}
+
+.ng-touched.ng-invalid[required],
+.ng-untouched.ng-pristine.ng-invalid[required].required-field {
+  border-left: 5px solid #700000;
+}
+
+@media only screen and (min-width: 768px) {
+  .table td{
+    cursor: pointer;
+  }
+
+  h2 {
+    position: absolute;
+    top: 0px;
+    left: 315px;
+  }
+
+  .btn-producto-l {
+    text-align: right;
+    padding-top: 5px;
+  }
+
+  .btn-producto-r {
+    text-align: left;
+    padding-top: 5px;
+  }
+}

@@ -1,0 +1,208 @@
+<motokob-sidenav></motokob-sidenav>
+<h2>Administrar Productos</h2>
+<div class="container">
+  <div class="alert alert-danger" role="alert" *ngIf="errorMessage">{{errorMessage}}</div>
+  <div class="alert alert-success" role="alert" *ngIf="successMessage">{{successMessage}}</div>
+
+  <div class="modal fade" tabindex="-1" role="dialog" id="modalMarca">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Crear marca</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-xs-12 col-sm-offset-3 col-sm-6">
+              <label for="name">Nombre marca</label>
+              <input type="text" class="form-control input-lg" name="name" placeholder="Ingresa la marca" [(ngModel)]="brand.name">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary btn-lg" (click)="addBrand()" data-dismiss="modal">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" tabindex="-1" role="dialog" id="modalTipo">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Crear tipo</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-xs-12 col-sm-offset-3 col-sm-6">
+              <label for="name">Tipo</label>
+              <input type="text" class="form-control input-lg" name="name" placeholder="Ingresa el tipo" [(ngModel)]="productType.name">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary btn-lg" (click)="addProductType()" data-dismiss="modal">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-products" id="formProducts">
+    <form>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-6">
+          <label for="name">Nombre*</label>
+          <input id="name" type="text" class="form-control input-lg" name="name" placeholder="Ingresa el nombre" [(ngModel)]="product.name" [class.required-field]="!valid" required>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6">
+          <label for="dropdownMenu1">Marca*</label>
+          <div class="input-group">
+            <select id="dropdownMenu1" name="selectedBrand" (change)="seleccionarMarca()" [(ngModel)]="marcaSeleccionada" [class.required-field]="!valid" required>
+              <option style="display:none" disabled selected value>Seleccione una marca</option>
+              <option [selected]="marcaSeleccionada == brand._id" value="{{brand._id}}" *ngFor="let brand of brands">{{brand.name}}</option>
+            </select>
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#modalMarca" style="margin-left: 10px; border-radius: 6px">Nueva</button>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-4">
+          <label for="model">Modelo*</label>
+          <input id="model" type="number" class="form-control input-lg" name="model" placeholder="Ingrese el modelo" [(ngModel)]="product.model" [class.required-field]="!valid" required>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-4">
+          <label for="cylinder">Cilindraje*</label>
+          <input id="cylinder" type="number" class="form-control input-lg" name="cylinder" placeholder="Ingrese el cilindraje" [(ngModel)]="product.cylinder" [class.required-field]="!valid" required>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-4">
+          <label for="dropdownMenu1">Tipo*</label>
+          <div class="input-group">
+            <select id="dropdownMenu2" name="selectedType" (change)="seleccionarTipoProducto()" [(ngModel)]="productTypeSeleccionado" [class.required-field]="!valid" required>
+              <option style="display:none" disabled selected value>Seleccione un tipo</option>
+              <option [selected]="productTypeSeleccionado == typeRow._id" value="{{typeRow._id}}" *ngFor="let typeRow of productTypes">{{typeRow.name}}</option>
+            </select>
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#modalTipo" style="margin-left: 10px; border-radius: 6px">Nueva</button>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-6">
+          <label for="price">Precio*</label>
+          <input id="price" type="number" class="form-control input-lg" name="price" placeholder="Ingrese el precio" [(ngModel)]="product.price" [class.required-field]="!valid" required>
+        </div>
+        <div class="col-xs-12 col-sm-3 col-md-1">
+          <label for="color">Color</label>
+          <input id="color" type="color" class="form-control input-lg" name="color" [(ngModel)]="product.color">
+        </div>
+        <div class="col-xs-12 col-sm-3 col-md-5">
+          <label for="selImage">Seleccione imagen</label>
+          <input id="selImage" type="file" class="form-control input-lg input-file" (change)="imageSelected($event)" multiple>
+          <label for="selImage" class="label-file">
+            <span style="padding: 11px">{{image}}</span>
+            <strong>
+              <span class="glyphicon glyphicon-save-file span-file"></span>
+            </strong>
+          </label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-3" *ngFor="let image of product.images">
+          <img src="{{image}}" alt="" class="img-responsive">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 btn-producto-l">
+          <button id="btn-cancelar" type="button" class="btn btn-danger btn-lg" (click)="limpiar()">Cancelar</button>
+          <button id="btn-guardar" type="button" class="btn btn-primary btn-lg" (click)="addProduct()">Guardar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <hr/>
+  <div class="row">
+    <div class="col-xs-12">
+      <h3>Lista de productos</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-5 col-md-4 center" style="margin-bottom: 10px;">
+      <form>
+        <select class="form-control input-lg" id="tamanoPagina" (change)="cambioTamanoPagina()" name="tamanoPagina" [(ngModel)]="pageSize">
+          <option [selected]="pageSize == 10" value="10">10 x pag</option>
+          <option [selected]="pageSize == 30" value="30">30 x pag</option>
+          <option [selected]="pageSize == 50" value="50">50 x pag</option>
+          <option [selected]="pageSize == 100" value="100">100 x pag</option>
+          <option [selected]="pageSize == 50000" value="50000">Todos</option>
+        </select>
+      </form>
+    </div>
+    <div class="col-xs-7 col-md-4">
+        <form (submit)="listarProductos()">
+          <div class="input-group">
+            <input class="form-control input-lg" [(ngModel)]="filtroBusqueda" placeholder="Buscar..." name="busqueda" type="search" />
+            <span class="input-group-btn">
+              <button class="btn btn-default btn-lg" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+            </span>
+          </div>
+        </form>
+    </div>
+    <div class="col-xs-12 col-md-4" style="text-align: center">
+      <ul class="paginador" style="width: 100%">
+        <li (click)="mostrarPagina(page - 1)">&laquo;</li>
+        <li (click)="mostrarPagina(pagina)" *ngFor="let pagina of pages" [class.active]="pagina == page">{{pagina}}</li>
+        <li (click)="mostrarPagina(page + 1)">&raquo;</li>
+      </ul>
+    </div>
+    <div class="col-xs-12">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <tr class="head-table">
+            <th>#</th>
+            <th style="width: 20px"></th>
+            <th>Producto</th>
+            <th>Tipo</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Cilindraje</th>
+            <th>Precio</th>
+            <th>Imagenes</th>
+          </tr>
+          <tr *ngFor="let productRow of products; let i = index" [class.info]="productRow._id == product._id" (click)="selectProduct(productRow)">
+            <td>{{i + 1}}</td>
+            <td>
+              <div id="color{{productRow._id}}" style="height: 20px; width: 20px; border-radius: 100%;" [ngStyle]="{background: productRow.color}"></div>
+            </td>
+            <td>
+              <div *ngIf=productRow.name>{{productRow.name}}</div>
+            </td>
+            <td>
+              <div *ngIf="productRow.productTypeId">{{productRow.productTypeId.name}}</div>
+            </td>
+            <td>
+              <div *ngIf="productRow.brandId">{{productRow.brandId.name}}</div>
+            </td>
+            <td>
+              <div *ngIf="productRow.model">{{productRow.model}}</div>
+            </td>
+            <td>
+              <div *ngIf="productRow.cylinder">{{productRow.cylinder}}</div>
+            </td>
+            <td>
+              <div *ngIf="productRow.price">{{productRow.price | number}}</div>
+            </td>
+            <td>
+              <div *ngIf="productRow.images">{{productRow.images.length}}</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

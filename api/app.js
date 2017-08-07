@@ -9,7 +9,9 @@ var app = express();
 var user_routes = require('./routes/user');
 var customer_routes = require('./routes/customer');
 var region_routes = require('./routes/region');
-var prueba_routes = require('./routes/prueba');
+var product_routes = require('./routes/product');
+var brand_routes = require('./routes/brand');
+var productType_routes = require('./routes/productType');
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -30,6 +32,8 @@ app.use((req, res, next) => {
 app.use('/api/user', user_routes);
 app.use('/api/customer', customer_routes);
 app.use('/api/region', region_routes);
-app.use('/api/prueba', prueba_routes);
+app.use('/api/product', product_routes);
+app.use('/api/brand', brand_routes);
+app.use('/api/productType', productType_routes);
 
 module.exports = app;
