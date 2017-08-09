@@ -5,7 +5,6 @@ var path = require('path');
 var mongoosePaginate = require('mongoose-pagination');
 var Product = require('../models/product');
 var ProductType = require('../models/productType');
-var Color = require('../models/color');
 var jwt = require('../services/jwt');
 
 function productsList(req, res) {
