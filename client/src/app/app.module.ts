@@ -11,6 +11,7 @@ import { UsersComponent } from './components/users/users.component';
 import { CustomersComponent } from './components/customers/customers.component';
 import { PruebaComponent } from './components/prueba/prueba.component';
 import { ProductsComponent } from './components/products/products.component';
+import { QuotationsComponent } from './components/quotations/quotations.component';
 
 import { routing, appRoutingProviders } from './app.routing';
 
@@ -23,7 +24,8 @@ import { routing, appRoutingProviders } from './app.routing';
     SideNavComponent,
     CustomersComponent,
     PruebaComponent,
-    ProductsComponent
+    ProductsComponent,
+    QuotationsComponent
   ],
   imports: [
     BrowserModule,

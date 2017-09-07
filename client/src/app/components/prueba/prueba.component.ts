@@ -29,7 +29,7 @@ export class PruebaComponent implements OnInit {
 
   public submit() {
     if (this.filesToUpload) {
-      this._uploadService.makeFileRequest(GLOBAL.url + 'prueba/upload/', [], this.filesToUpload, 'image').then(
+      this._uploadService.makeFileRequest(GLOBAL.url + 'prueba/upload/', 'PUT', [], this.filesToUpload, 'image', null).then(
         (result:string) => {
           console.log(JSON.parse(result));
           console.log(typeof result);

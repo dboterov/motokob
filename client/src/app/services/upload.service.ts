@@ -12,7 +12,7 @@ export class UploadService {
     this.url = GLOBAL.url;
   }
 
-  makeFileRequest(url: string, params: Array<string>, files: Array<File>, name: string) {
+  public makeFileRequest(url: string, method: string, params: Array<string>, files: Array<File>, name: string, token: string) {
     return new Promise(function(resolve, reject) {
       const formData: any = new FormData();
       const xhr = new XMLHttpRequest();
@@ -32,8 +32,10 @@ export class UploadService {
         }
       };
 
-      xhr.open('POST', url, true);
-      //xhr.setRequestHeader('Authorization', token);
+      xhr.open(method, url, true);
+      if (token != null) {
+        xhr.setRequestHeader('Authorization', token);
+      }
       xhr.send(formData);
     });
   }

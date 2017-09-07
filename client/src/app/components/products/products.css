@@ -57,6 +57,7 @@ select {
   border-radius: 6px;
   padding-left: 10px;
   font-size: 18px;
+  width: 100%;
 }
 
 select[disabled] {

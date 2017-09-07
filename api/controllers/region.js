@@ -8,8 +8,6 @@ var City = require('../models/city');
 var mongoose = require('mongoose');
 
 function listStates(req, res) {
-  console.log('listando departamentos');
-
   State.find({}, (err, result2) => {
     if (err) {
       res.status(500).send({
@@ -24,7 +22,6 @@ function listStates(req, res) {
 }
 
 function listCities(req, res) {
-  console.log('listando ciudades para el dpto ' + req.params.stateId);
   if (!req.params.stateId) {
     res.status(404).send({
       message: 'Se debe indicar un departamento para lista sus ciudades'

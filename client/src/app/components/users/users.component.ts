@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { CompanyService } from '../../services/company.service';
 import { User } from '../../models/user';
 
 @Component({
   selector: 'user-admin',
   templateUrl: './users.html',
   styleUrls: ['./users.css'],
-  providers: [UserService]
+  providers: [UserService, CompanyService]
 })
 export class UsersComponent implements OnInit {
   public identity;
@@ -21,16 +22,18 @@ export class UsersComponent implements OnInit {
   public perfilSeleccionado: string;
   public password1: string;
   public password2: string;
+  public companies: Array<string>;
 
-  constructor(private _userService: UserService, private _route: ActivatedRoute, private _router: Router) {
+  constructor(private _userService: UserService, private _companyService: CompanyService, private _route: ActivatedRoute, private _router: Router) {
     this.errorMessage = null;
     this.successMessage = null;
     this.errorMessageModal = null;
     this.users = new Array<User>();
-    this.user = new User('', '', '', '', '', '', true);
+    this.user = new User();
     this.perfilSeleccionado = 'Selecciona un perfil';
     this.password1 = '';
     this.password2 = '';
+    this.companies = new Array<string>();
   }
 
   ngOnInit() {
@@ -45,6 +48,17 @@ export class UsersComponent implements OnInit {
     } else {
       this.seleccionarUsuario(this.identity);
     }
+    this.listarEmpresas();
+  }
+
+  private listarEmpresas() {
+    this.companies = new Array<string>();
+    this._companyService.list(this.token).subscribe(
+      response => {
+        console.log('empresas: ', response);
+        this.companies = response;
+      }, error => { console.error(error); }
+    );
   }
 
   seleccionarUsuario(usuario) {
@@ -96,7 +110,7 @@ export class UsersComponent implements OnInit {
   }
 
   limpiarFormulario() {
-    this.user = new User('', '', '', '', '', '', true);
+    this.user = new User();
     this.perfilSeleccionado = 'Selecciona un perfil';
   }
 
@@ -112,7 +126,7 @@ export class UsersComponent implements OnInit {
             this.errorMessage = 'No se pudo actualizar el usuario';
           } else {
             this.successMessage = 'Se actualizó el usuario ' + this.user.username + " satisfactoriamente";
-            this.user = new User('', '', '', '', '', '', true);
+            this.user = new User();
             this.perfilSeleccionado = 'Selecciona un perfil';
             this.listarUsuarios();
           }
@@ -134,7 +148,7 @@ export class UsersComponent implements OnInit {
             this.errorMessage = 'No se pudo crear el usuario';
           } else {
             this.successMessage = 'Se creó el usuario ' + this.user.username + " satisfactoriamente";
-            this.user = new User('', '', '', '', '', '', true);
+            this.user = new User();
             this.perfilSeleccionado = 'Selecciona un perfil';
             this.listarUsuarios();
           }
@@ -168,7 +182,7 @@ export class UsersComponent implements OnInit {
           this.errorMessage = 'No se pudo crear el usuario';
         } else {
           this.successMessage = 'Se cambió la contraseña del usuario ' + this.user.username + " satisfactoriamente";
-          this.user = new User('', '', '', '', '', '', true);
+          this.user = new User();
           this.perfilSeleccionado = 'Selecciona un perfil';
           this.listarUsuarios();
         }
@@ -189,7 +203,7 @@ export class UsersComponent implements OnInit {
     this.activar = activar;
   }
 
-  cambiarEstadoUsuario(){
+  cambiarEstadoUsuario() {
     this.user.active = this.activar;
     this.guardar();
   }

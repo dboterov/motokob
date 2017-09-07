@@ -7,8 +7,6 @@ var Customer = require('../models/customer');
 var jwt = require('../services/jwt');
 
 function findByDocumentNumber(req, res) {
-  console.log('buscando cliente');
-
   var find = Customer.findOne({
     documentNumber: req.params.documentNumber
   }, (err, customer) => {
@@ -29,7 +27,6 @@ function findByDocumentNumber(req, res) {
 }
 
 function list(req, res) {
-  console.log('listando clientes registrados');
   var page = parseInt(req.query.page ? req.query.page : 1);
   var pageSize = parseInt(req.query.pageSize ? req.query.pageSize : 10);
   var strFilter = req.query.strFilter;
@@ -51,8 +48,6 @@ function list(req, res) {
       }]
     };
   }
-  console.log('queryObject:');
-  console.log(queryObject);
   Customer.find(queryObject).count({}, function(err, count) {
     Customer.find(queryObject).sort('name').sort('surname').paginate(page, pageSize).populate({
       path: 'customer'
@@ -90,6 +85,7 @@ function saveCustomer(req, res) {
   customer.cellphoneNumber = params.cellphoneNumber;
   customer.email = params.email;
   customer.companyName = params.companyName;
+  customer.image = params.image;
 
   console.log('guardando nuevo cliente: ' + JSON.stringify(customer));
 
@@ -133,9 +129,66 @@ function updateCustomer(req, res) {
   });
 }
 
+function uploadImage(req, res) {
+  var customerId = req.params.id;
+  if (req.files && req.files.length > 0) {
+    console.log('-------------------------------------');
+    console.log(req.files);
+    console.log('-------------------------------------');
+
+    var filePath = req.files.image.path;
+    var fileSplit = filePath.split('\\');
+    var fileName = fileSplit[2];
+    var extSplit = fileName.split('\.');
+    var fileExt = extSplit[1];
+    console.log('fileName: ' + fileName);
+
+    if (customerId) {
+      Customer.findByIdAndUpdate(customerId, {
+        images: fileName
+      }, (err, result) => {
+        if (err) {
+          res.status(500).send({
+            message: 'Ocurrió un error al recibir la foto del cliente'
+          });
+        } else if (!result) {
+          res.status(404).send({
+            message: 'No se ha podido actualizar la foto del cliente'
+          });
+        } else {
+          res.status(200).send(fileName);
+        }
+      });
+    } else {
+      res.status(200).send(fileName);
+    }
+  } else {
+    res.status(200).send({
+      message: 'no subiste ninguna imagen'
+    });
+  }
+}
+
+function getImageFile(req, res) {
+  var imageFile = req.params.imageFile;
+  var path_file = './uploads/customers/' + imageFile;
+
+  fs.exists(path_file, function(exists) {
+    if (exists) {
+      res.sendFile(path.resolve(path_file));
+    } else {
+      res.status(200).send({
+        message: 'No se encontro la imagen...'
+      });
+    }
+  });
+}
+
 module.exports = {
   saveCustomer,
   updateCustomer,
   list,
-  findByDocumentNumber
+  findByDocumentNumber,
+  uploadImage,
+  getImageFile
 };

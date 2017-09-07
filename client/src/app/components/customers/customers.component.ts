@@ -2,15 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
 import { RegionService } from '../../services/region.service';
+import { UploadService } from '../../services/upload.service';
 import { Customer } from '../../models/customer';
 import { State } from '../../models/state';
 import { City } from '../../models/city';
+import { GLOBAL } from '../../services/global';
+
+declare var $: any;
 
 @Component({
   selector: 'customer-admin',
   templateUrl: './customers.html',
   styleUrls: ['./customers.css'],
-  providers: [CustomerService, RegionService]
+  providers: [CustomerService, RegionService, UploadService]
 })
 export class CustomersComponent implements OnInit {
   public identity;
@@ -19,7 +23,7 @@ export class CustomersComponent implements OnInit {
   public errorMessageModal: string;
   public successMessage: string;
   public tipoDocumentoSeleccionado: string = 'Seleciona el tipo de documento...';
-  public departamentoSeleccionado: string;
+  public departamentoSeleccionado: string = '';
   public states: Array<State>;
   public ciudadSeleccionada: string;
   public cities: Array<City>;
@@ -30,8 +34,9 @@ export class CustomersComponent implements OnInit {
   public pageSize: number = 10;
   public pages: Array<String>;
   public filtroBusqueda: string = '';
+  private filesToUpload: Array<File>;
 
-  constructor(private _customerService: CustomerService, private _regionService: RegionService, private _route: ActivatedRoute, private _router: Router) {
+  constructor(private _customerService: CustomerService, private _regionService: RegionService, private _uploadService: UploadService, private _route: ActivatedRoute, private _router: Router) {
     this.errorMessage = null;
     this.successMessage = null;
     this.errorMessageModal = null;
@@ -44,10 +49,8 @@ export class CustomersComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('iniciando componente de administracion de clientes');
     this.identity = this._customerService.getItentity();
     this.token = this._customerService.getToken();
-    console.log(this.token);
     if (this.identity === null) {
       this._router.navigate(['/']);
     }
@@ -55,7 +58,7 @@ export class CustomersComponent implements OnInit {
     this.listarClientes();
   }
 
-  listarClientes() {
+  private listarClientes() {
     this.customers = new Array<Customer>();
     this.limpiarFormulario();
     this._customerService.list(this.page, this.pageSize, this.filtroBusqueda).subscribe(
@@ -74,7 +77,7 @@ export class CustomersComponent implements OnInit {
     );
   }
 
-  cargarDepartamentos() {
+  private cargarDepartamentos() {
     this._regionService.listStates().subscribe(
       response => {
         this.states = response.states;
@@ -121,15 +124,15 @@ export class CustomersComponent implements OnInit {
     }
   }
 
-  seleccionarCliente(cliente: Customer) {
+  public seleccionarCliente(cliente: Customer) {
     this.customer = new Customer();
     this.customer.setParams(cliente._id, cliente.name, cliente.surname, cliente.companyName, cliente.documentType, cliente.documentNumber,
-      cliente.stateCode, cliente.cityCode, cliente.address, cliente.landLineNumber, cliente.cellphoneNumber, cliente.email);
+      cliente.stateCode, cliente.cityCode, cliente.address, cliente.landLineNumber, cliente.cellphoneNumber, cliente.email, cliente.image);
     this.departamentoSeleccionado = this.customer.stateCode;
     this.seleccionarDepartamento();
   }
 
-  validarCliente() {
+  public validarCliente() {
     if (this.customer.name.length > 0 && this.customer.surname.length > 0 &&
       this.customer.documentType.length > 0 && this.customer.documentNumber.length > 0 &&
       this.customer.stateCode.length > 0 && this.customer.cityCode.length > 0 &&
@@ -140,14 +143,14 @@ export class CustomersComponent implements OnInit {
     return false;
   }
 
-  limpiarFormulario() {
+  public limpiarFormulario() {
     this.departamentoSeleccionado = null;
     this.ciudadSeleccionada = null;
     this.cities = new Array<City>();
     this.customer = new Customer();
   }
 
-  guardar() {
+  public guardar() {
     this.successMessage = null;
     this.errorMessage = null;
     if (this.customer._id) {
@@ -180,8 +183,23 @@ export class CustomersComponent implements OnInit {
             this.errorMessage = 'No se pudo crear el cliente';
           } else {
             this.successMessage = 'Se creó el cliente ' + this.customer.name + " satisfactoriamente";
-            this.customer = new Customer();
-            this.listarClientes();
+
+            //Guardar imagen asociada al cliente
+            this._uploadService.makeFileRequest(GLOBAL.url + 'customer/upload/' + this.customer._id, 'PUT', [], this.filesToUpload, 'image', this.token).then(
+              (result: string) => {
+                this.customer.image = result;
+                this.filesToUpload = new Array<File>();
+
+                this._customerService.updateCustomer(this.customer).subscribe(
+                  response => {
+                    this.customer = new Customer();
+                    this.listarClientes();
+                  }, error => { console.error(error); }
+                );
+              }, (error) => {
+                console.error(error);
+              }
+            );
           }
         },
         error => {
@@ -195,7 +213,7 @@ export class CustomersComponent implements OnInit {
     }
   }
 
-  seleccionarDepartamento() {
+  public seleccionarDepartamento() {
     this.customer.stateCode = this.departamentoSeleccionado;
     this.cities = new Array<City>();
     this._regionService.listCities(this.departamentoSeleccionado).subscribe(
@@ -215,11 +233,11 @@ export class CustomersComponent implements OnInit {
     );
   }
 
-  seleccionarCiudad() {
+  public seleccionarCiudad() {
     this.customer.cityCode = this.ciudadSeleccionada;
   }
 
-  mostrarPagina(pageToShow) {
+  public mostrarPagina(pageToShow) {
     if (pageToShow <= 0) {
       this.page = 1;
     } else if (pageToShow > this.pages.length) {
@@ -230,8 +248,41 @@ export class CustomersComponent implements OnInit {
     this.listarClientes();
   }
 
-  cambioTamanoPagina() {
-    console.log('tamano pagina ' + this.pageSize);
+  public cambioTamanoPagina() {
     this.listarClientes();
+  }
+
+  public fileChangeEvent(fileInput: any) {
+    this.filesToUpload = <Array<File>>fileInput.target.files;
+    console.log('procesando archivos', this.filesToUpload);
+    //Si se esta modificando un cliente, enviar la imagen de inmediato
+    this._uploadService.makeFileRequest(GLOBAL.url + 'customer/upload/' + this.customer._id, 'PUT', [], this.filesToUpload, 'image', this.token).then(
+      (result: string) => {
+        console.log('result: ', result);
+        this.customer.image = result;
+        this.filesToUpload = new Array<File>();
+
+        if (this.customer._id) {
+          this._customerService.updateCustomer(this.customer).subscribe(
+            response => {
+            }, error => { console.error(error); }
+          );
+        }
+      }, (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  public obtenerImagenCliente() {
+    if (this.customer && this.customer.image) {
+      return GLOBAL.url + 'customer/image/' + this.customer.image;
+    } else {
+      return GLOBAL.url + 'customer/image/404.png';
+    }
+  }
+
+  public seleccionarImagen() {
+    $('#imagen').click();
   }
 }

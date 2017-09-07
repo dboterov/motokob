@@ -37,7 +37,7 @@ export class ProductService {
       'Content-Type': 'application/json',
       'Authorization': this.getToken()
     });
-    if(strFilter){
+    if (strFilter) {
       return this._http.get(this.url + 'product/list/?page=' + page + '&pageSize=' + pageSize + '&strFilter=' + strFilter, { headers: headers })
         .map(res => res.json());
     } else {
@@ -61,6 +61,11 @@ export class ProductService {
       'Authorization': this.getToken()
     });
     return this._http.put(this.url + 'product/update/' + productToUpdate._id, JSON.stringify(productToUpdate), { headers: headers })
+      .map(res => res.json());
+  }
+
+  public getImage(imageName) {
+    return this._http.get(this.url + 'product/get-image/' + imageName, {})
       .map(res => res.json());
   }
 }

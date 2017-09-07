@@ -1,0 +1,64 @@
+#productBrand {
+  width: 100%;
+  text-align: left;
+}
+
+select {
+  padding-top: 12px;
+  padding-bottom: 10px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding-left: 10px;
+  font-size: 18px;
+  width: 100%;
+}
+
+select[disabled] {
+  color: #999;
+  background-color: #eee;
+}
+
+.quot-item {
+  text-align: center;
+  border: 1px solid #dedede;
+  height: 220px;
+}
+
+.quot-item:hover {
+  cursor: pointer;
+  border: 1px solid #ababab;
+}
+
+.item-image {
+  max-height: 100px;
+  max-width: 100%;
+}
+
+.item-label {
+  font-size: 12px;
+}
+
+.item-price {
+  font-size: 20px;
+}
+
+.item-subtotal {
+  font-size: 24px;
+}
+
+#btn_add_bike {
+  margin-top: 10px;
+}
+
+@media only screen and (max-width: 425px) {
+  label {
+    margin-top: 5px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  #btn_add_bike {
+    margin-top: 25px;
+  }
+}

@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   public token;
 
   constructor(private _userService: UserService, private _route: ActivatedRoute, private _router: Router) {
-    this.user = new User('', '', '', '', '', '', true);
+    this.user = new User();
   }
 
   ngOnInit() {
@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
                 this.errorMessage = 'Error al generar el token';
               } else {
                 localStorage.setItem('motokob.token', JSON.stringify(this.token));
-                this.user = new User('', '', '', '', '', '', true);
+                this.user = new User();
                 console.log('navegando a /');
                 this._router.navigate(['/home']);
               }

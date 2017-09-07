@@ -1,0 +1,107 @@
+<motokob-sidenav></motokob-sidenav>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modalNavigate">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>No existe ningún cliente con ese número de documento. ¿Deseas crearlo?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="navigateToCustomer()">Sí</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<h3 class="section-title">Cotizaciones</h3>
+<div class="container">
+  <!-- cliente, producto x cantidad -->
+  <div class="row">
+    <form>
+      <div class="col-xs-12 col-sm-6">
+        <label for="documentNumber">Cliente</label>
+        <div class="input-group">
+          <input id="documentNumber" [(ngModel)]="customerDocumentNumber" name="documentNumber" type="text" class="form-control input-lg" placeholder="Ingresa la cédula">
+          <span class="input-group-btn">
+            <button class="btn btn-default btn-lg" type="button" (click)="searchCustomer()"><span class="glyphicon glyphicon-search"></span></button>
+          </span>
+        </div>
+        <!-- /input-group -->
+      </div>
+      <div class="col-xs-12 col-sm-6">
+        <label for="customerName">Nombre</label>
+        <input id="customerName" [(ngModel)]="customerName" name="customerName" type="text" class="form-control input-lg" placeholder="Nombre del cliente" disabled/>
+      </div>
+    </form>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-xs-12 col-sm-2">
+      <button type="button" class="btn btn-lg btn-primary" (click)="startAdding()">Agregar <span class="glyphicon glyphicon-plus"></span></button>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-sm-offset-1">
+      <div class="alert alert-danger" role="alert" *ngIf="errorMessageAdding">
+        <p>{{errorMessageAdding}}</p>
+      </div>
+      <div class="alert alert-info" role="alert" *ngIf="successMessageAdding">
+        <p>{{successMessageAdding}}</p>
+      </div>
+    </div>
+  </div>
+  <br />
+  <div class="row" *ngIf="adding">
+    <form (submit)="addBike()">
+      <div class="col-xs-12 col-sm-4">
+        <label for="productBrand">Marca</label>
+        <select id="productBrand" name="selectedBrand" (change)="selectBrand()" [(ngModel)]="selectedBrand">
+          <option style="display:none" disabled selected value=''>Seleccione una marca</option>
+          <option [selected]="selectedBrand == brand._id" value="{{brand._id}}" *ngFor="let brand of brands">{{brand.name}}</option>
+        </select>
+        <!-- /input-group -->
+      </div>
+      <div class="col-xs-12 col-sm-4">
+        <label for="product">Moto</label>
+        <select id="product" name="selectedBike" [(ngModel)]="selectedBike" [disabled]="!selectedBrand || selectedBrand.length === 0">
+          <option style="display:none" disabled selected value=''>Seleccione una moto</option>
+          <option [selected]="selectedBike == bike._id" name="" *ngFor="let bike of bikes" [value]="bike._id">{{bike.name}} {{bike.cylinder}} {{bike.model}} {{bike.color}}</option>
+        </select>
+        <!-- /input-group -->
+      </div>
+      <div class="col-xs-12 col-sm-2">
+        <label for="quantity">Cantidad</label>
+        <input id="quantity" [(ngModel)]="quantity" name="quantity" class="form-control input-lg" placeholder="Cantidad" type="number" min="1" max="30" />
+      </div>
+      <div class="col-xs-12 col-sm-2">
+        <button id="btn_add_bike" class="btn btn-danger btn-lg" type="submit">Guardar</button>
+      </div>
+    </form>
+  </div>
+  <br />
+  <div class="row">
+    <div *ngFor="let line of quotation.items">
+      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="quot-item" (click)="selectBike(line)">
+          <div class="col-xs-12">
+            <img class="img-responsive" src="{{getImage(line.itemImage)}}" class="item-image" />
+          </div>
+          <div class="col-xs-6">
+            <span class="item-label">Valor unitario</span>
+            <p class="item-price">${{line.unitPrice | number:0}}</p>
+          </div>
+          <div class="col-xs-6">
+            <span class="item-label">Unidades</span>
+            <p class="item-price">{{line.quantity | number:0}}</p>
+          </div>
+          <div class="col-xs-12">
+            <span class="item-label">Subtotal</span>
+            <p class="item-subtotal">${{line.unitPrice * line.quantity | number:0}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

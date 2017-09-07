@@ -7,8 +7,6 @@ var User = require('../models/user');
 var jwt = require('../services/jwt');
 
 function list(req, res) {
-  console.log('listando usuarios registrados');
-
   var page = parseInt(req.query.page ? req.query.page : 1);
   var pageSize = parseInt(req.query.pageSize ? req.query.pageSize : 10);
 
@@ -69,7 +67,6 @@ function saveUser(req, res) {
 }
 
 function loginUser(req, res) {
-  console.log(req.body);
   if (typeof req.body.username === 'undefined') {
     console.error('no se recibieron datos para validar');
     res.status(500).send({
@@ -95,10 +92,8 @@ function loginUser(req, res) {
           message: 'usuario no existe'
         });
       } else {
-        console.log('usuario encontrado, validando contraseña');
         bcrypt.compare(password, user.password, function(err, check) {
           if (check) {
-            console.log('usuario autenticado con éxito');
             if (params.gethash) {
               // devolver token jwt
               res.status(200).send({

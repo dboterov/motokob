@@ -14,7 +14,8 @@ var CustomerSchema = Schema({
   address: String,
   landLineNumber: String,
   cellphoneNumber: String,
-  email: String
+  email: String,
+  image: String
 });
 
 module.exports = mongoose.model('Customer', CustomerSchema);

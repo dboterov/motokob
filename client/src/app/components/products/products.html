@@ -93,13 +93,21 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-xs-12 col-sm-6 col-md-6">
+        <div class="col-xs-12 col-sm-6 col-md-4">
           <label for="price">Precio*</label>
           <input id="price" type="number" class="form-control input-lg" name="price" placeholder="Ingrese el precio" [(ngModel)]="product.price" [class.required-field]="!valid" required>
         </div>
-        <div class="col-xs-12 col-sm-3 col-md-1">
+        <div class="col-xs-12 col-sm-3 col-md-3">
           <label for="color">Color</label>
-          <input id="color" type="color" class="form-control input-lg" name="color" [(ngModel)]="product.color">
+          <select id="color" name="color" [(ngModel)]="product.color">
+            <option style="display:none" disabled selected value=''>Selecciona un color</option>
+            <option value="amarillo">Amarillo</option>
+            <option value="azul">Azul</option>
+            <option value="blanco">Blanco</option>
+            <option value="negro">Negro</option>
+            <option value="rojo">Rojo</option>
+            <option value="verde">Verde</option>
+          </select>
         </div>
         <div class="col-xs-12 col-sm-3 col-md-5">
           <label for="selImage">Seleccione imagen</label>

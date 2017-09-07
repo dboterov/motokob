@@ -12,7 +12,7 @@ var md_upload = multipart({uploadDir: './uploads/products'});
 api.get('/list', md_auth.ensureAuth, ProductController.productsList);
 api.post('/save', md_auth.ensureAuth, ProductController.saveProduct);
 api.put('/update/:id', md_auth.ensureAuth, ProductController.updateProduct);
-api.post('/upload/:id', [md_upload], ProductController.uploadImage);
+api.put('/upload/:id', [md_upload], ProductController.uploadImage);
 api.get('/get-image/:imageFile', ProductController.getImageFile);
 
 module.exports = api;

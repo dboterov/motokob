@@ -12,6 +12,7 @@ var region_routes = require('./routes/region');
 var product_routes = require('./routes/product');
 var brand_routes = require('./routes/brand');
 var productType_routes = require('./routes/productType');
+var company_routes = require('./routes/company');
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -35,5 +36,6 @@ app.use('/api/region', region_routes);
 app.use('/api/product', product_routes);
 app.use('/api/brand', brand_routes);
 app.use('/api/productType', productType_routes);
+app.use('/api/company', company_routes);
 
 module.exports = app;

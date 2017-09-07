@@ -10,7 +10,8 @@ export class Customer {
   public address: string;
   public landLineNumber: string;
   public cellphoneNumber: string;
-  public email: string
+  public email: string;
+  public image: string;
 
   constructor() {
     this._id = '';
@@ -25,9 +26,10 @@ export class Customer {
     this.landLineNumber = '';
     this.cellphoneNumber = '';
     this.email = '';
+    this.image = '';
   }
 
-  setParams(_id, name, surname, companyName, documentType, documentNumber, stateCode, cityCode, address, landLineNumber, cellphoneNumber, email) {
+  setParams(_id, name, surname, companyName, documentType, documentNumber, stateCode, cityCode, address, landLineNumber, cellphoneNumber, email, image) {
     this._id = _id;
     this.name = name;
     this.surname = surname;
@@ -40,5 +42,6 @@ export class Customer {
     this.landLineNumber = landLineNumber;
     this.cellphoneNumber = cellphoneNumber;
     this.email = email;
+    this.image = image;
   }
 }

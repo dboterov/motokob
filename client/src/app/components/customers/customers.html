@@ -6,6 +6,9 @@
   <div class="form-customers" id="formCustomers">
     <form>
       <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-6">
+          <img src="{{obtenerImagenCliente()}}" alt="" class="img-responsive" (click)="seleccionarImagen()" style="cursor: pointer">
+        </div>
         <div class="col-xs-12 col-sm-6 col-md-6 ">
           <label for="documentType">Tipo Documento</label>
           <select id="documentType" name="selectedDocType" [(ngModel)]="customer.documentType">
@@ -20,14 +23,10 @@
           <label for="documentNumber">Documento</label>
           <input id="documentNumber" class="form-control input-lg" id="documentNumber" placeholder="Ingresa el número de documento" type="text" name="documentNumber" [(ngModel)]="customer.documentNumber" />
         </div>
-      </div>
-      <div class="row" *ngIf="customer.documentType === 'NIT'">
-        <div class="col-xs-12">
+        <div class="col-xs-12" *ngIf="customer.documentType === 'NIT'">
           <label for="name">Razón Social</label>
           <input id="name" class="form-control input-lg" id="name" placeholder="Ingresa la razón social" type="text" name="name" [(ngModel)]="customer.companyName" />
         </div>
-      </div>
-      <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-6 ">
           <label for="name">Nombre {{customer.documentType === 'NIT' ? 'de contacto': ''}}</label>
           <input id="name" class="form-control input-lg" id="name" placeholder="Ingresa el nombre" type="text" name="name" [(ngModel)]="customer.name" />
@@ -36,30 +35,26 @@
           <label for="surname">Apellido</label>
           <input id="surname" class="form-control input-lg" id="surname" placeholder="Ingresa el apellido" type="text" name="surname" [(ngModel)]="customer.surname" />
         </div>
-      </div>
-      <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-6 ">
           <label for="dropdownMenu2">Departamento</label>
           <select id="dropdownMenu2" (change)="seleccionarDepartamento()" name="selectedState" [(ngModel)]="departamentoSeleccionado">
-            <option style="display:none" disabled selected value>Selecciona un departamento</option>
+            <option disabled selected value>Selecciona un departamento</option>
             <option [selected]="departamentoSeleccionado == dpto._id" value="{{dpto._id}}" *ngFor="let dpto of states">{{dpto.name}}</option>
           </select>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-6 ">
           <label for="dropdownMenu3">Ciudad</label>
           <select id="dropdownMenu3" (change)="seleccionarCiudad()" name="selectedCity" [(ngModel)]="ciudadSeleccionada" [disabled]="cities.length == 0">
-            <option style="display:none" disabled selected value>Selecciona una ciudad</option>
+            <option disabled selected value>Selecciona una ciudad</option>
             <option [selected]="ciudadSeleccionada == ciudad._id" value="{{ciudad._id}}" *ngFor="let ciudad of cities">{{ciudad.name}}</option>
           </select>
         </div>
-      </div>
-      <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-6">
           <label for="address">Dirección</label>
           <input id="address" class="form-control input-lg" id="surname" placeholder="Ingresa la dirección" type="text" name="address" [(ngModel)]="customer.address" />
         </div>
         <div class="col-xs-12 col-sm-6 col-md-6 ">
-          <label for="landLineNumber">Teléfono fijo</label>
+          <label for="landLineNumber">Teléfono fijo (o cualquier otro)</label>
           <input id="landLineNumber" class="form-control input-lg" id="surname" placeholder="Ingresa el teléfono fijo" type="text" name="landLineNumber" [(ngModel)]="customer.landLineNumber" />
         </div>
         <div class="col-xs-12 col-sm-6 col-md-6 ">
@@ -75,8 +70,8 @@
           <label for="email">Correo</label>
           <input id="email" class="form-control input-lg" id="surname" placeholder="Ingresa el correo electrónico" type="email" name="email" [(ngModel)]="customer.email" />
         </div>
-        <div class="col-xs-12 col-sm-6">
-          <input type="file" accept="image/*;capture=camera">
+        <div class="col-xs-12 col-sm-6" style="display: none">
+          <input id="imagen" type="file" accept="image/*;capture=camera" (change)="fileChangeEvent($event)">
         </div>
       </div>
       <div class="row">

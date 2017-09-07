@@ -5,7 +5,6 @@ var moment = require('moment');
 var secret = '?}U^;N3XU_Yq7~Y{NdD]_*R=(x4"1>';
 
 exports.ensureAuth = function (req, res, next) {
-  console.log('validating authentication...');
     if (!req.headers.authorization) {
         return res.status(403).send({
             message: 'usuario no autorizado'

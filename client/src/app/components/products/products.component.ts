@@ -350,7 +350,7 @@ export class ProductsComponent implements OnInit {
   private subirImagen(id) {
     console.log(this.images);
     if (this.images) {
-      this._uploadService.makeFileRequest(GLOBAL.url + 'product/upload/' + id, [], this.images, 'image').then(
+      this._uploadService.makeFileRequest(GLOBAL.url + 'product/upload/' + id, 'PUT', [], this.images, 'image', null).then(
         (result: string) => {
           console.log(JSON.parse(result));
           console.log(typeof result);
