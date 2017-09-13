@@ -405,6 +405,16 @@ export class ProductsComponent implements OnInit {
     console.log(producto.images);
   }
 
+  public eliminarColorSeleccionado() {
+    for (let i = 0; i < this.product.colors.length; i++) {
+      if (this.product.colors[i]._id === this.colorSeleccionado) {
+        this.product.colors.splice(i, 1);
+        this.colorSeleccionado = '';
+        break;
+      }
+    }
+  }
+
   public imageSelected(fileInput: any) {
     console.log('------------------Hola--------------------');
     this.images = <Array<File>>(fileInput.target.files);
