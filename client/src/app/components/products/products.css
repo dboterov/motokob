@@ -126,7 +126,7 @@ td {
 }
 
 .input-file + .label-file span {
-  width: 89%;
+  width: 87%;
   min-height: 2em;
   display: inline-block;
   text-overflow: ellipsis;

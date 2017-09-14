@@ -13,7 +13,7 @@ export class Product {
         _id: string,
         name: string
       },
-      public color: string,
+      public colors: Array<any>,
       public images: Array<string>
     ) {}
 }

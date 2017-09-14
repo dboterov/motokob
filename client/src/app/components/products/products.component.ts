@@ -7,16 +7,20 @@ import { ProductService } from '../../services/product.service';
 import { BrandService } from '../../services/brand.service';
 import { ProductTypeService } from '../../services/productType.service';
 import { UploadService } from '../../services/upload.service';
+import { ColorService } from '../../services/color.service';
 
 import { Product } from '../../models/product';
 import { Brand } from '../../models/brand';
 import { ProductType } from '../../models/productType';
+import { Color } from '../../models/color';
+
+declare var $: any;
 
 @Component({
   selector: 'product',
   templateUrl: './products.html',
   styleUrls: ['./products.css'],
-  providers: [ProductService, BrandService, ProductTypeService, UploadService]
+  providers: [ProductService, BrandService, ProductTypeService, UploadService, ColorService]
 })
 
 export class ProductsComponent implements OnInit {
@@ -27,6 +31,8 @@ export class ProductsComponent implements OnInit {
   public successMessage: string;
   public marcaSeleccionada: string;
   public productTypeSeleccionado: string;
+  public colorSeleccionado: string;
+  public nombreColor: string;
   public url: string;
   public image: string;
   public filtroBusqueda: string = '';
@@ -40,16 +46,19 @@ export class ProductsComponent implements OnInit {
   public products: Array<Product>;
   public brands: Array<Brand>;
   public productTypes: Array<ProductType>;
+  public colors: Array<Color>;
 
-  constructor(private _productService: ProductService, private _brandService: BrandService, private _productTypeService: ProductTypeService, private _uploadService: UploadService, private _route: ActivatedRoute, private _router: Router) {
+  constructor(private _productService: ProductService, private _brandService: BrandService, private _productTypeService: ProductTypeService,
+    private _uploadService: UploadService, private _colorService: ColorService, private _route: ActivatedRoute, private _router: Router) {
     this.errorMessage = null;
     this.successMessage = null;
     this.marcaSeleccionada = '';
     this.productTypeSeleccionado = '';
+    this.colorSeleccionado = '';
     this.url = GLOBAL.url;
     this.image = '';
     this.images = new Array<File>();
-    this.product = new Product('', '', { _id: null, name: null }, null, '', null, { _id: null, name: null }, '#000000', new Array<string>());
+    this.product = new Product('', '', { _id: null, name: null }, null, '', null, { _id: null, name: null }, new Array<any>(), new Array<string>());
     this.brand = new Brand('', '');
     this.productType = new ProductType('', '');
     this.products = new Array<Product>();
@@ -87,6 +96,95 @@ export class ProductsComponent implements OnInit {
     this._productTypeService.list().subscribe(
       response => {
         this.productTypes = response.productTypes;
+      },
+      error => {
+        const errorResponse = <any>error;
+        if (errorResponse != null) {
+          this.errorMessage = JSON.parse(errorResponse._body).message;
+          console.error(this.errorMessage);
+        }
+      }
+    );
+  }
+
+  public cargarColores() {
+    this.errorMessage = null;
+    this.successMessage = null;
+    this.colors = new Array<Color>();
+    this._colorService.listColors().subscribe(
+      response => {
+        this.colors = response.colors;
+      },
+      error => {
+        const errorResponse = <any>error;
+        if (errorResponse != null) {
+          this.errorMessage = JSON.parse(errorResponse._body).message;
+          console.error(this.errorMessage);
+        }
+      }
+    );
+  }
+
+  public guardarColor() {
+    this.errorMessage = '';
+    if (this.colorSeleccionado != null && this.colorSeleccionado.length > 0) {
+      for (let j = 0; j < this.product.colors.length; j++) {
+        if (this.product.colors[j]._id === this.colorSeleccionado) {
+          this.errorMessage = 'El color ya fue asignado';
+          return;
+        }
+      }
+
+      for (let i = 0; i < this.colors.length; i++) {
+        if (this.colors[i]._id === this.colorSeleccionado) {
+          this.product.colors.push(this.colors[i]);
+          break;
+        }
+      }
+    } else {
+      this.addColor();
+    }
+    this.colorSeleccionado = '';
+    this.nombreColor = null;
+    $('#modalColor').modal('hide');
+  }
+
+  private addColor() {
+    this.errorMessage = null;
+    this.successMessage = null;
+    if (this.nombreColor == null || this.nombreColor.length == 0) {
+      this.errorMessage = 'Debe ingresar el nombre del color';
+      return;
+    }
+
+    let color = {
+      name: this.nombreColor.substring(0, 1).toUpperCase() + this.nombreColor.substring(1).toLowerCase()
+    }
+
+    // Validar si el color ya existe en la base de datos
+    this._colorService.find(color.name).subscribe(
+      response => {
+        console.log(response);
+        if (response.color != null && response.color._id != null && response.color._id.length > 0) {
+          this.errorMessage = 'El color que esta intentando guardar ya existe';
+          return;
+        } else {
+          this._colorService.save(color).subscribe(
+            response => {
+              if (response.color._id != null && response.color._id.length > 0) {
+                this.product.colors.push(response.color);
+                this.nombreColor = null;
+              }
+            },
+            error => {
+              const errorResponse = <any>error;
+              if (errorResponse != null) {
+                this.errorMessage = JSON.parse(errorResponse._body).message;
+                console.error(this.errorMessage);
+              }
+            }
+          );
+        }
       },
       error => {
         const errorResponse = <any>error;
@@ -304,7 +402,7 @@ export class ProductsComponent implements OnInit {
   public selectProduct(producto) {
     this.marcaSeleccionada = '';
     this.productTypeSeleccionado = '';
-    this.product = new Product('', '', { _id: null, name: null }, null, '', null, { _id: null, name: null }, '#000000', new Array<string>());
+    this.product = new Product('', '', { _id: null, name: null }, null, '', null, { _id: null, name: null }, new Array<any>(), new Array<string>());
 
     this.product._id = producto._id;
     this.product.name = producto.name;
@@ -315,10 +413,10 @@ export class ProductsComponent implements OnInit {
     }
     this.product.model = producto.model;
     this.product.cylinder = producto.cylinder;
-    if (!producto.color || producto.color.length <= 0) {
-      this.product.color = '#000000';
+    if (!producto.colors || producto.colors.length <= 0) {
+      this.product.colors = new Array<any>();
     } else {
-      this.product.color = producto.color;
+      this.product.colors = producto.colors;
     }
     this.product.price = producto.price;
     if (producto.images) {
@@ -335,6 +433,16 @@ export class ProductsComponent implements OnInit {
     }
     console.log(this.product);
     console.log(producto.images);
+  }
+
+  public eliminarColorSeleccionado() {
+    for (let i = 0; i < this.product.colors.length; i++) {
+      if (this.product.colors[i]._id === this.colorSeleccionado) {
+        this.product.colors.splice(i, 1);
+        this.colorSeleccionado = '';
+        break;
+      }
+    }
   }
 
   public imageSelected(fileInput: any) {
@@ -381,8 +489,8 @@ export class ProductsComponent implements OnInit {
     this.listarProductos();
   }
 
-  public limpiar(){
-    this.product = new Product('', '', { _id: null, name: null }, null, '', null, { _id: null, name: null }, '#000000', new Array<string>());
+  public limpiar() {
+    this.product = new Product('', '', { _id: null, name: null }, null, '', null, { _id: null, name: null }, new Array<any>(), new Array<string>());
     this.marcaSeleccionada = '';
     this.productTypeSeleccionado = '';
     this.images = new Array<File>();
