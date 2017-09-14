@@ -1,0 +1,25 @@
+label {
+  margin-top: 10px;
+  margin-bottom: 0px;
+  font-size: 17px;
+  color: #a01e20;
+}
+
+select {
+  padding-top: 12px;
+  padding-bottom: 10px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding-left: 10px;
+  font-size: 18px;
+}
+
+select[disabled] {
+  color: #999;
+  background-color: #eee;
+}
+
+.btn-agregar{
+  margin-bottom: 10px;
+}

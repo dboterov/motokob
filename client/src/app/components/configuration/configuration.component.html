@@ -1,0 +1,68 @@
+<motokob-sidenav></motokob-sidenav>
+<h3 class="section-title">Configuración costos</h3>
+<div class="container">
+  <div class="alert alert-success" role="alert" *ngIf="successMessage">{{successMessage}}</div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="modal_cost" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-xs-12">
+                <label for="state">Departamento</label>
+                <select id="state" name="state" [(ngModel)]="selectedState" (change)="seleccionarDepartamento()">
+                  <option style="display:none;" disabled selected value>Selecciona un departamento</option>
+                  <option [selected]="cost.state.code === state.code" [value]="state.code" *ngFor="let state of states">{{state.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 col-sm-6">
+                <label for="name">Nombre</label>
+                <input id="name" class="form-control input-lg" id="name" placeholder="Ingresa el nombre" type="text" name="name" [(ngModel)]="cost.name" />
+              </div>
+              <div class="col-xs-12 col-sm-6">
+                <label for="value">Valor</label>
+                <input id="value" class="form-control input-lg" id="value" placeholder="Ingresa el valor" type="number" name="value" [(ngModel)]="cost.value" />
+              </div>
+            </div>
+            <br />
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="alert alert-danger" role="alert" *ngIf="errorMessage">{{errorMessage}}</div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary btn-lg" (click)="saveCost()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="btn btn-primary btn-lg btn-agregar" data-toggle="modal" data-target="#modal_cost">Agregar</div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="table-responsive">
+        <table class="table table-hover ">
+          <tr>
+            <th>Departamento</th>
+            <th>Nombre costo</th>
+            <th>Valor</th>
+          </tr>
+          <tr *ngFor="let cost of costs" (click)="seleccionarCosto(cost)">
+            <td>{{cost.state.name}}</td>
+            <td>{{cost.name}}</td>
+            <td>{{cost.value | number}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -12,6 +12,7 @@ import { CustomersComponent } from './components/customers/customers.component';
 import { PruebaComponent } from './components/prueba/prueba.component';
 import { ProductsComponent } from './components/products/products.component';
 import { QuotationsComponent } from './components/quotations/quotations.component';
+import { ConfigurationComponent } from './components/configuration/configuration.component';
 
 import { routing, appRoutingProviders } from './app.routing';
 
@@ -25,7 +26,8 @@ import { routing, appRoutingProviders } from './app.routing';
     CustomersComponent,
     PruebaComponent,
     ProductsComponent,
-    QuotationsComponent
+    QuotationsComponent,
+    ConfigurationComponent
   ],
   imports: [
     BrowserModule,

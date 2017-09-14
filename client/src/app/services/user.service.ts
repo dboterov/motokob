@@ -14,7 +14,7 @@ export class UserService {
     this.url = GLOBAL.url;
   }
 
-  signIn(userToLogin, gethash = null) {
+  public signIn(userToLogin, gethash = null) {
     if (gethash != null) {
       userToLogin.gethash = gethash;
     }
@@ -26,7 +26,7 @@ export class UserService {
       .map(res => res.json());
   }
 
-  getItentity() {
+  public getItentity() {
     this.identity = null;
     const identity = JSON.parse(localStorage.getItem('motokob.identity'));
     if (typeof identity !== 'undefined') {
@@ -35,7 +35,7 @@ export class UserService {
     return this.identity;
   }
 
-  getToken() {
+  public getToken() {
     this.token = null;
     const token = JSON.parse(localStorage.getItem('motokob.token'));
     if (typeof token !== 'undefined') {
@@ -44,13 +44,18 @@ export class UserService {
     return this.token;
   }
 
-  register(userToRegister) {
+  public removeLocalStorageData() {
+    localStorage.removeItem('motokob.token');
+    localStorage.removeItem('motokob.identity');
+  }
+
+  public register(userToRegister) {
     const headers = new Headers({ 'Content-Type': 'application/json' });
     return this._http.post(this.url + 'user/register', JSON.stringify(userToRegister), { headers: headers })
       .map(res => res.json());
   }
 
-  updateUser(userToUpdate) {
+  public updateUser(userToUpdate) {
     const headers = new Headers({
       'Content-Type': 'application/json',
       'Authorization': this.getToken()
@@ -59,7 +64,7 @@ export class UserService {
       .map(res => res.json());
   }
 
-  changePassword(userToUpdate) {
+  public changePassword(userToUpdate) {
     const headers = new Headers({
       'Content-Type': 'application/json',
       'Authorization': this.getToken()
@@ -68,7 +73,7 @@ export class UserService {
       .map(res => res.json());
   }
 
-  listUsers() {
+  public listUsers() {
     const headers = new Headers({
       'Content-Type': 'application/json',
       'Authorization': this.getToken()

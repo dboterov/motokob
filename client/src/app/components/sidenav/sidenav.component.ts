@@ -19,7 +19,6 @@ export class SideNavComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('iniciando componente de navegacion lateral');
     this.identity = this._userService.getItentity();
     this.token = this._userService.getToken();
     if (this.identity === null || this.token === null) {

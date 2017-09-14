@@ -9,7 +9,8 @@ var UserSchema = Schema({
   username: String,
   password: String,
   role: String,
-  active: Boolean
+  active: Boolean,
+  companyName: String
 });
 
 module.exports = mongoose.model('User', UserSchema);

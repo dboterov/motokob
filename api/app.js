@@ -13,20 +13,21 @@ var product_routes = require('./routes/product');
 var brand_routes = require('./routes/brand');
 var productType_routes = require('./routes/productType');
 var company_routes = require('./routes/company');
+var cost_routes = require('./routes/cost');
 
 app.use(bodyParser.urlencoded({
-    extended: false
+  extended: false
 }));
 app.use(bodyParser.json());
 
 //configurar cabeceras http
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.header('Access', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Allow-Request-Method');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.header('Access', 'GET, POST, OPTIONS, PUT, DELETE');
 
-    next();
+  next();
 });
 
 //rutas base
@@ -37,5 +38,6 @@ app.use('/api/product', product_routes);
 app.use('/api/brand', brand_routes);
 app.use('/api/productType', productType_routes);
 app.use('/api/company', company_routes);
+app.use('/api/cost', cost_routes);
 
 module.exports = app;

@@ -55,7 +55,6 @@ export class UsersComponent implements OnInit {
     this.companies = new Array<string>();
     this._companyService.list(this.token).subscribe(
       response => {
-        console.log('empresas: ', response);
         this.companies = response;
       }, error => { console.error(error); }
     );
