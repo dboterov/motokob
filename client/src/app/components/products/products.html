@@ -65,7 +65,7 @@
                   <label>Colores disponibles</label>
                   <select id="color" name="color" [(ngModel)]="colorSeleccionado">
                     <option style="display:none" disabled selected value>Colores disponibles</option>
-                    <option [selected]="colorSeleccionado === ''">Colores disponibles</option>
+                    <option [selected]="colorSeleccionado === ''" value="">Colores disponibles</option>
                     <option [selected]="colorSeleccionado === color._id" value="{{color._id}}" *ngFor="let color of colors">{{color.name}}</option>
                   </select>
                 </div>
@@ -82,8 +82,13 @@
           </div>
         </div>
         <div class="modal-footer">
+          <div class="row">
+            <div class="col-xs-12 text-left">
+              <div class="alert alert-danger" role="alert" *ngIf="errorMessage">{{errorMessage}}</div>
+            </div>
+          </div>
           <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary btn-lg" (click)="guardarColor()" data-dismiss="modal">Guardar</button>
+          <button type="button" class="btn btn-primary btn-lg" (click)="guardarColor()">Guardar</button>
         </div>
       </div>
     </div>
@@ -141,7 +146,7 @@
           <div class="input-group">
             <select id="color" name="color" [(ngModel)]="colorSeleccionado">
               <option style="display:none" disabled selected value>Colores disponibles</option>
-              <option [selected]="colorSeleccionado === ''">Colores disponibles</option>
+              <option [selected]="colorSeleccionado === ''" value="">Colores disponibles</option>
               <option [selected]="colorSeleccionado === color._id" value="{{color._id}}" *ngFor="let color of product.colors">{{color.name}}</option>
             </select>
             <span class="input-group-btn">
@@ -224,6 +229,7 @@
             <th>Cilindraje</th>
             <th>Precio</th>
             <th>Imagenes</th>
+            <th>Colores</th>
           </tr>
           <tr *ngFor="let productRow of products; let i = index" [class.info]="productRow._id == product._id" (click)="selectProduct(productRow)">
             <td>{{i + 1}}</td>
@@ -250,6 +256,9 @@
             </td>
             <td>
               <div *ngIf="productRow.images">{{productRow.images.length}}</div>
+            </td>
+            <td>
+              <div *ngIf="productRow.colors">{{productRow.colors.length}}</div>
             </td>
           </tr>
         </table>

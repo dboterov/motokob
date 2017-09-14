@@ -27,6 +27,30 @@ function list(req, res) {
   });
 }
 
+function find(req, res) {
+  console.log('Buscando color por nombre');
+
+  var find = Color.findOne({
+    name: req.params.name
+  }, (err, color) => {
+    if (err) {
+      res.status(500).send({
+        message: 'Error al obtener el color'
+      });
+    } else {
+      if (color) {
+        return res.status(200).send({
+          color: null
+        });
+      } else {
+        return res.status(200).send({
+          color: color
+        });
+      }
+    }
+  });
+}
+
 function save(req, res) {
   var color = new Color();
   var params = req.body;
@@ -54,5 +78,6 @@ function save(req, res) {
 
 module.exports = {
   list,
+  find,
   save
 };

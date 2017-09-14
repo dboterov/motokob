@@ -14,6 +14,8 @@ import { Brand } from '../../models/brand';
 import { ProductType } from '../../models/productType';
 import { Color } from '../../models/color';
 
+declare var $: any;
+
 @Component({
   selector: 'product',
   templateUrl: './products.html',
@@ -124,7 +126,15 @@ export class ProductsComponent implements OnInit {
   }
 
   public guardarColor() {
+    this.errorMessage = '';
     if (this.colorSeleccionado != null && this.colorSeleccionado.length > 0) {
+      for (let j = 0; j < this.product.colors.length; j++) {
+        if (this.product.colors[j]._id === this.colorSeleccionado) {
+          this.errorMessage = 'El color ya fue asignado';
+          return;
+        }
+      }
+
       for (let i = 0; i < this.colors.length; i++) {
         if (this.colors[i]._id === this.colorSeleccionado) {
           this.product.colors.push(this.colors[i]);
@@ -135,6 +145,8 @@ export class ProductsComponent implements OnInit {
       this.addColor();
     }
     this.colorSeleccionado = '';
+    this.nombreColor = null;
+    $('#modalColor').modal('hide');
   }
 
   private addColor() {
@@ -146,14 +158,32 @@ export class ProductsComponent implements OnInit {
     }
 
     let color = {
-      name: this.nombreColor
+      name: this.nombreColor.substring(0, 1).toUpperCase() + this.nombreColor.substring(1).toLowerCase()
     }
 
-    this._colorService.save(color).subscribe(
+    // Validar si el color ya existe en la base de datos
+    this._colorService.find(color.name).subscribe(
       response => {
-        if (response.color._id != null && response.color._id.length > 0) {
-          this.product.colors.push(response.color);
-          this.nombreColor = null;
+        console.log(response);
+        if (response.color != null && response.color._id != null && response.color._id.length > 0) {
+          this.errorMessage = 'El color que esta intentando guardar ya existe';
+          return;
+        } else {
+          this._colorService.save(color).subscribe(
+            response => {
+              if (response.color._id != null && response.color._id.length > 0) {
+                this.product.colors.push(response.color);
+                this.nombreColor = null;
+              }
+            },
+            error => {
+              const errorResponse = <any>error;
+              if (errorResponse != null) {
+                this.errorMessage = JSON.parse(errorResponse._body).message;
+                console.error(this.errorMessage);
+              }
+            }
+          );
         }
       },
       error => {

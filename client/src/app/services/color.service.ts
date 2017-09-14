@@ -42,6 +42,16 @@ export class ColorService {
       .map(res => res.json());
   }
 
+  find(name) {
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'Authorization': this.getToken()
+    });
+
+    return this._http.get(this.url + 'color/find/' + name, { headers: headers })
+      .map(res => res.json());
+  }
+
   save(colorToSave) {
     const headers = new Headers({
       'Content-Type': 'application/json',
