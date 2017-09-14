@@ -10,7 +10,7 @@ var ProductSchema = Schema({
   cylinder: String,
   price: Number,
   productTypeId: String,
-  color: String,
+  colors: Array,
   images: Array
 });
 

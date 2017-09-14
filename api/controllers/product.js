@@ -72,7 +72,7 @@ function saveProduct(req, res) {
   product.model = params.model;
   product.cylinder = params.cylinder;
   product.productTypeId = params.productType._id;
-  product.color = params.color;
+  product.colors = params.colors;
   product.price = params.price;
   product.images = params.images;
 
@@ -104,7 +104,7 @@ function updateProduct(req, res) {
   product.model = params.model;
   product.cylinder = params.cylinder;
   product.productTypeId = params.productType._id;
-  product.color = params.color;
+  product.colors = params.colors;
   product.price = params.price;
   product.images = params.images;
 
