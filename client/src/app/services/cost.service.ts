@@ -32,4 +32,22 @@ export class CostService {
       .map(res => res.json());
   }
 
+  public listCostNames(token) {
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'Authorization': token
+    });
+    return this._http.get(this.url + 'cost/names', { headers: headers })
+      .map(res => res.json());
+  }
+
+  public listCostOptions(token, costName) {
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'Authorization': token
+    });
+    return this._http.get(this.url + 'cost/' + costName, { headers: headers })
+      .map(res => res.json());
+  }
+
 }

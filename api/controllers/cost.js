@@ -2,7 +2,6 @@
 
 var Cost = require('../models/cost');
 var mongoose = require('mongoose');
-var jwt = require('../services/jwt');
 
 function list(req, res) {
   Cost.find({
@@ -18,6 +17,39 @@ function list(req, res) {
   }).sort({
     'companyName': 1,
     'name': 1
+  });
+}
+
+function listCompanyCostNames(req, res) {
+  Cost.find({
+    companyName: req.user.companyName
+  }).distinct("name", (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send({
+        message: 'Ocurrió un error al listar los nombres de costo por empresa'
+      });
+    } else {
+      res.status(200).send(result);
+    }
+  });
+}
+
+function listFilteredCostOptions(req, res) {
+  console.log('filtrando opciones por empresa y nombre, ', req.params.name);
+  Cost.find({
+    companyName: req.user.companyName,
+    name: req.params.name
+  }, (err, result) => {
+    if (err) {
+      res.status(500).send({
+        message: 'Ocurrió un error al listar los costos'
+      });
+    } else {
+      res.status(200).send(result);
+    }
+  }).sort({
+    'state.name': 1
   });
 }
 
@@ -71,5 +103,7 @@ function save(req, res) {
 
 module.exports = {
   list,
+  listCompanyCostNames,
+  listFilteredCostOptions,
   save
 };

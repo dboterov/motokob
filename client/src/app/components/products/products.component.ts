@@ -31,7 +31,7 @@ export class ProductsComponent implements OnInit {
   public successMessage: string;
   public marcaSeleccionada: string;
   public productTypeSeleccionado: string;
-  public colorSeleccionado: string;
+  public colorSeleccionado: string = "";
   public nombreColor: string;
   public url: string;
   public image: string;

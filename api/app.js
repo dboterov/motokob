@@ -15,6 +15,7 @@ var productType_routes = require('./routes/productType');
 var company_routes = require('./routes/company');
 var cost_routes = require('./routes/cost');
 var color_routes = require('./routes/color');
+var restrictions_routes = require('./routes/restrictions');
 
 app.use(bodyParser.urlencoded({
   extended: false
@@ -41,5 +42,6 @@ app.use('/api/productType', productType_routes);
 app.use('/api/company', company_routes);
 app.use('/api/cost', cost_routes);
 app.use('/api/color', color_routes);
+app.use('/api/restrictions', restrictions_routes);
 
 module.exports = app;

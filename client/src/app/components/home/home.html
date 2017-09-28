@@ -1,11 +1,40 @@
 <motokob-sidenav></motokob-sidenav>
 <!--<div id="main">-->
-  <div class="container">
-    <div class="row">
-      <div class="col-xs-12">
-        <h2>¡Hola {{identity.name | titlecase}}!</h2>
-        <p>Bienvenido a MotoKob</p>
-      </div>
+<div class="container">
+  <div class="row" *ngIf="selectedCompany">
+    <div class="col-xs-12">
+      <h2>¡Hola {{identity.name | titlecase}}!</h2>
+      <p>Bienvenido a {{selectedCompany.companyName}}</p>
     </div>
   </div>
+
+  <div class="modal fade" tabindex="-1" role="dialog" id="modal_select_company">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Selecciona una empresa</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-xs-12">
+                <select name="company" [(ngModel)]="selectedCompanyId">
+                  <option selected value="" disabled style="display:none">Selecciona una opción</option>
+                  <option *ngFor="let company of identity.companies" [value]="company.company_id">{{company.companyName}}</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-lg" (click)="seleccionarEmpresa(selectedCompanyId)">Continuar</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+</div>
 <!--</div>-->

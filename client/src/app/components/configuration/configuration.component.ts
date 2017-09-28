@@ -3,45 +3,63 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { CostService } from '../../services/cost.service';
 import { RegionService } from '../../services/region.service';
+import { ProductService } from '../../services/product.service';
+import { RestrictionsService } from '../../services/restrictions.service';
 import { Cost } from '../../models/cost';
 import { State } from '../../models/state';
+import { Product } from '../../models/product';
+import { Restriction } from '../../models/restriction';
 
 declare var $: any;
 
 @Component({
   templateUrl: './configuration.component.html',
   styleUrls: ['./configuration.component.css'],
-  providers: [UserService, CostService, RegionService]
+  providers: [UserService, CostService, RegionService, ProductService, RestrictionsService]
 })
 export class ConfigurationComponent implements OnInit {
   public identity;
   public token;
   public cost: Cost;
   public costs: Array<Cost>;
+  public restrictions: Array<Restriction>;
   public states: Array<State>;
+  public bikes: Array<Product>;
+  public maxInstallments: number;
   public selectedState: string = '';
+  public selectedBike: string = '';
   public errorMessage: string = '';
   public successMessage: string = '';
+  private workingCompany: any;
 
   constructor(
     private _userService: UserService,
     private _costService: CostService,
     private _regionService: RegionService,
+    private _productService: ProductService,
+    private _restrictionsService: RestrictionsService,
     private _route: ActivatedRoute,
     private _router: Router) {
     this.cost = new Cost();
     this.costs = new Array<Cost>();
     this.states = new Array<State>();
+    this.bikes = new Array<Product>();
+    this.restrictions = new Array<Restriction>();
+    console.log(localStorage.getItem('motokob.selectedCompany'));
+    this.workingCompany = JSON.parse(localStorage.getItem('motokob.selectedCompany'));
   }
 
   ngOnInit() {
     this.identity = this._userService.getItentity();
+    console.log(this.identity);
     this.token = this._userService.getToken();
     if (this.identity === null || this.token === null) {
       this._router.navigate(['/']);
     } else {
       this.listCosts();
+      this.listRestrictions();
       this.listStates();
+      this.listBikes();
 
       $('#modal_cost').on('hidden.bs.modal', () => {
         this.cost = new Cost();
@@ -51,10 +69,38 @@ export class ConfigurationComponent implements OnInit {
     }
   }
 
+  private listBikes() {
+    console.log('cargando lista de productos');
+    this._productService.list(1, 10000, null).subscribe(
+      response => {
+        console.log(response);
+        this.bikes = response.products;
+        console.log('bikes: ', this.bikes);
+      }, error => { console.error(error); }
+    );
+  }
+
   private listStates() {
     this._regionService.listStates().subscribe(
       response => {
         this.states = response.states
+      }, error => { console.error(error); }
+    );
+  }
+
+  public saveMaxInstallments() {
+    let restriction = {
+      product_id: this.selectedBike,
+      max_installments: this.maxInstallments,
+      company_id: this.workingCompany.company_id
+    };
+    this._restrictionsService.save(restriction, this.token).subscribe(
+      response => {
+        this.maxInstallments = null;
+        this.selectedBike = null;
+        console.log('se creo con exito el nuevo limite de cuotas por producto', response);
+        $('#modal_installments').modal('hide');
+        this.listRestrictions();
       }, error => { console.error(error); }
     );
   }
@@ -96,6 +142,14 @@ export class ConfigurationComponent implements OnInit {
     );
   }
 
+  private listRestrictions() {
+    this._restrictionsService.listRestrictions(this.workingCompany.company_id, this.token).subscribe(
+      result => {
+        this.restrictions = result;
+      }, error => { console.error(error); }
+    );
+  }
+
   public seleccionarCosto(cost) {
     this.cost = cost;
     $('#modal_cost').modal('show');
@@ -111,5 +165,13 @@ export class ConfigurationComponent implements OnInit {
         break;
       }
     }
+  }
+
+  public seleccionarRestriccion(restriction) {
+    console.log('restriction selected: ', restriction);
+  }
+
+  public seleccionarProducto() {
+    console.log('selecciono la moto ' + this.selectedBike);
   }
 }

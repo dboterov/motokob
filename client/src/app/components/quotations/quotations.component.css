@@ -3,6 +3,10 @@
   text-align: left;
 }
 
+h2 {
+  color: #A01E20;
+}
+
 select {
   padding-top: 12px;
   padding-bottom: 10px;
@@ -45,6 +49,81 @@ select[disabled] {
 
 .item-subtotal {
   font-size: 24px;
+}
+
+.brand-card {
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 10px;
+  height: 265px;
+}
+
+.brand-card:hover {
+  border: 1px solid #dcdcdc;
+  background-color: #bbb;
+}
+
+.brand-logo {
+  height: 160px;
+}
+
+.brand-logo img{
+  max-height: 160px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.brand-name {
+  text-align: center;
+  width: 100%;
+  height: 80px;
+  padding-top: 25px;
+  font-size: 20px;
+}
+
+.bike-card {
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.bike-card:hover {
+  border: 1px solid #dcdcdc;
+  background-color: #bbb;
+}
+
+.bike-image img{
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+}
+
+.bike-name {
+  text-align: center;
+  width: 100%;
+  height: 70px;
+  font-size: 20px;
+}
+
+.bike-price {
+  text-align: center;
+  font-size: 25px;
+}
+
+.quot-type {
+  height: 80px;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 40px;
+  padding-top: 12px;
+}
+
+.quot-type:hover {
+  border: 1px solid #dcdcdc;
+  background-color: #bbb;
 }
 
 #btn_add_bike {

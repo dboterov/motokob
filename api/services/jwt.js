@@ -11,7 +11,7 @@ exports.createToken = function(user) {
     surname: user.surname,
     email: user.email,
     role: user.role,
-    companyName: user.companyName,
+    companies: user.companies,
     iat: moment().unix(),
     exp: moment().add(12, 'hours').unix()
   };

@@ -4,9 +4,11 @@ import { UserService } from '../../services/user.service';
 import { CustomerService } from '../../services/customer.service';
 import { BrandService } from '../../services/brand.service';
 import { ProductService } from '../../services/product.service';
+import { CostService } from '../../services/cost.service';
 import { Customer } from '../../models/customer';
 import { Product } from '../../models/product';
 import { Brand } from '../../models/brand';
+import { Cost } from '../../models/cost';
 import { Quotation, QuotationDetail } from '../../models/quotation';
 import { GLOBAL } from '../../services/global';
 
@@ -16,7 +18,7 @@ declare var $: any;
   selector: 'motokob-quotations',
   templateUrl: './quotations.component.html',
   styleUrls: ['./quotations.component.css'],
-  providers: [UserService, CustomerService, BrandService, ProductService]
+  providers: [UserService, CustomerService, BrandService, ProductService, CostService]
 })
 export class QuotationsComponent implements OnInit {
   public identity;
@@ -27,32 +29,48 @@ export class QuotationsComponent implements OnInit {
   public adding: boolean = false;
   public selectedBrand: string = '';
   public selectedBike: string = '';
+  public selectedColor: string = '';
+  public selectedCostName: string = '';
+  public selectedCostOption: string = '';
+  public selectedQuotationType: string = '';
+  public initialPayment: number;
   public quantity: number = 0;
   public brands: Array<Brand>;
   public bikes: Array<any>;
   public errorMessageAdding: string = '';
   public successMessageAdding: string = '';
+  public panelShown: string = 'brands';
   public quotation: Quotation;
+  public costOptions: Array<string>;
+  public filteredOptions: Array<Cost>;
+  public additionalCosts: Array<any>;
+
   private customer: Customer;
 
   constructor(
     private _productService: ProductService,
     private _brandService: BrandService,
     private _customerService: CustomerService,
+    private _costService: CostService,
     private _userService: UserService,
     private _route: ActivatedRoute,
     private _router: Router) {
     this.brands = new Array<Brand>();
     this.quotation = new Quotation();
+    this.costOptions = new Array<string>();
+    this.filteredOptions = new Array<Cost>();
+    this.additionalCosts = new Array<any>();
   }
 
   ngOnInit() {
     console.log('iniciando componente de cotizaciones');
     this.identity = this._userService.getItentity();
+    console.log(this.identity);
     this.token = this._userService.getToken();
     if (this.identity === null || this.token === null) {
       this._router.navigate(['/']);
     }
+    this.loadBrands();
   }
 
   private loadBrands() {
@@ -101,14 +119,55 @@ export class QuotationsComponent implements OnInit {
     }
   }
 
-  public selectBrand() {
-    console.log('selecciono la marca ' + this.selectedBrand);
-    this._productService.list(1, 10000, this.selectedBrand).subscribe(
+  public selectBrand(brand) {
+    console.log('selecciono la marca ', brand._id);
+    this.selectedBrand = brand;
+    this._productService.list(1, 10000, brand._id).subscribe(
       response => {
         console.log(response);
         this.bikes = response.products;
+        this.panelShown = 'bikes';
       }, error => { console.error(error); }
     );
+  }
+
+  public selectBike(bike) {
+    console.log('selecciono la moto ', bike);
+    this.selectedBike = bike;
+    this.panelShown = 'modelAndColor';
+    this._costService.listCostNames(this.token).subscribe(
+      response => {
+        this.costOptions = response;
+      }, error => { console.error(error); }
+    );
+  }
+
+  public selectQuotationType(quotationType) {
+    this.selectedQuotationType = quotationType;
+    this.panelShown = 'credit-params';
+  }
+
+  public selectCostName() {
+    console.log(this.selectedCostName);
+    this._costService.listCostOptions(this.token, this.selectedCostName).subscribe(
+      response => {
+        this.filteredOptions = response;
+      }, error => { console.error(error); }
+    );
+  }
+
+  public addSelectedCost() {
+    console.log(this.selectedCostName);
+    console.log(this.selectedCostOption);
+    for(let i = 0; i < this.costOptions.length; i++){
+      if(this.selectedCostOption === this.filteredOptions[i]._id){
+        this.additionalCosts.push({costName: this.selectedCostName, costOption: this.filteredOptions[i]});
+        this.selectedCostName = '';
+        this.selectedCostOption = '';
+        this.filteredOptions = new Array<Cost>();
+        break;
+      }
+    }
   }
 
   public addBike() {
@@ -167,13 +226,5 @@ export class QuotationsComponent implements OnInit {
 
   public getImage(imageName) {
     return GLOBAL.url + 'product/get-image/' + imageName;
-  }
-
-  public selectBike(quotationLine: QuotationDetail) {
-    console.log(quotationLine);
-    this.selectedBrand = quotationLine.brandId;
-    this.selectBrand();
-    this.selectedBike = quotationLine.itemId;
-    this.quantity = quotationLine.quantity;
   }
 }

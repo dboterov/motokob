@@ -24,6 +24,8 @@ export class Quotation {
   }
 }
 
+import { Cost } from './cost';
+
 export class QuotationDetail {
   public _id: string;
   public itemId: string;
@@ -32,6 +34,7 @@ export class QuotationDetail {
   public brandId: string;
   public quantity: number;
   public unitPrice: number;
+  public additionalCosts: Array<Cost>;
 
   constructor(itemId: string, itemName: string, itemImage: string, quantity: number, unitPrice: number, brandId: string) {
     this.itemId = itemId;
@@ -40,5 +43,6 @@ export class QuotationDetail {
     this.itemName = itemName;
     this.itemImage = itemImage;
     this.brandId = brandId;
+    this.additionalCosts = new Array<Cost>();
   }
 }

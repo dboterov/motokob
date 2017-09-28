@@ -20,11 +20,10 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('iniciando componente de login');
     this.identity = this._userService.getItentity();
     this.token = this._userService.getToken();
     //validar vigencia del token/identity
-    if(this.identity != null && this.token != null){
+    if (this.identity != null && this.token != null) {
       this._router.navigate(['/home']);
     }
   }
@@ -33,17 +32,12 @@ export class LoginComponent implements OnInit {
     this.errorMessage = null;
     if (this.user.username === null || this.user.username.trim().length === 0) {
       this.errorMessage = 'Debes ingresar tu usuario';
-      console.log('no se ingreso un usuario');
       return;
     }
     if (this.user.password === null || this.user.password.trim().length === 0) {
       this.errorMessage = 'Debes ingresar una contraseña';
-      console.log('no se ingreso una contraseña');
       return;
     }
-
-    console.log('iniciando sesion');
-    console.log(this.user.username + ", " + this.user.password);
 
     this._userService.signIn(this.user).subscribe(
       response => {
@@ -60,7 +54,6 @@ export class LoginComponent implements OnInit {
               } else {
                 localStorage.setItem('motokob.token', JSON.stringify(this.token));
                 this.user = new User();
-                console.log('navegando a /');
                 this._router.navigate(['/home']);
               }
             },
@@ -73,7 +66,6 @@ export class LoginComponent implements OnInit {
             }
           );
         }
-        console.log(response);
       },
       error => {
         const errorResponse = <any>error;

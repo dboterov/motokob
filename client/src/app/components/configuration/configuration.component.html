@@ -24,11 +24,13 @@
             <div class="row">
               <div class="col-xs-12 col-sm-6">
                 <label for="name">Nombre</label>
-                <input id="name" class="form-control input-lg" id="name" placeholder="Ingresa el nombre" type="text" name="name" [(ngModel)]="cost.name" />
+                <input id="name" class="form-control input-lg" id="name" placeholder="Ingresa el nombre" type="text" name="name" [(ngModel)]="cost.name"
+                />
               </div>
               <div class="col-xs-12 col-sm-6">
                 <label for="value">Valor</label>
-                <input id="value" class="form-control input-lg" id="value" placeholder="Ingresa el valor" type="number" name="value" [(ngModel)]="cost.value" />
+                <input id="value" class="form-control input-lg" id="value" placeholder="Ingresa el valor" type="number" name="value" [(ngModel)]="cost.value"
+                />
               </div>
             </div>
             <br />
@@ -46,6 +48,62 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="modal_installments" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-xs-12">
+              <p>
+                Aquí puedes configurar el númro máximo de cuotas a las que se financia una moto por empresa. Si no configuras un valor para
+                alguna moto, <b>el número máximo por defecto será 24</b>
+              </p>
+            </div>
+          </div>
+          <form>
+            <div class="row">
+              <div class="col-xs-6">
+                <label for="product">Producto</label>
+                <select id="product" name="product" [(ngModel)]="selectedBike" (change)="seleccionarProducto()">
+                  <option style="display:none;" disabled selected value>Selecciona un ítem</option>
+                  <option [selected]="selectedBike === bike._id" [value]="bike._id" *ngFor="let bike of bikes">{{bike.name}}</option>
+                </select>
+              </div>
+              <div class="col-xs-6">
+                <label for="max_installments">Cuotas máximas</label>
+                <input id="max_installments" class="form-control input-lg" id="value" placeholder="Ingresa el valor" type="number" name="value"
+                  [(ngModel)]="maxInstallments" />
+              </div>
+            </div>
+            <br />
+            <div class="row" *ngIf="errorMessage">
+              <div class="col-xs-12">
+                <div class="alert alert-danger" role="alert" *ngIf="errorMessage">{{errorMessage}}</div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary btn-lg" (click)="saveMaxInstallments()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fin modals -->
+
+  <div class="row">
+    <div class="col-xs-12">
+      <h4>Estás realizando la configuración de la empresa <b>{{workingCompany.companyName}}</b></h4>
+    </div>
+  </div>
+
+  <h3>Costos por departamento</h3>
   <div class="btn btn-primary btn-lg btn-agregar" data-toggle="modal" data-target="#modal_cost">Agregar</div>
   <div class="row">
     <div class="col-xs-12">
@@ -60,6 +118,26 @@
             <td>{{cost.state.name}}</td>
             <td>{{cost.name}}</td>
             <td>{{cost.value | number}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+  <h3>Cuotas máximas por moto</h3>
+  <div class="btn btn-primary btn-lg btn-agregar" data-toggle="modal" data-target="#modal_installments">Agregar</div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="table-responsive">
+        <table class="table table-hover ">
+          <tr>
+            <th>Producto</th>
+            <th>Máxima funanciación</th>
+          </tr>
+          <tr *ngFor="let restriction of restrictions" (click)="seleccionarRestriccion(restriction)">
+            <td>{{restriction.product_id.name}}</td>
+            <td>{{restriction.max_installments}}</td>
           </tr>
         </table>
       </div>
