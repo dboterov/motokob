@@ -27,6 +27,7 @@ export class ProductsComponent implements OnInit {
   public totalRecords: number = 0;
   public page: number = 1;
   public pageSize: number = 10;
+  public pasoProducto: number = 1;
   public errorMessage: string;
   public successMessage: string;
   public marcaSeleccionada: string;
@@ -487,6 +488,11 @@ export class ProductsComponent implements OnInit {
   cambioTamanoPagina() {
     console.log('tamano pagina ' + this.pageSize);
     this.listarProductos();
+  }
+
+  public siguientePasoProducto() {
+    this.pasoProducto++;
+    this.cargarColores();
   }
 
   public limpiar() {
