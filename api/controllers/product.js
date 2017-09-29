@@ -159,20 +159,20 @@ function uploadImage(req, res) {
 
     console.log(images);
 
-    Product.findByIdAndUpdate(productId, {
-      images: images
-    }, (err, productUpdated) => {
-      if (!productUpdated) {
-        res.status(404).send({
-          message: 'No se ha podido actualizar la imagen del producto'
-        });
-      } else {
-        res.status(200).send({
-          image: fileName,
-          product: productUpdated
-        });
-      }
+    // Product.findByIdAndUpdate(productId, {
+    //   images: images
+    // }, (err, productUpdated) => {
+    //   if (!productUpdated) {
+    //     res.status(404).send({
+    //       message: 'No se ha podido actualizar la imagen del producto'
+    //     });
+    //   } else {
+    res.status(200).send({
+      images
+      // product: productUpdated
     });
+    //   }
+    // });
   } else {
     res.status(200).send({
       message: 'no subiste ninguna imagen'

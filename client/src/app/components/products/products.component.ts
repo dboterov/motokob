@@ -448,22 +448,44 @@ export class ProductsComponent implements OnInit {
 
   public imageSelected(fileInput: any) {
     console.log('------------------Hola--------------------');
-    this.images = <Array<File>>(fileInput.target.files);
+    let images = <Array<File>>(fileInput.target.files);
     this.image = '';
-    for (let i = 0; i < this.images.length; i++) {
-      console.log('Se incluyo la imagen: ' + this.images[i].name);
-      this.image += this.images[i].name + '; ';
+    for (let i = 0; i < images.length; i++) {
+      console.log('Se incluyo la imagen: ' + images[i].name);
+      //image += this.images[i].name + '; ';
     }
+
+    this.subirImagen(images);
   }
 
-  private subirImagen(id) {
-    console.log(this.images);
-    if (this.images) {
-      this._uploadService.makeFileRequest(GLOBAL.url + 'product/upload/' + id, 'PUT', [], this.images, 'image', null).then(
+
+
+  private subirImagen(imagen) {
+    console.log(imagen);
+    if (imagen) {
+      this._uploadService.makeFileRequest(GLOBAL.url + 'product/upload', 'PUT', [], imagen, 'image', null).then(
         (result: string) => {
-          console.log(JSON.parse(result));
-          console.log(typeof result);
-          this.limpiar();
+          console.log('-----------------------------------------');
+          console.log(result);
+          console.log('-----------------------------------------');
+          if (imagen && imagen != null && imagen.length > 0) {
+            let images = result.replace('images', '').replace('{', '').replace('[', '').replace(':', '').replace(']', '').replace('}', '').replace('"', '').replace(/['"]+/g, '').split(',');
+            console.log(images);
+
+            for (let i = 0; i < images.length; i++) {
+              let image_path = this.url + 'product/get-image/' + images[i];
+              this.product.images.push(image_path);
+            }
+
+            console.log(this.product.images);
+          }
+
+
+
+
+          // console.log(JSON.parse(result));
+          // console.log(typeof result);
+          // this.limpiar();
         }, (error) => {
           console.error(error);
           this.errorMessage = 'Error al guardar las imagenes ' + JSON.parse(error._body).message;
