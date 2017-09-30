@@ -37,6 +37,7 @@ export class ProductsComponent implements OnInit {
   public url: string;
   public image: string;
   public filtroBusqueda: string = '';
+  public logoMarca: string = '';
   public agregarColor = false;
   public valid = true;
   public product: Product;
@@ -72,6 +73,7 @@ export class ProductsComponent implements OnInit {
     this.cargarMarcas();
     this.cargarTiposProducto();
     this.listarProductos();
+    this.cargarColores();
   }
 
   private cargarMarcas() {
@@ -175,6 +177,8 @@ export class ProductsComponent implements OnInit {
               if (response.color._id != null && response.color._id.length > 0) {
                 this.product.colors.push(response.color);
                 this.nombreColor = null;
+                this.colors.push(response.color);
+                this.colors[this.colors.length - 1].seleccionado = true;
               }
             },
             error => {
@@ -195,6 +199,36 @@ export class ProductsComponent implements OnInit {
         }
       }
     );
+  }
+
+  public seleccionarColor(_id) {
+    let eliminar: boolean = false;
+    let colors = new Color('', '', false);
+
+    for (let i = 0; i < this.colors.length; i++) {
+      if (this.colors[i]._id === _id) {
+        colors = this.colors[i];
+        if (this.colors[i].seleccionado) {
+          this.colors[i].seleccionado = false;
+          eliminar = true;
+        } else {
+          this.colors[i].seleccionado = true;
+          eliminar = false;
+        }
+        break;
+      }
+    }
+
+    if (!eliminar) {
+      this.product.colors.push(colors);
+    } else {
+      for (let i = 0; i < this.product.colors.length; i++) {
+        if (this.product.colors[i]._id === _id) {
+          this.product.colors.splice(i, 1);
+          break;
+        }
+      }
+    }
   }
 
   public listarProductos() {
@@ -251,13 +285,23 @@ export class ProductsComponent implements OnInit {
   }
 
   public seleccionarMarca() {
-    this.product.brand._id = this.marcaSeleccionada;
-    console.log('Se selecciono la marca ' + this.product.brand._id);
+    for (let i = 0; i < this.brands.length; i++) {
+      if (this.brands[i]._id === this.marcaSeleccionada) {
+        this.product.brand = this.brands[i];
+        console.log('Se selecciono la marca ' + this.product.brand._id);
+        break;
+      }
+    }
   }
 
   public seleccionarTipoProducto() {
-    this.product.productType._id = this.productTypeSeleccionado;
-    console.log('Se selecciono el tipo de producto ' + this.product.productType._id);
+    for (let i = 0; i < this.productTypes.length; i++) {
+      if (this.productTypes[i]._id === this.productTypeSeleccionado) {
+        this.product.productType = this.productTypes[i];
+        console.log('Se selecciono el tipo de producto ' + this.product.productType._id);
+        break;
+      }
+    }
   }
 
   public validarProducto() {
@@ -357,11 +401,7 @@ export class ProductsComponent implements OnInit {
           } else {
             console.log(this.product);
             this.successMessage = 'Se actualizó el producto ' + this.product.name + ' correctamente';
-            if (this.images && this.images.length > 0) {
-              this.subirImagen(this.product._id);
-            } else {
-              this.limpiar();
-            }
+            this.limpiar();
           }
         },
         error => {
@@ -374,6 +414,9 @@ export class ProductsComponent implements OnInit {
       );
     } else {
       //crear
+      for (let i = 0; i < this.product.images.length; i++) {
+        this.product.images[i] = this.product.images[i].replace(this.url + 'product/get-image/', '');
+      }
       this._productService.save(this.product).subscribe(
         response => {
           console.log(this.product);
@@ -382,11 +425,7 @@ export class ProductsComponent implements OnInit {
             this.errorMessage = 'Ocurrió un error al crear el producto';
           } else {
             this.successMessage = 'Se creó el producto ' + this.product.name + ' correctamente';
-            if (this.images && this.images.length > 0) {
-              this.subirImagen(this.product._id);
-            } else {
-              this.limpiar();
-            }
+            this.limpiar();
           }
         },
         error => {
@@ -415,9 +454,13 @@ export class ProductsComponent implements OnInit {
     this.product.model = producto.model;
     this.product.cylinder = producto.cylinder;
     if (!producto.colors || producto.colors.length <= 0) {
+      console.log('No tengo colores');
       this.product.colors = new Array<any>();
     } else {
-      this.product.colors = producto.colors;
+      console.log('Tengo colores');
+      for (let i = 0; i < producto.colors.length; i++) {
+        this.seleccionarColor(producto.colors[i]._id);
+      }
     }
     this.product.price = producto.price;
     if (producto.images) {
@@ -434,6 +477,7 @@ export class ProductsComponent implements OnInit {
     }
     console.log(this.product);
     console.log(producto.images);
+    $('#modalProducto').modal('show');
   }
 
   public eliminarColorSeleccionado() {
@@ -447,45 +491,45 @@ export class ProductsComponent implements OnInit {
   }
 
   public imageSelected(fileInput: any) {
-    console.log('------------------Hola--------------------');
     let images = <Array<File>>(fileInput.target.files);
     this.image = '';
-    for (let i = 0; i < images.length; i++) {
-      console.log('Se incluyo la imagen: ' + images[i].name);
-      //image += this.images[i].name + '; ';
-    }
 
-    this.subirImagen(images);
+    this.subirImagen(images, false);
   }
 
+  public imageLogo(fileInput: any) {
+    console.log('Subiendo logo');
+    let images = <Array<File>>(fileInput.target.files);
+    this.logoMarca = images[0].name;
+    this.subirImagen(images, true);
+  }
 
+  public quitarImagen(imagen) {
+    console.log('Intentando eliminar imagen: ' + imagen);
+    for (let i = 0; i < this.product.images.length; i++) {
+      if (this.product.images[i] === imagen) {
+        console.log('Se eliminara la imagen');
+        this.product.images.splice(i, 1);
+        console.log(this.product.images);
+        break;
+      }
+    }
+  }
 
-  private subirImagen(imagen) {
-    console.log(imagen);
+  private subirImagen(imagen, logo) {
     if (imagen) {
       this._uploadService.makeFileRequest(GLOBAL.url + 'product/upload', 'PUT', [], imagen, 'image', null).then(
         (result: string) => {
-          console.log('-----------------------------------------');
-          console.log(result);
-          console.log('-----------------------------------------');
-          if (imagen && imagen != null && imagen.length > 0) {
-            let images = result.replace('images', '').replace('{', '').replace('[', '').replace(':', '').replace(']', '').replace('}', '').replace('"', '').replace(/['"]+/g, '').split(',');
-            console.log(images);
-
-            for (let i = 0; i < images.length; i++) {
-              let image_path = this.url + 'product/get-image/' + images[i];
-              this.product.images.push(image_path);
+          if (!logo) {
+            console.log('Soy logo: ' + logo);
+            if (imagen && imagen != null && imagen.length > 0) {
+              let images = result.replace('images', '').replace('{', '').replace('[', '').replace(':', '').replace(']', '').replace('}', '').replace('"', '').replace(/['"]+/g, '').split(',');
+              for (let i = 0; i < images.length; i++) {
+                let image_path = this.url + 'product/get-image/' + images[i];
+                this.product.images.push(image_path);
+              }
             }
-
-            console.log(this.product.images);
           }
-
-
-
-
-          // console.log(JSON.parse(result));
-          // console.log(typeof result);
-          // this.limpiar();
         }, (error) => {
           console.error(error);
           this.errorMessage = 'Error al guardar las imagenes ' + JSON.parse(error._body).message;
@@ -513,8 +557,34 @@ export class ProductsComponent implements OnInit {
   }
 
   public siguientePasoProducto() {
+    this.errorMessage = '';
+    if (this.pasoProducto === 1) {
+      if (this.product.brand == null || this.product.brand._id == null || this.product.brand._id.length <= 0) {
+        this.errorMessage = 'Seleccione una marca';
+        return;
+      }
+    } else if (this.pasoProducto === 2) {
+      if (this.product.productType == null || this.product.productType._id == null || this.product.productType._id.length <= 0) {
+        this.errorMessage = 'Seleccione una tipo';
+        return;
+      }
+    } else if (this.pasoProducto === 3) {
+      if (this.product.name == null || this.product.name.length <= 0 || this.product.cylinder == null || this.product.cylinder.length <= 0
+        || this.product.model == null || this.product.model <= 0 || this.product.price == null || this.product.price <= 0) {
+        this.errorMessage = 'Todos los datos son obligatorios';
+        return;
+      }
+    } else if (this.pasoProducto === 4) {
+      if (this.product.colors == null || this.product.colors.length <= 0) {
+        this.errorMessage = 'Debe seleccionar al menos un color';
+        return;
+      }
+    }
     this.pasoProducto++;
-    this.cargarColores();
+  }
+
+  public anteriorPasoProducto() {
+    this.pasoProducto--;
   }
 
   public limpiar() {
@@ -523,7 +593,11 @@ export class ProductsComponent implements OnInit {
     this.productTypeSeleccionado = '';
     this.images = new Array<File>();
     this.image = '';
+    this.pasoProducto = 1;
     this.valid = true;
     this.listarProductos();
+    this.cargarColores();
+
+    $('#modalProducto').modal('hide');
   }
 }
