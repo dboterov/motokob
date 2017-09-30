@@ -153,25 +153,11 @@ function uploadImage(req, res) {
       var extSplit = fileName.split('\.');
       var fileExt = extSplit[1];
 
-      console.log(fileName);
       images.push(fileName);
     }
 
-    console.log(images);
-
-    Product.findByIdAndUpdate(productId, {
-      images: images
-    }, (err, productUpdated) => {
-      if (!productUpdated) {
-        res.status(404).send({
-          message: 'No se ha podido actualizar la imagen del producto'
-        });
-      } else {
-        res.status(200).send({
-          image: fileName,
-          product: productUpdated
-        });
-      }
+    res.status(200).send({
+      images
     });
   } else {
     res.status(200).send({
