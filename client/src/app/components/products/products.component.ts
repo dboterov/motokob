@@ -60,8 +60,8 @@ export class ProductsComponent implements OnInit {
     this.url = GLOBAL.url;
     this.image = '';
     this.images = new Array<File>();
-    this.product = new Product('', '', { _id: null, name: null }, null, '', null, { _id: null, name: null }, new Array<any>(), new Array<string>());
-    this.brand = new Brand('', '');
+    this.product = new Product('', '', { _id: null, name: null, logo: null }, null, '', null, { _id: null, name: null }, new Array<any>(), new Array<string>());
+    this.brand = new Brand('', '', '');
     this.productType = new ProductType('', '');
     this.products = new Array<Product>();
     this.brands = new Array<Brand>();
@@ -288,6 +288,7 @@ export class ProductsComponent implements OnInit {
     for (let i = 0; i < this.brands.length; i++) {
       if (this.brands[i]._id === this.marcaSeleccionada) {
         this.product.brand = this.brands[i];
+        this.product.brand.logo = this.url + 'brand/get-image/' + this.brands[i].logo;
         console.log('Se selecciono la marca ' + this.product.brand._id);
         break;
       }
@@ -330,7 +331,9 @@ export class ProductsComponent implements OnInit {
           this.successMessage = 'Se creó la marca ' + this.brand.name + ' correctamente';
           this.marcaSeleccionada = this.brand._id;
           this.product.brand = this.brand;
-          this.brand = new Brand('', '');
+          this.product.brand.logo = this.url + 'brand/get-image/' + this.brand.logo;
+          this.brand = new Brand('', '', '');
+          this.logoMarca = null;
           this.cargarMarcas();
         }
       },
@@ -442,13 +445,13 @@ export class ProductsComponent implements OnInit {
   public selectProduct(producto) {
     this.marcaSeleccionada = '';
     this.productTypeSeleccionado = '';
-    this.product = new Product('', '', { _id: null, name: null }, null, '', null, { _id: null, name: null }, new Array<any>(), new Array<string>());
+    this.product = new Product('', '', { _id: null, name: null, logo: null }, null, '', null, { _id: null, name: null }, new Array<any>(), new Array<string>());
 
     this.product._id = producto._id;
     this.product.name = producto.name;
     if (producto.brandId) {
-      this.product.brand._id = producto.brandId._id;
-      this.product.brand.name = producto.brandId.name;
+      this.product.brand = producto.brandId;
+      this.product.brand.logo = this.url + 'brand/get-image/' + producto.brandId.logo;
       this.marcaSeleccionada = this.product.brand._id;
     }
     this.product.model = producto.model;
@@ -469,7 +472,6 @@ export class ProductsComponent implements OnInit {
         this.product.images.push(image_path);
       }
     }
-    //this.product.images = producto.images;
     if (producto.productTypeId) {
       this.product.productType._id = producto.productTypeId._id;
       this.product.productType.name = producto.productTypeId.name;
@@ -494,14 +496,14 @@ export class ProductsComponent implements OnInit {
     let images = <Array<File>>(fileInput.target.files);
     this.image = '';
 
-    this.subirImagen(images, false);
+    this.subirImagen(images);
   }
 
   public imageLogo(fileInput: any) {
     console.log('Subiendo logo');
     let images = <Array<File>>(fileInput.target.files);
     this.logoMarca = images[0].name;
-    this.subirImagen(images, true);
+    this.subirLogo(images);
   }
 
   public quitarImagen(imagen) {
@@ -516,18 +518,33 @@ export class ProductsComponent implements OnInit {
     }
   }
 
-  private subirImagen(imagen, logo) {
+  private subirLogo(imagen) {
+    if (imagen) {
+      this._uploadService.makeFileRequest(GLOBAL.url + 'brand/upload', 'PUT', [], imagen, 'image', null).then(
+        (result: string) => {
+          let images = result.replace('images', '').replace('{', '').replace('[', '').replace(':', '').replace(']', '').replace('}', '').replace('"', '').replace(/['"]+/g, '').split(',');
+          this.brand.logo = images[0];
+          console.log(images);
+          console.log(this.brand.logo);
+        }, (error) => {
+          console.error(error);
+          this.errorMessage = 'Error al guardar las imagenes ' + JSON.parse(error._body).message;
+        }
+      );
+    } else {
+      console.log('no hay archivos para subir');
+    }
+  }
+
+  private subirImagen(imagen) {
     if (imagen) {
       this._uploadService.makeFileRequest(GLOBAL.url + 'product/upload', 'PUT', [], imagen, 'image', null).then(
         (result: string) => {
-          if (!logo) {
-            console.log('Soy logo: ' + logo);
-            if (imagen && imagen != null && imagen.length > 0) {
-              let images = result.replace('images', '').replace('{', '').replace('[', '').replace(':', '').replace(']', '').replace('}', '').replace('"', '').replace(/['"]+/g, '').split(',');
-              for (let i = 0; i < images.length; i++) {
-                let image_path = this.url + 'product/get-image/' + images[i];
-                this.product.images.push(image_path);
-              }
+          if (imagen && imagen != null && imagen.length > 0) {
+            let images = result.replace('images', '').replace('{', '').replace('[', '').replace(':', '').replace(']', '').replace('}', '').replace('"', '').replace(/['"]+/g, '').split(',');
+            for (let i = 0; i < images.length; i++) {
+              let image_path = this.url + 'product/get-image/' + images[i];
+              this.product.images.push(image_path);
             }
           }
         }, (error) => {
@@ -588,7 +605,7 @@ export class ProductsComponent implements OnInit {
   }
 
   public limpiar() {
-    this.product = new Product('', '', { _id: null, name: null }, null, '', null, { _id: null, name: null }, new Array<any>(), new Array<string>());
+    this.product = new Product('', '', { _id: null, name: null, logo: null }, null, '', null, { _id: null, name: null }, new Array<any>(), new Array<string>());
     this.marcaSeleccionada = '';
     this.productTypeSeleccionado = '';
     this.images = new Array<File>();
