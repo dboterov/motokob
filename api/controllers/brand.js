@@ -7,12 +7,10 @@ var Brand = require('../models/brand');
 var jwt = require('../services/jwt');
 
 function list(req, res) {
-  console.log('listando marcas registrados');
-
   Brand.find().sort('name').exec((err, brands) => {
     if(err){
       res.status(500).send({
-        message: 'error al listar las marcas'
+        message: 'error al listar las marcass'
       });
     } else {
       if(!brands){
@@ -20,17 +18,13 @@ function list(req, res) {
           message: 'no se encontraron marcas'
         });
       } else {
-        return res.status(200).send({
-          brands: brands
-        });
+        return res.status(200).send(brands);
       }
     }
   });
 }
 
 function findById(req, res) {
-  console.log('buscando marca');
-
   var find = Brand.findOne({
     _id: req.params.id
   }, (err, brand) => {

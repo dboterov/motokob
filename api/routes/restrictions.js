@@ -6,7 +6,8 @@ var RestrictionsController = require('../controllers/restrictions');
 var api = express.Router();
 var md_auth = require('../middlewares/authenticated');
 
-api.get('/installments/:company_id', md_auth.ensureAuth, RestrictionsController.getMaximumInstallments);
+api.get('/installments/:company_id', md_auth.ensureAuth, RestrictionsController.listMaximumInstallments);
+api.get('/installments/:company_id/:product_id', md_auth.ensureAuth, RestrictionsController.getMaximumInstallments);
 api.post('/', md_auth.ensureAuth, RestrictionsController.save);
 
 module.exports = api;

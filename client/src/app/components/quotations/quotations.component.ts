@@ -5,6 +5,7 @@ import { CustomerService } from '../../services/customer.service';
 import { BrandService } from '../../services/brand.service';
 import { ProductService } from '../../services/product.service';
 import { CostService } from '../../services/cost.service';
+import { RestrictionsService } from '../../services/restrictions.service';
 import { Customer } from '../../models/customer';
 import { Product } from '../../models/product';
 import { Brand } from '../../models/brand';
@@ -18,7 +19,7 @@ declare var $: any;
   selector: 'motokob-quotations',
   templateUrl: './quotations.component.html',
   styleUrls: ['./quotations.component.css'],
-  providers: [UserService, CustomerService, BrandService, ProductService, CostService]
+  providers: [UserService, CustomerService, BrandService, ProductService, CostService, RestrictionsService]
 })
 export class QuotationsComponent implements OnInit {
   public identity;
@@ -28,13 +29,15 @@ export class QuotationsComponent implements OnInit {
   public items: Array<any>;
   public adding: boolean = false;
   public selectedBrand: string = '';
-  public selectedBike: string = '';
+  public selectedBike: Product;
   public selectedColor: string = '';
   public selectedCostName: string = '';
   public selectedCostOption: string = '';
   public selectedQuotationType: string = '';
+  public selectedInstallments: string = '';
   public initialPayment: number;
-  public quantity: number = 0;
+  public discount: number;
+  public maxInstallments: number;
   public brands: Array<Brand>;
   public bikes: Array<any>;
   public errorMessageAdding: string = '';
@@ -44,6 +47,7 @@ export class QuotationsComponent implements OnInit {
   public costOptions: Array<string>;
   public filteredOptions: Array<Cost>;
   public additionalCosts: Array<any>;
+  private company: any;
 
   private customer: Customer;
 
@@ -52,6 +56,7 @@ export class QuotationsComponent implements OnInit {
     private _brandService: BrandService,
     private _customerService: CustomerService,
     private _costService: CostService,
+    private _restrictionsService: RestrictionsService,
     private _userService: UserService,
     private _route: ActivatedRoute,
     private _router: Router) {
@@ -63,20 +68,26 @@ export class QuotationsComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('iniciando componente de cotizaciones');
     this.identity = this._userService.getItentity();
     console.log(this.identity);
     this.token = this._userService.getToken();
     if (this.identity === null || this.token === null) {
       this._router.navigate(['/']);
+    } else {
+      this.loadBrands();
+      this.loadSelectedCompany();
     }
-    this.loadBrands();
+  }
+
+  private loadSelectedCompany() {
+    this.company = JSON.parse(localStorage.getItem('motokob.selectedCompany'));
+    console.log(this.company);
   }
 
   private loadBrands() {
     this._brandService.listBrands().subscribe(
       response => {
-        this.brands = response.brands;
+        this.brands = response;
       }, error => { const errorResponse = <any>error; }
     );
   }
@@ -134,7 +145,13 @@ export class QuotationsComponent implements OnInit {
   public selectBike(bike) {
     console.log('selecciono la moto ', bike);
     this.selectedBike = bike;
+    console.log(this.selectedBike);
     this.panelShown = 'modelAndColor';
+    this._restrictionsService.getRestrictions(this.company.company_id, this.selectedBike._id, this.token).subscribe(
+      response => {
+        this.maxInstallments = response.max_installments;
+      }, error => { console.error(error); }
+    );
     this._costService.listCostNames(this.token).subscribe(
       response => {
         this.costOptions = response;
@@ -144,11 +161,14 @@ export class QuotationsComponent implements OnInit {
 
   public selectQuotationType(quotationType) {
     this.selectedQuotationType = quotationType;
-    this.panelShown = 'credit-params';
+    if (quotationType === 'contado') {
+      this.panelShown = 'summary';
+    } else {
+      this.panelShown = 'credit-params';
+    }
   }
 
   public selectCostName() {
-    console.log(this.selectedCostName);
     this._costService.listCostOptions(this.token, this.selectedCostName).subscribe(
       response => {
         this.filteredOptions = response;
@@ -159,9 +179,9 @@ export class QuotationsComponent implements OnInit {
   public addSelectedCost() {
     console.log(this.selectedCostName);
     console.log(this.selectedCostOption);
-    for(let i = 0; i < this.costOptions.length; i++){
-      if(this.selectedCostOption === this.filteredOptions[i]._id){
-        this.additionalCosts.push({costName: this.selectedCostName, costOption: this.filteredOptions[i]});
+    for (let i = 0; i < this.costOptions.length; i++) {
+      if (this.selectedCostOption === this.filteredOptions[i]._id) {
+        this.additionalCosts.push({ costName: this.selectedCostName, costOption: this.filteredOptions[i] });
         this.selectedCostName = '';
         this.selectedCostOption = '';
         this.filteredOptions = new Array<Cost>();
@@ -170,61 +190,23 @@ export class QuotationsComponent implements OnInit {
     }
   }
 
-  public addBike() {
-    this.errorMessageAdding = '';
-    this.successMessageAdding = '';
-    if (!this.selectedBrand) {
-      this.errorMessageAdding = 'Debes seleccionar una marca de moto';
-      return;
-    }
-    console.log('selectedBrand: ' + this.selectedBrand);
-
-    if (!this.selectedBike) {
-      this.errorMessageAdding = 'Debes seleccionar una moto';
-      return;
-    }
-    console.log('selectedBike: ' + this.selectedBike);
-
-    if (this.quantity === 0) {
-      this.errorMessageAdding = 'Debes ingresar la cantidad';
-      return;
-    }
-
-    let exists = false;
-    for (let i = 0; i < this.quotation.items.length; i++) {
-      if (this.quotation.items[i].itemId === this.selectedBike) {
-        exists = true;
-        this.quotation.items[i].quantity = this.quantity;
-        this.clearAddingForm();
-        this.successMessageAdding = 'Artículo modificado con éxito';
-        return;
-      }
-    }
-
-    console.log(this.bikes);
-    if (!exists) {
-      for (let i = 0; i < this.bikes.length; i++) {
-        if (this.bikes[i]._id === this.selectedBike) {
-          console.log(this.bikes[i]);
-          this.quotation.addLine(this.selectedBike, this.bikes[i].name, this.bikes[i].images[0], this.quantity, this.bikes[i].price, this.bikes[i].brandId._id);
-          this.successMessageAdding = 'Artículo adicionado con éxito';
-          this.clearAddingForm();
-          break;
-        }
-      }
-    }
-
-    console.log(this.quotation);
-  }
-
-  private clearAddingForm() {
-    this.selectedBike = '';
-    this.selectedBrand = '';
-    this.quantity = 0;
-    this.bikes = new Array<any>();
-  }
-
   public getImage(imageName) {
     return GLOBAL.url + 'product/get-image/' + imageName;
+  }
+
+  public getLineTotal() {
+    let total = 0;
+    for (let i = 0; i < this.additionalCosts.length; i++) {
+      total += this.additionalCosts[i].costOption.value;
+    }
+    total += this.selectedBike ? this.selectedBike.price : 0;
+    total -= this.initialPayment ? this.initialPayment : 0;
+    total -= this.discount ? this.discount : 0;
+    console.log('el total de la moto siendo cotizada es ' + total);
+    return total;
+  }
+
+  public calculatePaymentsValue(){
+    
   }
 }

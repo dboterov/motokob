@@ -4,9 +4,6 @@ var Restrictions = require('../models/restrictions');
 var mongoose = require('mongoose');
 
 function save(req, res) {
-  console.log(req.body);
-  console.log(req.user);
-
   var restriction = new Restrictions();
   restriction.product_id = req.body.product_id;
   restriction.company_id = req.body.company_id;
@@ -30,13 +27,13 @@ function save(req, res) {
   });
 }
 
-function getMaximumInstallments(req, res) {
+function listMaximumInstallments(req, res) {
   var ObjectId = require('mongoose').Types.ObjectId;
   var query = { company_id: new ObjectId(req.params.company_id) };
-  Restrictions.find(query, (err, result) => {
+  Restrictions.findOne(query, (err, result) => {
     if (err) {
       res.status(500).send({
-        message: 'Ocurrió un error al listar el máximo de cuotas por producto y empresa'
+        message: 'Ocurrió un error al consultar el máximo de cuotas por producto y empresa'
       });
     } else {
       res.status(200).send(result);
@@ -44,7 +41,27 @@ function getMaximumInstallments(req, res) {
   }).populate('product_id');
 }
 
+function getMaximumInstallments(req, res) {
+  var ObjectId = require('mongoose').Types.ObjectId;
+  var query = { company_id: new ObjectId(req.params.company_id), product_id: new ObjectId(req.params.product_id) };
+  Restrictions.findOne(query, (err, result) => {
+    if (err) {
+      res.status(500).send({
+        message: 'Ocurrió un error al listar el máximo de cuotas por empresa'
+      });
+    } else {
+      if (!result) {
+        res.status(200).send({max_installments: 24});
+      } else {
+        res.status(200).send(result);
+      }
+
+    }
+  }).populate('product_id');
+}
+
 module.exports = {
   save,
+  listMaximumInstallments,
   getMaximumInstallments
 }

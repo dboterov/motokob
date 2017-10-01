@@ -8,7 +8,6 @@ var ProductType = require('../models/productType');
 var jwt = require('../services/jwt');
 
 function productsList(req, res) {
-  console.log('Listando productos registrados');
   var page = parseInt(req.query.page ? req.query.page : 1);
   var pageSize = parseInt(req.query.pageSize ? req.query.pageSize : 10);
   var strFilter = req.query.strFilter;
@@ -29,8 +28,8 @@ function productsList(req, res) {
     }
   }
 
-  console.log('queryObject');
-  console.log(queryObject);
+  //console.log('queryObject');
+  //console.log(queryObject);
 
   Product.find(queryObject).count({}, (err, count) => {
     Product.find(queryObject).sort('name').paginate(page, pageSize).populate({
@@ -94,7 +93,7 @@ function saveProduct(req, res) {
 }
 
 function updateProduct(req, res) {
-  console.log(req.body);
+  //console.log(req.body);
   var product = new Product();
   var params = req.body;
 
@@ -132,9 +131,9 @@ function uploadImage(req, res) {
 
   if (req.files) {
     var images = [];
-    console.log('-------------------------------------');
-    console.log(req.files);
-    console.log('-------------------------------------');
+    //console.log('-------------------------------------');
+    //console.log(req.files);
+    //console.log('-------------------------------------');
     if (req.files.image.length > 1) {
       for (var i = 0; i < req.files.image.length; i++) {
         var filePath = req.files.image[i].path;
@@ -143,7 +142,7 @@ function uploadImage(req, res) {
         var extSplit = fileName.split('\.');
         var fileExt = extSplit[1];
 
-        console.log(fileName);
+        //console.log(fileName);
         images.push(fileName);
       }
     } else {
@@ -153,11 +152,11 @@ function uploadImage(req, res) {
       var extSplit = fileName.split('\.');
       var fileExt = extSplit[1];
 
-      console.log(fileName);
+      //console.log(fileName);
       images.push(fileName);
     }
 
-    console.log(images);
+    //console.log(images);
 
     Product.findByIdAndUpdate(productId, {
       images: images
@@ -184,8 +183,8 @@ function getImageFile(req, res) {
   var imageFile = req.params.imageFile;
   var path_file = './uploads/products/' + imageFile;
 
-  console.log(imageFile);
-  console.log(path_file);
+  //console.log(imageFile);
+  //console.log(path_file);
 
   fs.exists(path_file, function(exists) {
     if (exists) {
