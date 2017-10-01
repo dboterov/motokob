@@ -156,21 +156,8 @@ function uploadImage(req, res) {
       images.push(fileName);
     }
 
-    //console.log(images);
-
-    Product.findByIdAndUpdate(productId, {
-      images: images
-    }, (err, productUpdated) => {
-      if (!productUpdated) {
-        res.status(404).send({
-          message: 'No se ha podido actualizar la imagen del producto'
-        });
-      } else {
-        res.status(200).send({
-          image: fileName,
-          product: productUpdated
-        });
-      }
+    res.status(200).send({
+      images
     });
   } else {
     res.status(200).send({
@@ -186,7 +173,7 @@ function getImageFile(req, res) {
   //console.log(imageFile);
   //console.log(path_file);
 
-  fs.exists(path_file, function(exists) {
+  fs.exists(path_file, function (exists) {
     if (exists) {
       res.sendFile(path.resolve(path_file));
     } else {

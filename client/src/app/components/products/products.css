@@ -1,5 +1,7 @@
 @-moz-document url-prefix() {
-  fieldset { display: table-cell; }
+  fieldset {
+    display: table-cell;
+  }
 }
 
 h2 {
@@ -61,8 +63,8 @@ select {
 }
 
 select[disabled] {
-    color: #999;
-    background-color: #eee;
+  color: #999;
+  background-color: #eee;
 }
 
 .paginador {
@@ -110,7 +112,7 @@ td {
   opacity: 0;
 }
 
-.input-file + .label-file {
+.input-file+.label-file {
   border: 1px solid #CCCCCC;
   padding: 0;
   min-width: 100%;
@@ -125,17 +127,18 @@ td {
   border-radius: 6px;
 }
 
-.input-file + .label-file span {
-  width: 87%;
+.input-file+.label-file span {
+  width: 91%;
   min-height: 2em;
   display: inline-block;
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow: hidden;;
+  overflow: hidden;
+  ;
   vertical-align: top;
 }
 
-.input-file + .label-file strong {
+.input-file+.label-file strong {
   height: 100%;
   color: #FFFFFF;
   background-color: #A01E20;
@@ -146,7 +149,7 @@ td {
   text-align: center;
 }
 
-.input-file + .label-file .span-file {
+.input-file+.label-file .span-file {
   vertical-align: middle;
   fill: currentColor;
   margin-right: 0.25em;
@@ -155,31 +158,42 @@ td {
   font-size: 20px;
 }
 
-.ng-valid[required], .ng-valid.required  {
+.ng-valid[required], .ng-valid.required {
   border-left: 5px solid #337AB7;
 }
 
-.ng-touched.ng-invalid[required],
-.ng-untouched.ng-pristine.ng-invalid[required].required-field {
+.ng-touched.ng-invalid[required], .ng-untouched.ng-pristine.ng-invalid[required].required-field {
   border-left: 5px solid #700000;
 }
 
+.btn-eliminar-imagen {
+  font-size: 25px;
+}
+
+.contendor-imagen {
+  border: 1px solid #CCCCCC;
+  margin: 5px;
+  padding: 10px;
+  height: 124px;
+}
+
+.pointer-cursor {
+  cursor: pointer;
+}
+
 @media only screen and (min-width: 768px) {
-  .table td{
+  .table td {
     cursor: pointer;
   }
-
   h2 {
     position: absolute;
     top: 0px;
     left: 315px;
   }
-
   .btn-producto-l {
     text-align: right;
     padding-top: 5px;
   }
-
   .btn-producto-r {
     text-align: left;
     padding-top: 5px;
