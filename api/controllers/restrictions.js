@@ -30,10 +30,10 @@ function save(req, res) {
 function listMaximumInstallments(req, res) {
   var ObjectId = require('mongoose').Types.ObjectId;
   var query = { company_id: new ObjectId(req.params.company_id) };
-  Restrictions.findOne(query, (err, result) => {
+  Restrictions.find(query, (err, result) => {
     if (err) {
       res.status(500).send({
-        message: 'Ocurrió un error al consultar el máximo de cuotas por producto y empresa'
+        message: 'Ocurrió un error al listar el máximo de cuotas por empresa'
       });
     } else {
       res.status(200).send(result);
@@ -47,7 +47,7 @@ function getMaximumInstallments(req, res) {
   Restrictions.findOne(query, (err, result) => {
     if (err) {
       res.status(500).send({
-        message: 'Ocurrió un error al listar el máximo de cuotas por empresa'
+        message: 'Ocurrió un error al consultar el máximo de cuotas por producto y empresa'
       });
     } else {
       if (!result) {

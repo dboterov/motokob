@@ -1,10 +1,10 @@
 export class Brand {
-  public _id: string;
-  public name: string;
-  public logo: string;
+  public _id: string = '';
+  public name: string = '';
+  public logo: string = '';
   constructor() { }
 
-  public newBrand() {
+  public initialize() {
     this._id = '';
     this.name = '';
     this.logo = '';

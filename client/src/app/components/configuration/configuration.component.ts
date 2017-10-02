@@ -5,17 +5,19 @@ import { CostService } from '../../services/cost.service';
 import { RegionService } from '../../services/region.service';
 import { ProductService } from '../../services/product.service';
 import { RestrictionsService } from '../../services/restrictions.service';
+import { FactorService } from '../../services/factor.service';
 import { Cost } from '../../models/cost';
 import { State } from '../../models/state';
 import { Product } from '../../models/product';
 import { Restriction } from '../../models/restriction';
+import { Factor } from '../../models/factor';
 
 declare var $: any;
 
 @Component({
   templateUrl: './configuration.component.html',
   styleUrls: ['./configuration.component.css'],
-  providers: [UserService, CostService, RegionService, ProductService, RestrictionsService]
+  providers: [UserService, CostService, RegionService, ProductService, RestrictionsService, FactorService]
 })
 export class ConfigurationComponent implements OnInit {
   public identity;
@@ -25,6 +27,7 @@ export class ConfigurationComponent implements OnInit {
   public restrictions: Array<Restriction>;
   public states: Array<State>;
   public bikes: Array<Product>;
+  public factors: Array<Factor>;
   public maxInstallments: number;
   public selectedState: string = '';
   public selectedBike: string = '';
@@ -38,6 +41,7 @@ export class ConfigurationComponent implements OnInit {
     private _regionService: RegionService,
     private _productService: ProductService,
     private _restrictionsService: RestrictionsService,
+    private _factorsService: FactorService,
     private _route: ActivatedRoute,
     private _router: Router) {
     this.cost = new Cost();
@@ -45,6 +49,7 @@ export class ConfigurationComponent implements OnInit {
     this.states = new Array<State>();
     this.bikes = new Array<Product>();
     this.restrictions = new Array<Restriction>();
+    this.factors = new Array<Factor>();
     console.log(localStorage.getItem('motokob.selectedCompany'));
     this.workingCompany = JSON.parse(localStorage.getItem('motokob.selectedCompany'));
   }
@@ -60,6 +65,7 @@ export class ConfigurationComponent implements OnInit {
       this.listRestrictions();
       this.listStates();
       this.listBikes();
+      this.listFactors();
 
       $('#modal_cost').on('hidden.bs.modal', () => {
         this.cost = new Cost();
@@ -67,6 +73,15 @@ export class ConfigurationComponent implements OnInit {
         console.log(this.cost);
       });
     }
+  }
+
+  private listFactors() {
+    this._factorsService.listFactors().subscribe(
+      result => {
+        console.log('factores de amortizacion encontrados. ', result);
+        this.factors = result;
+      }, error => { console.error(error); }
+    );
   }
 
   private listBikes() {
@@ -145,7 +160,15 @@ export class ConfigurationComponent implements OnInit {
   private listRestrictions() {
     this._restrictionsService.listRestrictions(this.workingCompany.company_id, this.token).subscribe(
       result => {
-        this.restrictions = result;
+        //console.log(result);
+        this.restrictions = new Array<Restriction>();
+        for (let i = 0; i < result.length; i++) {
+          if (result[i] && result[i].product_id) {
+            this.restrictions.push(result[i]);
+          } else {
+            console.warn('se descarta la restriccion porque no se recibieron datos del producto', result[i]);
+          }
+        }
       }, error => { console.error(error); }
     );
   }

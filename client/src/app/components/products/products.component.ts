@@ -60,9 +60,9 @@ export class ProductsComponent implements OnInit {
     this.url = GLOBAL.url;
     this.image = '';
     this.images = new Array<File>();
-    this.product = new Product().newProduct();
-    this.brand = new Brand().newBrand();
-    this.productType = new ProductType().newProductType();
+    this.product = new Product();
+    this.brand = new Brand();
+    this.productType = new ProductType();
     this.products = new Array<Product>();
     this.brands = new Array<Brand>();
     this.productTypes = new Array<ProductType>();
@@ -77,11 +77,19 @@ export class ProductsComponent implements OnInit {
   }
 
   private cargarMarcas() {
+    this.brands = new Array<Brand>();
     this.errorMessage = null;
     this.successMessage = null;
     this._brandService.listBrands().subscribe(
       response => {
-        this.brands = response.brands;
+        console.log('se encontraron marcas', response);
+        for (let i = 0; i < response.length; i++) {
+          let newBrand = new Brand();
+          newBrand._id = response[i]._id;
+          newBrand.name = response[i].name;
+          newBrand.logo = response[i].logo;
+          this.brands.push(newBrand);
+        }
       },
       error => {
         const errorResponse = <any>error;
@@ -238,7 +246,6 @@ export class ProductsComponent implements OnInit {
     this._productService.list(this.page, this.pageSize, this.filtroBusqueda).subscribe(
       response => {
         this.products = response.products;
-        console.log(this.products);
         this.totalRecords = response.records;
         this.calcularPaginas();
       },
@@ -332,7 +339,7 @@ export class ProductsComponent implements OnInit {
           this.marcaSeleccionada = this.brand._id;
           this.product.brand = this.brand;
           this.product.brand.logo = this.url + 'brand/get-image/' + this.brand.logo;
-          this.brand = new Brand().newBrand();;
+          this.brand = new Brand();
           this.logoMarca = null;
           this.cargarMarcas();
         }
@@ -365,7 +372,7 @@ export class ProductsComponent implements OnInit {
           this.successMessage = 'Se creó el tipo de producto ' + this.productType.name + ' correctamente';
           this.productTypeSeleccionado = this.productType._id;
           this.product.productType = this.productType;
-          this.productType = new ProductType().newProductType()
+          this.productType = new ProductType();
           this.cargarTiposProducto();
         }
       },
@@ -445,7 +452,7 @@ export class ProductsComponent implements OnInit {
   public selectProduct(producto) {
     this.marcaSeleccionada = '';
     this.productTypeSeleccionado = '';
-    this.product = new Product().newProduct();
+    this.product = new Product();
 
     this.product._id = producto._id;
     this.product.name = producto.name;
@@ -603,7 +610,7 @@ export class ProductsComponent implements OnInit {
   }
 
   public limpiar() {
-    this.product = new Product().newProduct();
+    this.product = new Product();
     this.marcaSeleccionada = '';
     this.productTypeSeleccionado = '';
     this.images = new Array<File>();

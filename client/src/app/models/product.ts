@@ -1,32 +1,29 @@
+import { Color } from './color';
+import { Brand } from './brand';
+import { ProductType } from './productType';
+
 export class Product {
-  public _id: string;
-  public name: string;
-  public brand: {
-    _id: string,
-    name: string,
-    logo: string
-  };
+  public _id: string = '';
+  public name: string = '';
+  public brand: Brand;
   public model: number;
-  public cylinder: string;
+  public cylinder: string = '';
   public price: number;
-  public productType: {
-    _id: string,
-    name: string
-  };
-  public colors: Array<any>;
-  public images: Array<string>;
+  public productType: ProductType;
+  public colors: Array<Color> = new Array<Color>();
+  public images: Array<string> = new Array<string>();
 
   constructor() { }
 
-  public newProduct() {
+  public initialize() {
     this._id = '';
     this.name = '';
-    this.brand = { _id: null, name: null, logo: null };
+    this.brand = new Brand();
     this.model = null;
     this.cylinder = '';
     this.price = null;
-    this.productType = { _id: null, name: null };
-    this.colors = new Array<any>();
+    this.productType = new ProductType();
+    this.colors = new Array<Color>();
     this.images = new Array<string>();
 
     return this;

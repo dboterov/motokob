@@ -1,9 +1,9 @@
 export class ProductType {
-  public _id: string;
-  public name: string;
+  public _id: string = '';
+  public name: string = '';
   constructor() { }
 
-  public newProductType() {
+  public initialize() {
     this._id = '';
     this.name = '';
 

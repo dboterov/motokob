@@ -16,7 +16,8 @@
               <div class="row">
                 <div class="col-xs-12">
                   <label for="marca">Marca:</label>
-                  <select id="marca" name="selectedBrand" (change)="seleccionarMarca()" [(ngModel)]="marcaSeleccionada" [class.required-field]="!valid" required>
+                  <select id="marca" name="selectedBrand" (change)="seleccionarMarca()" [(ngModel)]="marcaSeleccionada" [class.required-field]="!valid"
+                    required>
                     <option style="display:none" disabled selected value>Seleccione una marca</option>
                     <option [selected]="marcaSeleccionada == brand._id" value="{{brand._id}}" *ngFor="let brand of brands">{{brand.name}}</option>
                   </select>
@@ -53,7 +54,8 @@
               <div class="row">
                 <div class="col-xs-12">
                   <label for="tipo">Tipo:</label>
-                  <select id="tipo" name="selectedType" (change)="seleccionarTipoProducto()" [(ngModel)]="productTypeSeleccionado" [class.required-field]="!valid" required>
+                  <select id="tipo" name="selectedType" (change)="seleccionarTipoProducto()" [(ngModel)]="productTypeSeleccionado" [class.required-field]="!valid"
+                    required>
                     <option style="display:none" disabled selected value>Seleccione un tipo</option>
                     <option [selected]="productTypeSeleccionado == typeRow._id" value="{{typeRow._id}}" *ngFor="let typeRow of productTypes">{{typeRow.name}}</option>
                   </select>
@@ -78,19 +80,23 @@
               <div class="row">
                 <div class="col-xs-6">
                   <label for="nombre">Nombre:</label>
-                  <input id="nombre" type="text" class="form-control input-lg" name="name" placeholder="Ingresa el nombre" [(ngModel)]="product.name" [class.required-field]="!valid" required>
+                  <input id="nombre" type="text" class="form-control input-lg" name="name" placeholder="Ingresa el nombre" [(ngModel)]="product.name"
+                    [class.required-field]="!valid" required>
                 </div>
                 <div class="col-xs-6">
                   <label for="modelo">Modelo:</label>
-                  <input id="modelo" type="number" class="form-control input-lg" name="model" placeholder="Ingrese el modelo" [(ngModel)]="product.model" [class.required-field]="!valid" required>
+                  <input id="modelo" type="number" class="form-control input-lg" name="model" placeholder="Ingrese el modelo" [(ngModel)]="product.model"
+                    [class.required-field]="!valid" required>
                 </div>
                 <div class="col-xs-6">
                   <label for="cilindraje">Cilindraje:</label>
-                  <input id="cilindraje" type="number" class="form-control input-lg" name="cylinder" placeholder="Ingrese el cilindraje" [(ngModel)]="product.cylinder" [class.required-field]="!valid" required>
+                  <input id="cilindraje" type="number" class="form-control input-lg" name="cylinder" placeholder="Ingrese el cilindraje" [(ngModel)]="product.cylinder"
+                    [class.required-field]="!valid" required>
                 </div>
                 <div class="col-xs-6">
                   <label for="precio">Precio:</label>
-                  <input id="precio" type="number" class="form-control input-lg" name="price" placeholder="Ingrese el precio" [(ngModel)]="product.price" [class.required-field]="!valid" required>
+                  <input id="precio" type="number" class="form-control input-lg" name="price" placeholder="Ingrese el precio" [(ngModel)]="product.price"
+                    [class.required-field]="!valid" required>
                 </div>
               </div>
             </div>
@@ -101,7 +107,8 @@
                 <div class="col-xs-12">
                   <label for="nuevoColor">Nuevo color:</label>
                   <div class="input-group">
-                    <input id="nuevoColor" type="text" class="form-control input-lg" name="name" placeholder="Ingresa el color" [(ngModel)]="nombreColor" autocomplete="off">
+                    <input id="nuevoColor" type="text" class="form-control input-lg" name="name" placeholder="Ingresa el color" [(ngModel)]="nombreColor"
+                      autocomplete="off">
                     <div class="input-group-btn">
                       <button type="button" class="btn btn-default btn-lg" (click)="guardarColor()">Guardar</button>
                     </div>
@@ -230,6 +237,7 @@
   </div>
 
   <div class="row">
+    <div class="col-xs-12">{{brands}}</div>
     <div class="col-xs-12">
       <h3>Lista de productos</h3>
     </div>
