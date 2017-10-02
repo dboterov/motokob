@@ -98,7 +98,7 @@ function uploadImage(req, res) {
     }
 
     res.status(200).send({
-      images
+      images: images
     });
   } else {
     res.status(200).send({
