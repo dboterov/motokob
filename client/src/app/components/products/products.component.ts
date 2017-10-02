@@ -60,9 +60,9 @@ export class ProductsComponent implements OnInit {
     this.url = GLOBAL.url;
     this.image = '';
     this.images = new Array<File>();
-    this.product = new Product('', '', { _id: null, name: null, logo: null }, null, '', null, { _id: null, name: null }, new Array<any>(), new Array<string>());
-    this.brand = new Brand('', '', '');
-    this.productType = new ProductType('', '');
+    this.product = new Product().newProduct();
+    this.brand = new Brand().newBrand();
+    this.productType = new ProductType().newProductType();
     this.products = new Array<Product>();
     this.brands = new Array<Brand>();
     this.productTypes = new Array<ProductType>();
@@ -332,7 +332,7 @@ export class ProductsComponent implements OnInit {
           this.marcaSeleccionada = this.brand._id;
           this.product.brand = this.brand;
           this.product.brand.logo = this.url + 'brand/get-image/' + this.brand.logo;
-          this.brand = new Brand('', '', '');
+          this.brand = new Brand().newBrand();;
           this.logoMarca = null;
           this.cargarMarcas();
         }
@@ -365,7 +365,7 @@ export class ProductsComponent implements OnInit {
           this.successMessage = 'Se creó el tipo de producto ' + this.productType.name + ' correctamente';
           this.productTypeSeleccionado = this.productType._id;
           this.product.productType = this.productType;
-          this.productType = new ProductType('', '');
+          this.productType = new ProductType().newProductType()
           this.cargarTiposProducto();
         }
       },
@@ -445,7 +445,7 @@ export class ProductsComponent implements OnInit {
   public selectProduct(producto) {
     this.marcaSeleccionada = '';
     this.productTypeSeleccionado = '';
-    this.product = new Product('', '', { _id: null, name: null, logo: null }, null, '', null, { _id: null, name: null }, new Array<any>(), new Array<string>());
+    this.product = new Product().newProduct();
 
     this.product._id = producto._id;
     this.product.name = producto.name;
@@ -522,9 +522,8 @@ export class ProductsComponent implements OnInit {
     if (imagen) {
       this._uploadService.makeFileRequest(GLOBAL.url + 'brand/upload', 'PUT', [], imagen, 'image', null).then(
         (result: string) => {
-          let images = result.replace('images', '').replace('{', '').replace('[', '').replace(':', '').replace(']', '').replace('}', '').replace('"', '').replace(/['"]+/g, '').split(',');
-          this.brand.logo = images[0];
-          console.log(images);
+          let respObject = JSON.parse(result);
+          this.brand.logo = respObject.images[0];
           console.log(this.brand.logo);
         }, (error) => {
           console.error(error);
@@ -540,12 +539,11 @@ export class ProductsComponent implements OnInit {
     if (imagen) {
       this._uploadService.makeFileRequest(GLOBAL.url + 'product/upload', 'PUT', [], imagen, 'image', null).then(
         (result: string) => {
-          if (imagen && imagen != null && imagen.length > 0) {
-            let images = result.replace('images', '').replace('{', '').replace('[', '').replace(':', '').replace(']', '').replace('}', '').replace('"', '').replace(/['"]+/g, '').split(',');
-            for (let i = 0; i < images.length; i++) {
-              let image_path = this.url + 'product/get-image/' + images[i];
-              this.product.images.push(image_path);
-            }
+          let respObject = JSON.parse(result);
+          console.log(respObject);
+          for (let i = 0; i < respObject.images.length; i++) {
+            let image_path = this.url + 'product/get-image/' + respObject.images[i];
+            this.product.images.push(image_path);
           }
         }, (error) => {
           console.error(error);
@@ -605,7 +603,7 @@ export class ProductsComponent implements OnInit {
   }
 
   public limpiar() {
-    this.product = new Product('', '', { _id: null, name: null, logo: null }, null, '', null, { _id: null, name: null }, new Array<any>(), new Array<string>());
+    this.product = new Product().newProduct();
     this.marcaSeleccionada = '';
     this.productTypeSeleccionado = '';
     this.images = new Array<File>();
