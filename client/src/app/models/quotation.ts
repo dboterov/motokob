@@ -1,48 +1,51 @@
+import { Cost } from './cost';
+import { Product } from './product';
+import { Brand } from './brand';
+import { Customer } from './customer';
+import { User } from './user';
+import { Color } from './color';
+
 export class Quotation {
   public _id: string;
-  public customer: {
-    documentNumber: string,
-    completeName: string
-  };
+  public customer: Customer;
   public quotationNumber: number;
   public date: Date;
   public total: number;
   public status: string;
-  public seller: {
-    _id: string,
-    name: string
-  };
+  public seller: User;
   public items: Array<QuotationDetail>;
 
   constructor() {
     this.items = new Array<QuotationDetail>();
   }
 
-  public addLine(itemId: string, itemName: string, itemImage: string, quantity: number, unitPrice: number, brandId: string) {
-    this.items.unshift(new QuotationDetail(itemId, itemName, itemImage, quantity, unitPrice, brandId))
-    //this.items.push(new QuotationDetail(itemId, quantity, unitPrice));
+  public addLine(item: Product, brand: Brand, installments: number, initialPayment: number, discount: number, additionalCosts: Array<Cost>, paymentValue: number, lineTotal: number, color: Color) {
+    this.items.unshift(new QuotationDetail(item, brand, installments, initialPayment, discount, additionalCosts, paymentValue, lineTotal, color));
   }
 }
 
-import { Cost } from './cost';
-
 export class QuotationDetail {
   public _id: string;
-  public itemId: string;
-  public itemName: string;
-  public itemImage: string;
-  public brandId: string;
-  public quantity: number;
-  public unitPrice: number;
+  public item: Product;
+  public brand: Brand;
+  public installments: number;
+  public initialPayment: number;
+  public discount: number;
   public additionalCosts: Array<Cost>;
+  public paymentValue: number;
+  public lineTotal: number;
+  public color: Color;
 
-  constructor(itemId: string, itemName: string, itemImage: string, quantity: number, unitPrice: number, brandId: string) {
-    this.itemId = itemId;
-    this.quantity = quantity;
-    this.unitPrice = unitPrice;
-    this.itemName = itemName;
-    this.itemImage = itemImage;
-    this.brandId = brandId;
-    this.additionalCosts = new Array<Cost>();
+  constructor(item: Product, brand: Brand, installments: number, initialPayment: number, discount: number, additionalCosts: Array<Cost>, paymentValue: number, lineTotal: number, color: Color) {
+    this.item = item;
+    this.brand = brand;
+    this.installments = installments;
+    this.initialPayment = initialPayment;
+    this.discount = discount;
+    this.additionalCosts = additionalCosts;
+    this.paymentValue = paymentValue;
+    this.lineTotal = lineTotal;
+    this.color = color;
+    console.log(this);
   }
 }

@@ -126,6 +126,15 @@ select[disabled] {
   background-color: #bbb;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.additional-cost {
+  margin-left: 30px;
+  font-size: 10px;
+}
+
 #btn_add_bike {
   margin-top: 10px;
 }

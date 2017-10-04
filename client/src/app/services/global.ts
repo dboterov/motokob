@@ -1,3 +1,3 @@
 export let GLOBAL = {
-    url: 'http://localhost:3977/api/'
+    url: 'http://192.168.1.7:3977/api/'
 };

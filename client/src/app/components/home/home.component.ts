@@ -31,12 +31,13 @@ export class HomeComponent implements OnInit {
     }
     //valida que el usuario tenga al menos una empresa asociada
     if (!this.identity.companies || this.identity.companies.length === 0) {
+      this._userService.removeLocalStorageData();
       this._router.navigate(['/']);
     }
     //si tiene mas de una empresa, le pide que seleccione en cual desea trabajar
-    if (this.identity.companies.length > 1) {
+    if (this.identity.companies && this.identity.companies.length > 1) {
       $("#modal_select_company").modal({ backdrop: 'static', keyboard: false, show: true });
-    } else {
+    } else if(this.identity.companies){
       this.seleccionarEmpresa(this.identity.companies[0].company_id);
     }
   }
