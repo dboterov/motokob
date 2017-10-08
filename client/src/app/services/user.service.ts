@@ -29,8 +29,9 @@ export class UserService {
   public getItentity() {
     this.identity = null;
     const identity = JSON.parse(localStorage.getItem('motokob.identity'));
-    if (typeof identity !== 'undefined') {
+    if (typeof identity !== 'undefined' && identity != null) {
       this.identity = identity;
+      this.identity.password = null;
     }
     return this.identity;
   }

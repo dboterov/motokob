@@ -58,7 +58,7 @@ export class CustomersComponent implements OnInit {
     this.listarClientes();
   }
 
-  private listarClientes() {
+  public listarClientes() {
     this.customers = new Array<Customer>();
     this.limpiarFormulario();
     this._customerService.list(this.page, this.pageSize, this.filtroBusqueda).subscribe(

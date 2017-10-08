@@ -33,7 +33,7 @@ export class ConfigurationComponent implements OnInit {
   public selectedBike: string = '';
   public errorMessage: string = '';
   public successMessage: string = '';
-  private workingCompany: any;
+  public workingCompany: any;
 
   constructor(
     private _userService: UserService,

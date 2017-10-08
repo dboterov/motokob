@@ -10,13 +10,23 @@ export class Quotation {
   public customer: Customer;
   public quotationNumber: number;
   public date: Date;
-  public total: number;
   public status: string;
   public seller: User;
   public items: Array<QuotationDetail>;
 
   constructor() {
     this.items = new Array<QuotationDetail>();
+    this.customer = new Customer();
+  }
+
+  public initializeFromJSON(jsonObject: any) {
+    this._id = jsonObject._id;
+    this.customer = jsonObject.customer;
+    this.quotationNumber = jsonObject.quotationNumber;
+    this.date = jsonObject.date;
+    this.status = jsonObject.status;
+    this.seller = jsonObject.seller;
+    this.items = jsonObject.items;
   }
 
   public addLine(item: Product, brand: Brand, installments: number, initialPayment: number, discount: number, additionalCosts: Array<Cost>, paymentValue: number, lineTotal: number, color: Color) {

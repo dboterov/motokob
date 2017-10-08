@@ -7,6 +7,7 @@ import { ProductService } from '../../services/product.service';
 import { CostService } from '../../services/cost.service';
 import { RestrictionsService } from '../../services/restrictions.service';
 import { FactorService } from '../../services/factor.service';
+import { QuotationService } from '../../services/quotation.service';
 import { Customer } from '../../models/customer';
 import { Product } from '../../models/product';
 import { Brand } from '../../models/brand';
@@ -21,14 +22,12 @@ declare var $: any;
   selector: 'motokob-quotations',
   templateUrl: './quotations.component.html',
   styleUrls: ['./quotations.component.css'],
-  providers: [UserService, CustomerService, BrandService, ProductService, CostService, RestrictionsService, FactorService]
+  providers: [UserService, CustomerService, BrandService, ProductService, CostService, RestrictionsService, FactorService, QuotationService]
 })
 export class QuotationsComponent implements OnInit {
-  public identity;
+  public identity: any;
   public token;
   public errorMessageInstallments: string = '';
-  public customerDocumentNumber: string = '';
-  public customerName: string = '';
   public items: Array<any>;
   public selectedBrand: Brand;
   public selectedBike: Product;
@@ -50,8 +49,6 @@ export class QuotationsComponent implements OnInit {
   private factors: Array<Factor>;
   private company: any;
 
-  private customer: Customer;
-
   constructor(
     private _productService: ProductService,
     private _brandService: BrandService,
@@ -59,6 +56,7 @@ export class QuotationsComponent implements OnInit {
     private _costService: CostService,
     private _restrictionsService: RestrictionsService,
     private _factorsService: FactorService,
+    private _quotationsService: QuotationService,
     private _userService: UserService,
     private _route: ActivatedRoute,
     private _router: Router) {
@@ -80,7 +78,42 @@ export class QuotationsComponent implements OnInit {
       this.loadBrands();
       this.loadSelectedCompany();
       this.loadFactors();
+      this.initializeQuotation();
     }
+  }
+
+  private initializeQuotation() {
+    //TODO: load from database
+    this._quotationsService.loadStartedQuotation(this.identity.username, this.token).subscribe(
+      response => {
+        console.log(response);
+        if (response && response.length === 1) {
+          this.quotation.initializeFromJSON(response[0]);
+          console.log('quotation loaded: ', this.quotation);
+        } else {
+          if (response.length > 1) {
+            console.error('se encontro mas de una cotizacion ininciada para el usuario. ');
+          }
+          this.initializeNewQuotation();
+        }
+      }, error => {
+        this.initializeNewQuotation();
+        console.error(error);
+      }
+    );
+
+  }
+
+  private initializeNewQuotation() {
+    this.quotation = new Quotation();
+
+    this.quotation.seller = this.identity;
+    this.quotation.seller.password = null;
+    this.quotation.seller.permissions = null;
+
+    this.quotation.date = new Date();
+    this.quotation.status = 'INICIADA';
+    console.log('quotation created: ', this.quotation);
   }
 
   private loadFactors() {
@@ -106,45 +139,34 @@ export class QuotationsComponent implements OnInit {
   private loadBrands() {
     this._brandService.listBrands().subscribe(
       response => {
+        console.log('brands: ', response);
         this.brands = response;
-      }, error => { const errorResponse = <any>error; }
+      }, error => {
+        if (error.status === 401) {
+          this._userService.removeLocalStorageData();
+          this._router.navigate(['/']);
+        }
+      }
     );
   }
 
   public searchCustomer() {
-    if (this.customerDocumentNumber && this.customerDocumentNumber.length > 0) {
-      this._customerService.find(this.customerDocumentNumber).subscribe(
+    if (this.quotation.customer.documentNumber && this.quotation.customer.documentNumber.length > 0) {
+      this._customerService.find(this.quotation.customer.documentNumber).subscribe(
         response => {
-          this.customer = response.customer;
-          this.getCustomerName();
+          this.quotation.customer = response.customer;
         }, error => {
           if (error.status == 404) {
             $('#modalNavigate').modal('show');
           }
-          console.error(error);
         }
       );
-    }
-  }
-
-  private getCustomerName() {
-    if (this.customer && this.customer.name.length > 0) {
-      this.customerName = this.customer.name + ' ' + this.customer.surname;
-    } else {
-      this.customerName = '';
     }
   }
 
   public navigateToCustomer() {
     this._router.navigate(['/clientes']);
   }
-
-  /*public startAdding() {
-    this.adding = true;
-    if (!this.brands || this.brands.length === 0) {
-      this.loadBrands();
-    }
-  }*/
 
   public selectBrand(brand) {
     this.selectedBrand = brand;
@@ -277,7 +299,61 @@ export class QuotationsComponent implements OnInit {
       this.getSelectedColor()
     );
     this.clearSelections();
-    console.log(this.quotation);
+    this.saveQuotationToDB();
+  }
+
+  private saveQuotationToDB() {
+    console.log('saving quotation to database. ', this.quotation);
+    this._quotationsService.saveQuotation(this.quotation, this.token).subscribe(
+      response => {
+        if (response.quotation) {
+          console.log('quotation saved. ', response.quotation);
+          if (this.quotation.items.length < response.quotation.items.length) {
+            this.quotation = response.quotation;
+          }
+        } else {
+          console.warn('something went wrong. quotation may not be saved');
+        }
+      }, error => { console.error(error); }
+    );
+  }
+
+  public restartActiveQuotation() {
+    if (this.quotation._id) {
+      this._quotationsService.cancelActiveQuotation(this.quotation._id, this.token).subscribe(
+        result => {
+          console.log(result);
+        }, error => { console.error(error); }
+      );
+    }
+
+    this.initializeNewQuotation();
+    this.clearSelections();
+  }
+
+  private saveQuotation() {
+    if (this.quotation.items.length === 0) {
+      console.error('la cotizacion debe tener al menos un item');
+      return;
+    }
+    this.saveQuotationToDB();
+  }
+
+  public createQuotationDocument() {
+    if (this.quotation.items.length === 0) {
+      console.error('la cotizacion debe tener al menos un item');
+      return;
+    }
+    if (!this.quotation.customer || !this.quotation.customer._id) {
+      console.error('la cotizacion debe tener un cliente asociado');
+      return;
+    }
+    this._quotationsService.createDocument(this.quotation._id, this.token).subscribe(
+      result => {
+        console.log('se creo el documento con exito', result);
+        this.initializeNewQuotation();
+      }, error => { console.error(error); }
+    );
   }
 
   public clearSelections() {

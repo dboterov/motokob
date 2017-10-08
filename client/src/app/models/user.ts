@@ -4,9 +4,8 @@ export class User {
   public surname: string;
   public username: string;
   public password: string;
-  public role: string;
   public active: boolean;
-  public company: string;
+  public permissions: Array<Permission>;
 
   constructor() {
     this._id = '';
@@ -14,8 +13,15 @@ export class User {
     this.surname = '';
     this.username = '';
     this.password = '';
-    this.role = '';
-    this.company = '';
+    this.permissions = new Array<Permission>();
     this.active = true;
   }
+}
+
+export class Permission {
+  public companyId: string;
+  public companyName: string;
+  public role: string;
+
+  constructor() { }
 }

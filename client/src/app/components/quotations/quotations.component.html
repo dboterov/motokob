@@ -7,8 +7,44 @@
         <p>No existe ningún cliente con ese número de documento. ¿Deseas crearlo?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="navigateToCustomer()">Sí</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary btn-lg" data-dismiss="modal" (click)="navigateToCustomer()">Sí</button>
+        <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">No</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modalConfirmCancel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>¿Estás seguro que deseas cancelar la cotización activa? Toda la información que hayas agregado hasta el momento se
+          perderá
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-lg" data-dismiss="modal" (click)="restartActiveQuotation()">Sí</button>
+        <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">No</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modalConfirmNew">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>¿Estás seguro que has terminado la cotización?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-lg" data-dismiss="modal" (click)="createQuotationDocument()">Sí</button>
+        <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">No</button>
       </div>
     </div>
     <!-- /.modal-content -->
@@ -24,7 +60,7 @@
 
         <div class="row" *ngIf="panelShown === 'brands'">
           <div class="col-xs-12">
-            <h2>Selecciona una marca</h2>
+            <h3>Paso 1 de 7: Marca</h3>
           </div>
           <div class="col-xs-6 col-sm-4 col-md-3" *ngFor="let brand of brands">
             <div class="brand-card" (click)="selectBrand(brand)">
@@ -36,11 +72,11 @@
 
         <div class="row" *ngIf="panelShown === 'bikes'">
           <div class="col-xs-12">
-            <h2>
+            <h3>
               <span class="btn btn-default btn-lg" (click)="panelShown = 'brands'">
-                <span class="glyphicon glyphicon-circle-arrow-left"></span> Volver
-              </span> Selecciona una moto
-            </h2>
+                <span class="glyphicon glyphicon-circle-arrow-left"></span><span class="hidden-xs"> Volver</span>
+              </span> Paso 2 de 7: Moto
+            </h3>
           </div>
           <div class="col-xs-12" *ngIf="!bikes || bikes.length == 0">
             No hay motos registradas para esta marca
@@ -56,11 +92,11 @@
 
         <div class="row" *ngIf="panelShown === 'modelAndColor'">
           <div class="col-xs-12">
-            <h2>
+            <h3>
               <span class="btn btn-default btn-lg" (click)="panelShown = 'bikes'">
-                  <span class="glyphicon glyphicon-circle-arrow-left"></span> Volver
-              </span> Selecciona el color
-            </h2>
+                  <span class="glyphicon glyphicon-circle-arrow-left"></span><span class="hidden-xs"> Volver</span>
+              </span> Paso 3 de 7: Color
+            </h3>
           </div>
           <div class="col-xs-12">
             <form>
@@ -76,11 +112,11 @@
 
         <div class="row" *ngIf="panelShown === 'dyn-costs'">
           <div class="col-xs-12">
-            <h2>
+            <h3>
               <span class="btn btn-default btn-lg" (click)="panelShown = 'modelAndColor'">
-                  <span class="glyphicon glyphicon-circle-arrow-left"></span> Volver
-              </span> Agrega opciones
-            </h2>
+                  <span class="glyphicon glyphicon-circle-arrow-left"></span><span class="hidden-xs"> Volver</span>
+              </span> Paso 4 de 7: Opciones
+            </h3>
           </div>
           <div class="col-xs-12 col-md-5">
             <label for="costName">Opción</label>
@@ -100,17 +136,20 @@
             <button class="btn btn-primary btn-lg" (click)="addSelectedCost()" [disabled]="!selectedCostName || !selectedCostOption">Agregar</button>
           </div>
           <div class="col-xs-12" style="margin-top: 25px;" *ngIf="additionalCosts.length > 0">
-            <table class="table table-responsive">
-              <tr>
-                <th>Opción</th>
-                <th>Valor</th>
-              </tr>
-              <tr *ngFor="let option of additionalCosts">
-                <td>{{option.costName}}</td>
-                <td>{{option.costOption.state.name}} - {{option.costOption.value | number}}</td>
-                <td><span class="glyphicon glyphicon-trash cursor-pointer" (click)="removeCost(option)"></span></td>
-              </tr>
-            </table>
+            <div class="table-responsive">
+              <table class="table">
+                <tr>
+                  <th>Opción</th>
+                  <th>Valor</th>
+                  <th>&nbsp;</th>
+                </tr>
+                <tr *ngFor="let option of additionalCosts">
+                  <td>{{option.costName}}</td>
+                  <td>{{option.costOption.state.name}} - {{option.costOption.value | number}}</td>
+                  <td><span class="glyphicon glyphicon-trash cursor-pointer" (click)="removeCost(option)"></span></td>
+                </tr>
+              </table>
+            </div>
           </div>
           <div class="col-xs-12">
             <br>
@@ -120,18 +159,18 @@
 
         <div class="row" *ngIf="panelShown === 'quot-type'">
           <div class="col-xs-12">
-            <h2>
+            <h3>
               <span class="btn btn-default btn-lg" (click)="panelShown = 'dyn-costs'">
-                <span class="glyphicon glyphicon-circle-arrow-left"></span> Volver
-              </span> Tipo de cotización
-            </h2>
+                <span class="glyphicon glyphicon-circle-arrow-left"></span><span class="hidden-xs"> Volver</span>
+              </span> Paso 5 de 7: Tipo
+            </h3>
           </div>
-          <div class="col-xs-10 col-xs-offset-1 col-md-4 col-md-offset-2">
+          <div class="col-xs-10 col-xs-offset-1 col-md-4">
             <div class="quot-type" (click)="selectQuotationType('credito')">
               CRÉDITO
             </div>
           </div>
-          <div class="col-xs-10 col-xs-offset-1 col-md-4">
+          <div class="col-xs-10 col-xs-offset-1 col-md-4 col-md-offset-2">
             <div class="quot-type" (click)="selectQuotationType('contado')">
               CONTADO
             </div>
@@ -141,11 +180,11 @@
         <div class="row" *ngIf="panelShown === 'credit-params'">
 
           <div class="col-xs-12">
-            <h2>
+            <h3>
               <span class="btn btn-default btn-lg" (click)="panelShown = 'quot-type'">
-                <span class="glyphicon glyphicon-circle-arrow-left"></span> Volver
-              </span> Configuración del crédito
-            </h2>
+                <span class="glyphicon glyphicon-circle-arrow-left"></span><span class="hidden-xs"> Volver</span>
+              </span> Paso 6 de 7: Crédito
+            </h3>
           </div>
 
           <div class="col-xs-12 col-md-6">
@@ -166,65 +205,67 @@
 
           <div class="col-xs-12">
             <br>
-            <button class="btn btn-primary btn-lg" type="button" (click)="validateInstallments()" [disabled]="!(initialPayment > 0 && selectedInstallments > 1)">Continuar</button>
+            <button class="btn btn-primary btn-lg" type="button" (click)="validateInstallments()" [disabled]="!(initialPayment > 0 && selectedInstallments > 0)">Continuar</button>
           </div>
         </div>
 
         <div class="row" *ngIf="panelShown === 'summary'">
           <div class="col-xs-12">
-            <h2>
+            <h3>
               <span class="btn btn-default btn-lg" (click)="panelShown = 'quot-type'">
-                <span class="glyphicon glyphicon-circle-arrow-left"></span> Volver
-              </span> Resumen
-            </h2>
+                <span class="glyphicon glyphicon-circle-arrow-left"></span><span class="hidden-xs"> Volver</span>
+              </span> Paso 7 de 7: Resumen
+            </h3>
           </div>
           <div class="col-xs-12">
-            <table class="table table-responsive">
-              <tr>
-                <td><strong>Moto seleccionada:</strong></td>
-                <td>{{selectedBike.name}} <strong>${{selectedBike.price | number:0}}</strong></td>
-              </tr>
-              <tr>
-                <td><strong>Color:</strong></td>
-                <td>{{getSelectedColorName()}}</td>
-              </tr>
-              <tr *ngFor="let option of additionalCosts">
-                <td><strong>{{option.costName}}</strong></td>
-                <td>
-                  {{option.costOption.state.name}} - {{option.costOption.value | number}}
-                  <span class="glyphicon glyphicon-trash cursor-pointer pull-right" (click)="removeCost(option)"></span>
-                </td>
-              </tr>
-              <tr>
-                <td><strong>Tipo cotización:</strong></td>
-                <td>{{selectedQuotationType}}</td>
-              </tr>
-              <tr *ngIf="selectedInstallments > 0">
-                <td><strong># Cuotas:</strong></td>
-                <td>{{selectedInstallments}}</td>
-              </tr>
-              <tr *ngIf="selectedInstallments > 0">
-                <td><strong>Cuota inicial:</strong></td>
-                <td>$ {{initialPayment | number:0}}</td>
-              </tr>
-              <tr>
-                <td><label for="initial_payment">Descuento:</label></td>
-                <td>
-                  <input id="initial_payment" type="number" min="0" max="{{selectedBike.price}}" step="50000" class="form-control input-lg"
-                    name="initial_payment" placeholder="Valor descuento" [(ngModel)]="discount">
-                </td>
-              </tr>
-              <tfoot>
+            <div class="table-responsive">
+              <table class="table">
                 <tr>
-                  <td><strong>Valor total <span *ngIf="selectedInstallments > 0">a financiar</span>:</strong></td>
-                  <td>{{getLineTotal() | number : 0}}</td>
+                  <td><strong>Moto seleccionada:</strong></td>
+                  <td>{{selectedBike.name}} <strong>${{selectedBike.price | number:0}}</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Color:</strong></td>
+                  <td>{{getSelectedColorName()}}</td>
+                </tr>
+                <tr *ngFor="let option of additionalCosts">
+                  <td><strong>{{option.costName}}</strong></td>
+                  <td>
+                    {{option.costOption.state.name}} - {{option.costOption.value | number}}
+                    <span class="glyphicon glyphicon-trash cursor-pointer pull-right" (click)="removeCost(option)"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Tipo cotización:</strong></td>
+                  <td>{{selectedQuotationType}}</td>
                 </tr>
                 <tr *ngIf="selectedInstallments > 0">
-                  <td><strong>Valor cuota:</strong></td>
-                  <td><strong>{{calculatePaymentsValue() | number:0}}</strong></td>
+                  <td><strong># Cuotas:</strong></td>
+                  <td>{{selectedInstallments}}</td>
                 </tr>
-              </tfoot>
-            </table>
+                <tr *ngIf="selectedInstallments > 0">
+                  <td><strong>Cuota inicial:</strong></td>
+                  <td>$ {{initialPayment | number:0}}</td>
+                </tr>
+                <tr>
+                  <td><label for="initial_payment">Descuento:</label></td>
+                  <td>
+                    <input id="initial_payment" type="number" min="0" max="{{selectedBike.price}}" step="50000" class="form-control" name="initial_payment"
+                      placeholder="Valor descuento" [(ngModel)]="discount">
+                  </td>
+                </tr>
+                <tfoot>
+                  <tr>
+                    <td><strong>Valor total <span *ngIf="selectedInstallments > 0">a financiar</span>:</strong></td>
+                    <td>{{getLineTotal() | number : 0}}</td>
+                  </tr>
+                  <tr *ngIf="selectedInstallments > 0">
+                    <td><strong>Valor cuota:</strong></td>
+                    <td><strong>{{calculatePaymentsValue() | number:0}}</strong></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
           </div>
           <div class="col-xs-12">
             <br>
@@ -248,8 +289,8 @@
       <div class="col-xs-12 col-sm-6">
         <label for="documentNumber">Cliente</label>
         <div class="input-group">
-          <input id="documentNumber" [(ngModel)]="customerDocumentNumber" name="documentNumber" type="text" class="form-control input-lg"
-            placeholder="Ingresa la cédula">
+          <input id="documentNumber" [(ngModel)]="quotation.customer.documentNumber" name="documentNumber" type="text" class="form-control input-lg"
+            placeholder="Ingresa la cédula" autocomplete="off">
           <span class="input-group-btn">
             <button class="btn btn-default btn-lg" type="button" (click)="searchCustomer()"><span class="glyphicon glyphicon-search"></span></button>
           </span>
@@ -258,16 +299,25 @@
       </div>
       <div class="col-xs-12 col-sm-6">
         <label for="customerName">Nombre</label>
-        <input id="customerName" [(ngModel)]="customerName" name="customerName" type="text" class="form-control input-lg" placeholder="Nombre del cliente"
-          disabled/>
+        <input id="customerName" [(ngModel)]="quotation.customer.name + ' ' + quotation.customer.surname" name="customerName" type="text"
+          class="form-control input-lg" placeholder="Nombre del cliente" disabled/>
       </div>
     </form>
   </div>
   <br />
   <div class="row">
-    <div class="col-xs-12 col-sm-2">
-      <button type="button" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalNewItem">Agregar <span class="glyphicon glyphicon-plus"></span></button>
+    <div class="col-xs-12">
+      <button type="button" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalNewItem">
+        <span class="glyphicon glyphicon-plus"></span>
+      </button>
+      <button type="button" class="btn btn-lg btn-danger" data-toggle="modal" data-target="#modalConfirmCancel" *ngIf="quotation && quotation.items && quotation.items.length > 0">
+        <span class="glyphicon glyphicon-trash"></span>
+      </button>
+      <button type="button" class="btn btn-lg btn-default" data-toggle="modal" data-target="#modalConfirmNew" *ngIf="quotation && quotation.items && quotation.items.length > 0">
+        <span class="glyphicon glyphicon-floppy-disk"></span>
+      </button>
     </div>
+    <!--
     <div class="col-xs-12 col-sm-6 col-sm-offset-1">
       <div class="alert alert-danger" role="alert" *ngIf="errorMessageAdding">
         <p>{{errorMessageAdding}}</p>
@@ -276,47 +326,50 @@
         <p>{{successMessageAdding}}</p>
       </div>
     </div>
+    -->
   </div>
   <br />
-  <div class="row">
+  <div class="row" *ngIf="quotation && quotation.items && quotation.items.length > 0">
     <div class="col-xs-12">
-      <table class="table table-responsive">
-        <thead>
-          <tr>
-            <th>Moto</th>
-            <th>Inicial</th>
-            <th>Cuotas</th>
-            <th>Descuento</th>
-            <th>Total</th>
-            <th>Valor cuota</th>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Moto</th>
+              <th>Inicial</th>
+              <th>Cuotas</th>
+              <th>Descuento</th>
+              <th>Total</th>
+              <th>Valor cuota</th>
+            </tr>
+          </thead>
+          <tr *ngFor="let line of quotation.items">
+            <td>
+              <div>{{line.brand.name}} {{line.item.name}} {{line.item.model}} {{line.color.name}}</div>
+              <div class="additional-cost">${{line.item.price | number:0}}</div>
+              <div class="additional-cost" *ngFor="let addCost of line.additionalCosts">
+                {{addCost.costName}}: {{addCost.costOption.state.name}} - {{addCost.costOption.value | number}}
+              </div>
+            </td>
+            <td>
+              <span *ngIf="line.installments > 0">${{line.initialPayment | number:0}}</span>
+              <span *ngIf="line.installments == 0">N/A</span>
+            </td>
+            <td>
+              <span *ngIf="line.installments > 0">{{line.installments}}</span>
+              <span *ngIf="line.installments == 0">N/A</span>
+            </td>
+            <td>
+              <span>${{line.discount | number:0}}</span>
+            </td>
+            <td>${{line.lineTotal | number:0}}</td>
+            <td>
+              <span *ngIf="line.installments > 0">${{line.paymentValue | number:0}}</span>
+              <span *ngIf="line.installments == 0">N/A</span>
+            </td>
           </tr>
-        </thead>
-        <tr *ngFor="let line of quotation.items">
-          <td>
-            <div>{{line.brand.name}} {{line.item.name}} {{line.item.model}} {{line.color.name}}</div>
-            <div class="additional-cost" *ngFor="let addCost of line.additionalCosts">
-              {{addCost.costName}}: {{addCost.costOption.state.name}} - {{addCost.costOption.value | number}}
-            </div>
-          </td>
-          <td>
-            <span *ngIf="line.installments > 0">${{line.initialPayment | number:0}}</span>
-            <span *ngIf="line.installments == 0">N/A</span>
-          </td>
-          <td>
-            <span *ngIf="line.installments > 0">{{line.installments}}</span>
-            <span *ngIf="line.installments == 0">N/A</span>
-          </td>
-          <td>
-            <span *ngIf="line.installments > 0">${{line.discount | number:0}}</span>
-            <span *ngIf="line.installments == 0">N/A</span>
-          </td>
-          <td>${{line.lineTotal | number:0}}</td>
-          <td>
-            <span *ngIf="line.installments > 0">${{line.paymentValue | number:0}}</span>
-            <span *ngIf="line.installments == 0">N/A</span>
-          </td>
-        </tr>
-      </table>
+        </table>
+      </div>
     </div>
   </div>
 </div>

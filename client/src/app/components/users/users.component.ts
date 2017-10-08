@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { CompanyService } from '../../services/company.service';
-import { User } from '../../models/user';
+import { User, Permission } from '../../models/user';
+import { Company } from '../../models/company';
 
 @Component({
   selector: 'user-admin',
@@ -13,16 +14,18 @@ import { User } from '../../models/user';
 export class UsersComponent implements OnInit {
   public identity;
   public token;
+  public selectedCompany: string = '';
+  public selectedProfile: string = '';
   public errorMessage: string;
   public errorMessageModal: string;
   public successMessage: string;
   public users: Array<User>;
   public user: User;
   public activar: boolean;
-  public perfilSeleccionado: string;
+
   public password1: string;
   public password2: string;
-  public companies: Array<string>;
+  public availableCompanies: Array<Company>;
 
   constructor(private _userService: UserService, private _companyService: CompanyService, private _route: ActivatedRoute, private _router: Router) {
     this.errorMessage = null;
@@ -30,10 +33,9 @@ export class UsersComponent implements OnInit {
     this.errorMessageModal = null;
     this.users = new Array<User>();
     this.user = new User();
-    this.perfilSeleccionado = 'Selecciona un perfil';
     this.password1 = '';
     this.password2 = '';
-    this.companies = new Array<string>();
+    this.availableCompanies = new Array<Company>();
   }
 
   ngOnInit() {
@@ -51,42 +53,47 @@ export class UsersComponent implements OnInit {
     this.listarEmpresas();
   }
 
+  public selectedCompanyListener() {
+    console.log(this.selectedCompany);
+  }
+
+  public selectedProfileListener() {
+    console.log(this.selectedProfile);
+  }
+
   private listarEmpresas() {
-    this.companies = new Array<string>();
+    this.availableCompanies = new Array<Company>();
     this._companyService.list(this.token).subscribe(
       response => {
-        this.companies = response;
+        for (let i = 0; i < response.length; i++) {
+          let company = new Company();
+          company._id = response[i]._id;
+          company.name = response[i].name;
+          company.active = response[i].active;
+          this.availableCompanies.push(company);
+        }
       }, error => { console.error(error); }
     );
   }
 
   seleccionarUsuario(usuario) {
     this.user = usuario;
-    this.seleccionarPerfil(this.user.role);
-  }
-
-  seleccionarPerfil(perfil) {
-    console.log('seleccionando el perfil ' + perfil);
-    this.user.role = perfil;
-    switch (perfil) {
-      case 'ROLE_ADMIN':
-        this.perfilSeleccionado = 'Administrador';
-        break;
-      case 'ROLE_COORD':
-        this.perfilSeleccionado = 'Coordinador';
-        break;
-      case 'ROLE_USER':
-        this.perfilSeleccionado = 'Asesor';
-        break;
-      default:
-        break;
-    }
   }
 
   listarUsuarios() {
     this.users = new Array<User>();
     this._userService.listUsers().subscribe(
       response => {
+        for (let i = 0; i < response.users.length; i++) {
+          let usr = new User();
+          usr._id = response.users[i]._id;
+          usr.active = response.users[i].active;
+          usr.name = response.users[i].name;
+          usr.password = response.users[i].password;
+          usr.permissions = response.users[i].permissions;
+          usr.surname = response.users[i].surname;
+          usr.username = response.users[i].username;
+        }
         this.users = response.users;
       },
       error => {
@@ -99,10 +106,9 @@ export class UsersComponent implements OnInit {
     );
   }
 
-  validarUsuario() {
+  public validarUsuario() {
     if (this.user.name.length > 0 && this.user.surname.length > 0 &&
-      this.user.username.length > 0 && this.user.password.length > 0 &&
-      this.user.role.length > 0) {
+      this.user.username.length > 0 && this.user.password.length > 0) {
       return true;
     }
     return false;
@@ -110,10 +116,11 @@ export class UsersComponent implements OnInit {
 
   limpiarFormulario() {
     this.user = new User();
-    this.perfilSeleccionado = 'Selecciona un perfil';
+    this.selectedProfile = '';
+    this.selectedCompany = '';
   }
 
-  guardar() {
+  public guardar() {
     this.successMessage = null;
     this.errorMessage = null;
     if (this.user._id) {
@@ -126,7 +133,6 @@ export class UsersComponent implements OnInit {
           } else {
             this.successMessage = 'Se actualizó el usuario ' + this.user.username + " satisfactoriamente";
             this.user = new User();
-            this.perfilSeleccionado = 'Selecciona un perfil';
             this.listarUsuarios();
           }
         },
@@ -148,7 +154,7 @@ export class UsersComponent implements OnInit {
           } else {
             this.successMessage = 'Se creó el usuario ' + this.user.username + " satisfactoriamente";
             this.user = new User();
-            this.perfilSeleccionado = 'Selecciona un perfil';
+            //this.perfilSeleccionado = 'Selecciona un perfil';
             this.listarUsuarios();
           }
         },
@@ -163,7 +169,35 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  cambiarContrasena() {
+  public addCompanyToUser() {
+    console.log('agregando empresa ' + this.selectedCompany + ' y perfil ' + this.selectedProfile);
+    if (!this.selectedCompany || this.selectedCompany.length === 0) {
+      return;
+    }
+    if (!this.selectedProfile || this.selectedProfile.length === 0) {
+      return;
+    }
+
+    let perm = new Permission();
+    perm.companyId = this.selectedCompany;
+    perm.companyName = this.getCompanyName();
+    perm.role = this.selectedProfile;
+    this.user.permissions.push(perm);
+
+    this.selectedCompany = '';
+    this.selectedProfile = '';
+  }
+
+  private getCompanyName() {
+    for (let i = 0; i < this.availableCompanies.length; i++) {
+      if (this.availableCompanies[i]._id === this.selectedCompany) {
+        return this.availableCompanies[i].name;
+      }
+    }
+    return "";
+  }
+
+  public cambiarContrasena() {
     this.errorMessageModal = null;
     if (this.password1.length === 0 || this.password2.length === 0) {
       this.errorMessageModal = 'Debes completar ambos campos';
@@ -182,7 +216,7 @@ export class UsersComponent implements OnInit {
         } else {
           this.successMessage = 'Se cambió la contraseña del usuario ' + this.user.username + " satisfactoriamente";
           this.user = new User();
-          this.perfilSeleccionado = 'Selecciona un perfil';
+          //this.perfilSeleccionado = 'Selecciona un perfil';
           this.listarUsuarios();
         }
       },
@@ -197,8 +231,8 @@ export class UsersComponent implements OnInit {
   }
 
   seleccionarUsuarioCambioEstado(usuario, activar) {
+    console.log(usuario);
     this.user = usuario;
-    //this.user.active = activar;
     this.activar = activar;
   }
 

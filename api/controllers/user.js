@@ -30,8 +30,8 @@ function saveUser(req, res) {
   user.name = params.name;
   user.surname = params.surname;
   user.username = params.username;
-  user.role = params.role;
   user.active = true;
+  user.permissions = params.permissions;
 
   if (params.password) {
     bcrypt.hash(params.password, null, null, function(err, hash) {

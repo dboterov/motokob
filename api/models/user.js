@@ -8,10 +8,8 @@ var UserSchema = Schema({
   surname: String,
   username: String,
   password: String,
-  role: String,
   active: Boolean,
-  //companyName: String,
-  companies: []
+  permissions: []
 });
 
 module.exports = mongoose.model('User', UserSchema);

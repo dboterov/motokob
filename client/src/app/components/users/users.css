@@ -1,7 +1,5 @@
-h2 {
-  /*position: absolute;
-  top: 0px;
-  left: 65px;*/
+h3 {
+  color: #A01E20;
 }
 
 p {
@@ -31,15 +29,8 @@ select[disabled] {
   background-color: #eee;
 }
 
-.table {
-  margin-left: -10px;
-}
-
-#main {
-  /*position: absolute;
-  top: 60px;
-  left: 0px;
-  width: 100%;*/
+.btn-margin-15{
+  margin-top: 15px;
 }
 
 .btn-usuario {
@@ -71,12 +62,6 @@ select[disabled] {
 }
 
 @media only screen and (min-width: 768px) {
-  #main {
-    /*position: absolute;
-    top: 60px;
-    left: 300px;
-    width: inherit;*/
-  }
   .table {
     cursor: pointer;
   }

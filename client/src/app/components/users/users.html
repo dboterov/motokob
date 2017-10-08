@@ -10,11 +10,13 @@
         <div class="row">
           <div class="col-xs-12">
             <label for="password1">Ingresa la nueva contraseña</label>
-            <input class="form-control input-lg" id="password1" placeholder="Contraseña..." type="password" name="password1" [(ngModel)]="password1" required/>
+            <input class="form-control input-lg" id="password1" placeholder="Contraseña..." type="password" name="password1" [(ngModel)]="password1"
+              required/>
           </div>
           <div class="col-xs-12">
             <label for="password2">Confirma la contraseña</label>
-            <input class="form-control input-lg" id="password2" placeholder="Confirma..." type="password" name="password2" [(ngModel)]="password2" required/>
+            <input class="form-control input-lg" id="password2" placeholder="Confirma..." type="password" name="password2" [(ngModel)]="password2"
+              required/>
           </div>
         </div>
       </div>
@@ -53,20 +55,24 @@
       <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-4 ">
           <label for="name">Nombre</label>
-          <input class="form-control input-lg" id="name" placeholder="Ingresa el nombre" type="text" name="name" [(ngModel)]="user.name" required/>
+          <input class="form-control input-lg" id="name" placeholder="Ingresa el nombre" type="text" name="name" [(ngModel)]="user.name"
+            autocomplete="off" required/>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-4 ">
           <label for="surname">Apellido</label>
-          <input class="form-control input-lg" id="surname" placeholder="Ingresa el apellido" type="text" name="surname" [(ngModel)]="user.surname" required/>
+          <input class="form-control input-lg" id="surname" placeholder="Ingresa el apellido" type="text" name="surname" [(ngModel)]="user.surname"
+            autocomplete="off" required/>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-4 ">
-          <label for="username">Usuario</label>
-          <input class="form-control input-lg" id="username" placeholder="Ingresa el usuario" type="text" name="username" [(ngModel)]="user.username" required/>
+          <label for="new_username">Usuario</label>
+          <input class="form-control input-lg" id="new_username" placeholder="Ingresa el usuario" type="text" name="new_username" [(ngModel)]="user.username"
+            autocomplete="off" required/>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-4 ">
-          <label for="password">Contraseña</label>
+          <label for="new_password">Contraseña</label>
           <div class="input-group">
-            <input class="form-control input-lg" id="password" placeholder="Ingresa la contraseña" type="password" name="password" [(ngModel)]="user.password" [disabled]="user._id === '' ? false : true" required/>
+            <input class="form-control input-lg" id="new_password" placeholder="Ingresa la contraseña" type="password" name="new_password"
+              [(ngModel)]="user.password" [disabled]="user._id === '' ? false : true" autocomplete="off" required/>
             <span class="input-group-btn">
               <button class="btn btn-default btn-lg" type="button" [disabled]="user._id === '' ? true : false" data-toggle="modal" data-target="#modalPassword">
                 <span class="glyphicon glyphicon-pencil"></span>
@@ -74,27 +80,53 @@
             </span>
           </div>
         </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 ">
-          <label>Perfil</label>
-          <div class="dropdown">
-            <button class="btn btn-default btn-lg dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" [disabled]="identity.role != 'ROLE_ADMIN'">
-              {{perfilSeleccionado}}
-              <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-              <li><a href="javascript:void(0);" (click)="seleccionarPerfil('ROLE_ADMIN')">Administrador</a></li>
-              <li role="separator" class="divider"></li>
-              <li><a href="javascript:void(0);" (click)="seleccionarPerfil('ROLE_COORD')">Coordinador</a></li>
-              <li><a href="javascript:void(0);" (click)="seleccionarPerfil('ROLE_USER')">Asesor</a></li>
-            </ul>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">Empresas/Perfiles</div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-4 ">
+                  <label for="drop_perfil">Perfil</label>
+                  <select id="drop_perfil" name="selectedProfile" [(ngModel)]="selectedProfile" (change)="selectedProfileListener()" [disabled]="identity.role != 'ROLE_ADMIN'">
+                    <option style="display: none" disabled selected value="">Selecciona un perfil</option>
+                    <option value="ROLE_ADMIN">Administrador</option>
+                    <option value="ROLE_COORD">Coordinador</option>
+                    <option value="ROLE_USER">Asesor</option>
+                  </select>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4 ">
+                  <label for="drop_empresa">Empresa</label>
+                  <select id="drop_empresa" name="selectedCompany" [(ngModel)]="selectedCompany" (change)="selectedCompanyListener()" [disabled]="identity.role != 'ROLE_ADMIN'">
+                    <option style="display: none" disabled selected value="">Selecciona una empresa</option>
+                    <option value="{{company._id}}" *ngFor="let company of availableCompanies">{{company.name}}</option>
+                  </select>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4 ">
+                  <button class="btn btn-default btn-lg btn-margin-15" (click)="addCompanyToUser()">Agregar</button>
+                </div>
+              </div>
+              <div class="row" *ngIf="user.permissions && user.permissions.length > 0">
+                <div class="col-xs-12">
+                  <br>
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tr>
+                        <th>Empresa</th>
+                        <th>Rol</th>
+                      </tr>
+                      <tr *ngFor="let permission of user.permissions">
+                        <td>{{permission.companyName}}</td>
+                        <td>{{permission.role}}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-md-4 ">
-          <label for="drop_empresa">Empresa</label>
-          <select id="drop_empresa" name="selectedCompany" [(ngModel)]="user.company" [disabled]="identity.role != 'ROLE_ADMIN'">
-            <option disabled selected value>Selecciona una empresa</option>
-            <option [selected]="user.company == company" value="{{company.name}}" *ngFor="let company of companies">{{company.name}}</option>
-          </select>
         </div>
       </div>
       <div class="row">
@@ -110,24 +142,28 @@
   <div *ngIf="identity.role === 'ROLE_ADMIN'">
     <hr/>
     <h3>Lista de usuarios</h3>
-    <table class="table table-hover table-responsive ">
-      <tr>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Usuario</th>
-        <th>Perfil</th>
-        <th>&nbsp;</th>
-      </tr>
-      <tr *ngFor="let userRow of users" (click)="seleccionarUsuario(userRow)" [class.info]="userRow._id === user._id" [class.usuario-inactivo]="!userRow.active">
-        <td>{{userRow.name}}</td>
-        <td>{{userRow.surname}}</td>
-        <td>{{userRow.username}}</td>
-        <td>{{userRow.role}}</td>
-        <td>
-          <span *ngIf="userRow.active" class="glyphicon glyphicon-ban-circle" title="Inactivar usuario" (click)="seleccionarUsuarioCambioEstado(userRow, false)" data-toggle="modal" data-target="#modalDesactivar"></span>
-          <span *ngIf="!userRow.active" class="glyphicon glyphicon-off" title="Activar usuario" (click)="seleccionarUsuarioCambioEstado(userRow, true)" data-toggle="modal" data-target="#modalDesactivar"></span>
-        </td>
-      </tr>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Usuario</th>
+          <!--<th>Perfil</th>-->
+          <th>&nbsp;</th>
+        </tr>
+        <tr *ngFor="let userRow of users" (click)="seleccionarUsuario(userRow)" [class.info]="userRow._id === user._id" [class.usuario-inactivo]="!userRow.active">
+          <td>{{userRow.name}}</td>
+          <td>{{userRow.surname}}</td>
+          <td>{{userRow.username}}</td>
+          <!--<td>{{userRow.role}}</td>-->
+          <td>
+            <span *ngIf="userRow.active" class="glyphicon glyphicon-ban-circle" title="Inactivar usuario" (click)="seleccionarUsuarioCambioEstado(userRow, false)"
+              data-toggle="modal" data-target="#modalDesactivar"></span>
+            <span *ngIf="!userRow.active" class="glyphicon glyphicon-off" title="Activar usuario" (click)="seleccionarUsuarioCambioEstado(userRow, true)"
+              data-toggle="modal" data-target="#modalDesactivar"></span>
+          </td>
+        </tr>
+      </table>
+    </div>
   </div>
 </div>
