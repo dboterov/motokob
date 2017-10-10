@@ -30,15 +30,15 @@ export class HomeComponent implements OnInit {
       this._router.navigate(['/']);
     }
     //valida que el usuario tenga al menos una empresa asociada
-    if (!this.identity.companies || this.identity.companies.length === 0) {
+    if (!this.identity.permissions || this.identity.permissions.length === 0) {
       this._userService.removeLocalStorageData();
       this._router.navigate(['/']);
     }
     //si tiene mas de una empresa, le pide que seleccione en cual desea trabajar
-    if (this.identity.companies && this.identity.companies.length > 1) {
+    if (this.identity.permissions && this.identity.permissions.length > 1) {
       $("#modal_select_company").modal({ backdrop: 'static', keyboard: false, show: true });
-    } else if(this.identity.companies){
-      this.seleccionarEmpresa(this.identity.companies[0].company_id);
+    } else if(this.identity.permissions){
+      this.seleccionarEmpresa(this.identity.permissions[0].company_id);
     }
   }
 
@@ -65,10 +65,10 @@ export class HomeComponent implements OnInit {
 
   public seleccionarEmpresa(company_id) {
     localStorage.removeItem('motokob.selectedCompany');
-    for (let i = 0; i < this.identity.companies.length; i++) {
-      if (this.identity.companies[i].company_id === company_id) {
-        this.selectedCompany = this.identity.companies[i];
-        localStorage.setItem('motokob.selectedCompany', JSON.stringify(this.identity.companies[i]));
+    for (let i = 0; i < this.identity.permissions.length; i++) {
+      if (this.identity.permissions[i].company_id === company_id) {
+        this.selectedCompany = this.identity.permissions[i];
+        localStorage.setItem('motokob.selectedCompany', JSON.stringify(this.identity.permissions[i]));
         $("#modal_select_company").modal('hide');
         break;
       }

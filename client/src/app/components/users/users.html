@@ -90,7 +90,7 @@
               <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-4 ">
                   <label for="drop_perfil">Perfil</label>
-                  <select id="drop_perfil" name="selectedProfile" [(ngModel)]="selectedProfile" (change)="selectedProfileListener()" [disabled]="identity.role != 'ROLE_ADMIN'">
+                  <select id="drop_perfil" name="selectedProfile" [(ngModel)]="selectedProfile" (change)="selectedProfileListener()" [disabled]="!isAdmin">
                     <option style="display: none" disabled selected value="">Selecciona un perfil</option>
                     <option value="ROLE_ADMIN">Administrador</option>
                     <option value="ROLE_COORD">Coordinador</option>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-4 ">
                   <label for="drop_empresa">Empresa</label>
-                  <select id="drop_empresa" name="selectedCompany" [(ngModel)]="selectedCompany" (change)="selectedCompanyListener()" [disabled]="identity.role != 'ROLE_ADMIN'">
+                  <select id="drop_empresa" name="selectedCompany" [(ngModel)]="selectedCompany" (change)="selectedCompanyListener()" [disabled]="!isAdmin">
                     <option style="display: none" disabled selected value="">Selecciona una empresa</option>
                     <option value="{{company._id}}" *ngFor="let company of availableCompanies">{{company.name}}</option>
                   </select>
@@ -139,7 +139,7 @@
       </div>
     </form>
   </div>
-  <div *ngIf="identity.role === 'ROLE_ADMIN'">
+  <div *ngIf="isAdmin">
     <hr/>
     <h3>Lista de usuarios</h3>
     <div class="table-responsive">
@@ -148,14 +148,12 @@
           <th>Nombre</th>
           <th>Apellido</th>
           <th>Usuario</th>
-          <!--<th>Perfil</th>-->
           <th>&nbsp;</th>
         </tr>
         <tr *ngFor="let userRow of users" (click)="seleccionarUsuario(userRow)" [class.info]="userRow._id === user._id" [class.usuario-inactivo]="!userRow.active">
           <td>{{userRow.name}}</td>
           <td>{{userRow.surname}}</td>
           <td>{{userRow.username}}</td>
-          <!--<td>{{userRow.role}}</td>-->
           <td>
             <span *ngIf="userRow.active" class="glyphicon glyphicon-ban-circle" title="Inactivar usuario" (click)="seleccionarUsuarioCambioEstado(userRow, false)"
               data-toggle="modal" data-target="#modalDesactivar"></span>

@@ -22,7 +22,7 @@ export class UsersComponent implements OnInit {
   public users: Array<User>;
   public user: User;
   public activar: boolean;
-
+  public isAdmin: boolean = false;
   public password1: string;
   public password2: string;
   public availableCompanies: Array<Company>;
@@ -39,18 +39,26 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('iniciando componente de administracion de usuarios');
     this.identity = this._userService.getItentity();
     this.token = this._userService.getToken();
     if (this.identity === null) {
       this._router.navigate(['/']);
     }
-    if (this.identity.role === 'ROLE_ADMIN') {
+    this.validateAdmin();
+    if (this.isAdmin) {
       this.listarUsuarios();
     } else {
       this.seleccionarUsuario(this.identity);
     }
     this.listarEmpresas();
+  }
+
+  private validateAdmin() {
+    try {
+      this.isAdmin = JSON.parse(localStorage.getItem("motokob.selectedCompany")).role === 'ROLE_ADMIN';
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   public selectedCompanyListener() {
@@ -231,7 +239,6 @@ export class UsersComponent implements OnInit {
   }
 
   seleccionarUsuarioCambioEstado(usuario, activar) {
-    console.log(usuario);
     this.user = usuario;
     this.activar = activar;
   }

@@ -28,6 +28,7 @@ export class QuotationsComponent implements OnInit {
   public identity: any;
   public token;
   public errorMessageInstallments: string = '';
+  public errorMessageSaving: string = '';
   public items: Array<any>;
   public selectedBrand: Brand;
   public selectedBike: Product;
@@ -311,6 +312,9 @@ export class QuotationsComponent implements OnInit {
           if (this.quotation.items.length < response.quotation.items.length) {
             this.quotation = response.quotation;
           }
+          if(response.quotation._id){
+            this.quotation._id = response.quotation._id;
+          }
         } else {
           console.warn('something went wrong. quotation may not be saved');
         }
@@ -340,12 +344,15 @@ export class QuotationsComponent implements OnInit {
   }
 
   public createQuotationDocument() {
+    this.errorMessageSaving = '';
     if (this.quotation.items.length === 0) {
       console.error('la cotizacion debe tener al menos un item');
+      this.errorMessageSaving = 'Debes ingresar al menos un ítem';
       return;
     }
     if (!this.quotation.customer || !this.quotation.customer._id) {
       console.error('la cotizacion debe tener un cliente asociado');
+      this.errorMessageSaving = 'Debes ingresar un cliente para la cotización';
       return;
     }
     this._quotationsService.createDocument(this.quotation._id, this.token).subscribe(

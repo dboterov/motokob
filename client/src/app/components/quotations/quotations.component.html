@@ -308,25 +308,22 @@
   <div class="row">
     <div class="col-xs-12">
       <button type="button" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalNewItem">
-        <span class="glyphicon glyphicon-plus"></span>
+        <span class="hidden-xs">Agregar </span><span class="glyphicon glyphicon-plus"></span>
       </button>
       <button type="button" class="btn btn-lg btn-danger" data-toggle="modal" data-target="#modalConfirmCancel" *ngIf="quotation && quotation.items && quotation.items.length > 0">
-        <span class="glyphicon glyphicon-trash"></span>
+        <span class="hidden-xs">Cancelar </span><span class="glyphicon glyphicon-trash"></span>
       </button>
       <button type="button" class="btn btn-lg btn-default" data-toggle="modal" data-target="#modalConfirmNew" *ngIf="quotation && quotation.items && quotation.items.length > 0">
-        <span class="glyphicon glyphicon-floppy-disk"></span>
+        <span class="hidden-xs">Guardar </span><span class="glyphicon glyphicon-floppy-disk"></span>
       </button>
     </div>
-    <!--
-    <div class="col-xs-12 col-sm-6 col-sm-offset-1">
-      <div class="alert alert-danger" role="alert" *ngIf="errorMessageAdding">
-        <p>{{errorMessageAdding}}</p>
-      </div>
-      <div class="alert alert-info" role="alert" *ngIf="successMessageAdding">
-        <p>{{successMessageAdding}}</p>
+  </div>
+  <div class="row" *ngIf="errorMessageSaving">
+    <div class="col-xs-12">
+      <div class="alert alert-danger" role="alert">
+        <p>{{errorMessageSaving}}</p>
       </div>
     </div>
-    -->
   </div>
   <br />
   <div class="row" *ngIf="quotation && quotation.items && quotation.items.length > 0">
