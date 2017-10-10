@@ -102,32 +102,36 @@ function remove(req, res) {
 }
 
 function createDocument(req, res) {
-  Quotation.update(
-    {
-      _id: req.params.id
-    }, {
-      $set: {
-        status: 'ABIERTA',
-        documentNumber: getNextSequence("quotationId")
-      }
-    }, (err, result) => {
-      console.log('termino de buscar y actualizar');
-      if (err) {
-        console.error(err);
-        res.status(500).send({
-          message: 'Ocurrió un error al modificar la cotización. ' + err.message
-        });
-      } else {
-        if (!result) {
-          res.status(404).send({
-            message: 'No se modificó la cotización'
+  console.log('asigning document number to quotation ' + req.params.id);
+  mongoose.connection.db.eval("getNextSequence('quotationId')", function (err, retVal) {
+    console.log('next quotation number: ' + retVal);
+    Quotation.update(
+      {
+        _id: req.params.id
+      }, {
+        $set: {
+          status: 'ABIERTA',
+          documentNumber: retVal
+        }
+      }, (err, result) => {
+        console.log('termino de buscar y actualizar');
+        if (err) {
+          console.error(err);
+          res.status(500).send({
+            message: 'Ocurrió un error al modificar la cotización. ' + err.message
           });
         } else {
-          res.status(200).send({ quotation: result });
+          if (!result) {
+            res.status(404).send({
+              message: 'No se modificó la cotización'
+            });
+          } else {
+            res.status(200).send({ quotation: result });
+          }
         }
       }
-    }
-  );
+    );
+  });
 }
 
 module.exports = {
