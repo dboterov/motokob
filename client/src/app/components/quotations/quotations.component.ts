@@ -74,7 +74,6 @@ export class QuotationsComponent implements OnInit {
 
   ngOnInit() {
     this.identity = this._userService.getItentity();
-    console.log(this.identity);
     this.token = this._userService.getToken();
     if (this.identity === null || this.token === null) {
       this._router.navigate(['/']);
@@ -89,7 +88,6 @@ export class QuotationsComponent implements OnInit {
   private initializeQuotation() {
     this._quotationsService.loadStartedQuotation(this.token).subscribe(
       response => {
-        console.log(response);
         if (response && response.length === 1) {
           this.viewShown = 'singleQuotation';
           this.quotation.initializeFromJSON(response[0]);
@@ -153,7 +151,6 @@ export class QuotationsComponent implements OnInit {
 
   private loadSelectedCompany() {
     this.company = JSON.parse(localStorage.getItem('motokob.selectedCompany'));
-    console.log(this.company);
   }
 
   private loadBrands() {

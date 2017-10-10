@@ -61,11 +61,15 @@ export class LoginComponent implements OnInit {
               }
             },
             error => {
-              const errorResponse = <any>error;
-              if (errorResponse != null) {
-                this.errorMessage = JSON.parse(errorResponse._body).message;
-                console.error(this.errorMessage);
-              } else {
+              try {
+                const errorResponse = <any>error;
+                if (errorResponse != null) {
+                  this.errorMessage = JSON.parse(errorResponse._body).message;
+                  console.error(this.errorMessage);
+                } else {
+                  this.errorMessage = 'Ocurrió un error al iniciar sesión. Intenta de nuevo más tarde. Si el problema persiste, contacta al administrador del sistema.';
+                }
+              } catch (error) {
                 this.errorMessage = 'Ocurrió un error al iniciar sesión. Intenta de nuevo más tarde. Si el problema persiste, contacta al administrador del sistema.';
               }
             }
@@ -73,13 +77,17 @@ export class LoginComponent implements OnInit {
         }
       },
       error => {
-        console.error(error);
-        this.processing = false;
-        const errorResponse = <any>error;
-        if (errorResponse != null) {
-          this.errorMessage = JSON.parse(errorResponse._body).message;
-          console.error(this.errorMessage);
-        } else {
+        try {
+          console.error(error);
+          this.processing = false;
+          const errorResponse = <any>error;
+          if (errorResponse != null) {
+            this.errorMessage = JSON.parse(errorResponse._body).message;
+            console.error(this.errorMessage);
+          } else {
+            this.errorMessage = 'Ocurrió un error al iniciar sesión. Intenta de nuevo más tarde. Si el problema persiste, contacta al administrador del sistema.';
+          }
+        } catch (error) {
           this.errorMessage = 'Ocurrió un error al iniciar sesión. Intenta de nuevo más tarde. Si el problema persiste, contacta al administrador del sistema.';
         }
       }
