@@ -54,9 +54,10 @@ function save(req, res) {
 function list(req, res) {
   console.log('executing LIST method for user:', req.user.sub);
   console.log('queryParams: ', req.query);
-  var queryObject = { 'seller._id': '' };
-  if (req.user.role !== 'ROLE_ADMIN' || req.query.started) {
+  var queryObject = {};
+  if (req.query.started) {
     queryObject = { 'seller._id': req.user.sub };
+    queryObject.status = 'INICIADA';
   }
   if (req.query) {
     if (req.query._id) {
@@ -64,9 +65,6 @@ function list(req, res) {
     }
     if (req.query.customer) {
       queryObject.customer._id = req.query.customer;
-    }
-    if (req.query.started) {
-      queryObject.status = 'INICIADA';
     }
   }
   console.log('queryObject: ', queryObject);
@@ -81,7 +79,7 @@ function list(req, res) {
         res.status(200).send(result);
       }
     }
-  });
+  }).sort('-date');
 }
 
 function remove(req, res) {

@@ -24,12 +24,13 @@ export class QuotationService {
   }
 
   public createDocument(quotationId: string, token: string) {
+    console.log('finalizando cotizacion. ', quotationId);
     const headers = new Headers({
       'Content-Type': 'application/json',
       'Authorization': token
     });
 
-    return this._http.put(this.url + 'quotation/create/' + quotationId, { headers: headers })
+    return this._http.put(this.url + 'quotation/create/' + quotationId, {}, { headers: headers })
       .map(res => res.json());
   }
 
@@ -50,13 +51,23 @@ export class QuotationService {
     }
   }
 
-  public loadStartedQuotation(user: string, token: string) {
+  public loadStartedQuotation(token: string) {
     const headers = new Headers({
       'Content-Type': 'application/json',
       'Authorization': token
     });
 
     return this._http.get(this.url + 'quotation?started=yes', { headers: headers })
+      .map(res => res.json());
+  }
+
+  public listQuotations(token: string) {
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'Authorization': token
+    });
+
+    return this._http.get(this.url + 'quotation', { headers: headers })
       .map(res => res.json());
   }
 }

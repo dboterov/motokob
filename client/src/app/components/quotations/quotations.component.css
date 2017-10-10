@@ -140,6 +140,10 @@ select[disabled] {
   margin-top: 10px;
 }
 
+.loading {
+  color: #999;
+}
+
 @media only screen and (max-width: 425px) {
   label {
     margin-top: 5px;

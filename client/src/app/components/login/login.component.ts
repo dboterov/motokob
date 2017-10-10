@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
   public errorMessage: string;
   public identity;
   public token;
+  public processing = false;
 
   constructor(private _userService: UserService, private _route: ActivatedRoute, private _router: Router) {
     this.user = new User();
@@ -39,8 +40,10 @@ export class LoginComponent implements OnInit {
       return;
     }
 
+    this.processing = true;
     this._userService.signIn(this.user).subscribe(
       response => {
+        this.processing = false;
         this.identity = response.user;
         if (!this.identity._id) {
           this.errorMessage = 'Error';
@@ -62,16 +65,22 @@ export class LoginComponent implements OnInit {
               if (errorResponse != null) {
                 this.errorMessage = JSON.parse(errorResponse._body).message;
                 console.error(this.errorMessage);
+              } else {
+                this.errorMessage = 'Ocurrió un error al iniciar sesión. Intenta de nuevo más tarde. Si el problema persiste, contacta al administrador del sistema.';
               }
             }
           );
         }
       },
       error => {
+        console.error(error);
+        this.processing = false;
         const errorResponse = <any>error;
         if (errorResponse != null) {
           this.errorMessage = JSON.parse(errorResponse._body).message;
           console.error(this.errorMessage);
+        } else {
+          this.errorMessage = 'Ocurrió un error al iniciar sesión. Intenta de nuevo más tarde. Si el problema persiste, contacta al administrador del sistema.';
         }
       }
     );

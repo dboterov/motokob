@@ -282,7 +282,10 @@
 <!-- /.modal -->
 
 <h3 class="section-title">Cotizaciones</h3>
-<div class="container">
+<div class="container" *ngIf="viewShown === 'quotationList'">
+  <span class="loading" *ngIf="userQuotations.length === 0">Estamos cargando tus datos...</span>
+</div>
+<div class="container" *ngIf="viewShown === 'singleQuotation'">
   <!-- cliente, producto x cantidad -->
   <div class="row">
     <form>

@@ -43,10 +43,12 @@ export class QuotationsComponent implements OnInit {
   public brands: Array<Brand>;
   public bikes: Array<any>;
   public panelShown: string = 'brands';
+  public viewShown: string = 'quotationList';
   public quotation: Quotation;
   public costOptions: Array<string>;
   public filteredOptions: Array<Cost>;
   public additionalCosts: Array<any>;
+  public userQuotations: Array<any>;
   private factors: Array<Factor>;
   private company: any;
 
@@ -67,6 +69,7 @@ export class QuotationsComponent implements OnInit {
     this.filteredOptions = new Array<Cost>();
     this.additionalCosts = new Array<any>();
     this.factors = new Array<Factor>();
+    this.userQuotations = new Array<any>();
   }
 
   ngOnInit() {
@@ -84,25 +87,41 @@ export class QuotationsComponent implements OnInit {
   }
 
   private initializeQuotation() {
-    //TODO: load from database
-    this._quotationsService.loadStartedQuotation(this.identity.username, this.token).subscribe(
+    this._quotationsService.loadStartedQuotation(this.token).subscribe(
       response => {
         console.log(response);
         if (response && response.length === 1) {
+          this.viewShown = 'singleQuotation';
           this.quotation.initializeFromJSON(response[0]);
           console.log('quotation loaded: ', this.quotation);
         } else {
+          this.viewShown = 'quotationList';
           if (response.length > 1) {
             console.error('se encontro mas de una cotizacion ininciada para el usuario. ');
           }
-          this.initializeNewQuotation();
+          this.listUserQuotations();
         }
       }, error => {
         this.initializeNewQuotation();
         console.error(error);
       }
     );
+  }
 
+  private listUserQuotations() {
+    this.userQuotations = new Array<any>();
+    console.log('no se encontraron cotizaciones iniciadas para el usuario, cargando historia');
+    this._quotationsService.listQuotations(this.token).subscribe(
+      response => {
+        console.log('cotizaciones para el usuario: ', response);
+        if (response && response.length > 0) {
+          this.userQuotations = response;
+        } else {
+          this.initializeNewQuotation();
+          this.viewShown = 'singleQuotation';
+        }
+      }, error => { console.error(error); }
+    );
   }
 
   private initializeNewQuotation() {
@@ -182,7 +201,7 @@ export class QuotationsComponent implements OnInit {
   public selectBike(bike) {
     this.selectedBike = bike;
     this.panelShown = 'modelAndColor';
-    this._restrictionsService.getRestrictions(this.company.company_id, this.selectedBike._id, this.token).subscribe(
+    this._restrictionsService.getRestrictions(this.company.companyId, this.selectedBike._id, this.token).subscribe(
       response => {
         this.maxInstallments = response.max_installments;
       }, error => { console.error(error); }
@@ -312,7 +331,7 @@ export class QuotationsComponent implements OnInit {
           if (this.quotation.items.length < response.quotation.items.length) {
             this.quotation = response.quotation;
           }
-          if(response.quotation._id){
+          if (response.quotation._id) {
             this.quotation._id = response.quotation._id;
           }
         } else {
@@ -357,8 +376,10 @@ export class QuotationsComponent implements OnInit {
     }
     this._quotationsService.createDocument(this.quotation._id, this.token).subscribe(
       result => {
-        console.log('se creo el documento con exito', result);
         this.initializeNewQuotation();
+        this.viewShown = 'quotationList';
+        this.listUserQuotations();
+        console.log('se creo el documento con exito', result);
       }, error => { console.error(error); }
     );
   }
