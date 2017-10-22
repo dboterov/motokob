@@ -19,6 +19,7 @@ function save(req, res) {
   var company = new Company();
   var params = req.body;
 
+  company.nit = params.nit;
   company.name = params.name;
   company.active = true;
 

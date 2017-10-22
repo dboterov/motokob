@@ -4,7 +4,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var CompanySchema = Schema({
-  name: String
+  nit: String,
+  name: String,
+  active: Boolean
 });
 
 module.exports = mongoose.model('Company', CompanySchema);
