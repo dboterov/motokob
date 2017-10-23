@@ -5,6 +5,8 @@ import { CompanyService } from '../../services/company.service';
 import { User, Permission } from '../../models/user';
 import { Company } from '../../models/company';
 
+declare var $: any;
+
 @Component({
   selector: 'user-admin',
   templateUrl: './users.html',
@@ -22,9 +24,10 @@ export class UsersComponent implements OnInit {
   public users: Array<User>;
   public user: User;
   public activar: boolean;
-  public isAdmin: boolean = false;
   public password1: string;
   public password2: string;
+  public companyName: string = '';
+  public companyNit: string = '';
   public availableCompanies: Array<Company>;
 
   constructor(private _userService: UserService, private _companyService: CompanyService, private _route: ActivatedRoute, private _router: Router) {
@@ -44,8 +47,7 @@ export class UsersComponent implements OnInit {
     if (this.identity === null) {
       this._router.navigate(['/']);
     }
-    this.validateAdmin();
-    if (this.isAdmin) {
+    if (this.isAdmin()) {
       this.listarUsuarios();
     } else {
       this.seleccionarUsuario(this.identity);
@@ -53,13 +55,7 @@ export class UsersComponent implements OnInit {
     this.listarEmpresas();
   }
 
-  private validateAdmin() {
-    try {
-      this.isAdmin = JSON.parse(localStorage.getItem("motokob.selectedCompany")).role === 'ROLE_ADMIN';
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  
 
   public selectedCompanyListener() {
     console.log(this.selectedCompany);
@@ -114,10 +110,12 @@ export class UsersComponent implements OnInit {
     );
   }
 
-  public validarUsuario() {
+  public validarUsuario(validatePassword: boolean = true) {
     if (this.user.name.length > 0 && this.user.surname.length > 0 &&
-      this.user.username.length > 0 && this.user.password.length > 0) {
-      return true;
+      this.user.username.length > 0) {
+      if ((validatePassword && this.user.password && this.user.password.length > 0) || !validatePassword) {
+        return true;
+      }
     }
     return false;
   }
@@ -246,5 +244,25 @@ export class UsersComponent implements OnInit {
   cambiarEstadoUsuario() {
     this.user.active = this.activar;
     this.guardar();
+  }
+
+  public guardarNuevaEmpresa() {
+    let newCompany = new Company();
+    newCompany.name = this.companyName;
+    newCompany.nit = this.companyNit;
+    newCompany.active = true;
+    this._companyService.save(newCompany, this.token).subscribe(
+      result => {
+        this.selectedCompany = result._id;
+        this.listarEmpresas();
+        this.companyName = '';
+        this.companyNit = '';
+        $("#modalCompany").modal('hide');
+      }, error => { console.error(error); }
+    );
+  }
+
+  public isAdmin(){
+    return this._userService.isAdmin();
   }
 }

@@ -3,7 +3,9 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
         <h4 class="modal-title">Cambiar contraseña</h4>
       </div>
       <div class="modal-body">
@@ -28,13 +30,44 @@
   </div>
 </div>
 
+<div class="modal fade" tabindex="-1" role="dialog" id="modalCompany">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Agregar empresa</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <label for="nit">NIT de la empresa</label>
+            <input class="form-control input-lg" id="nit" type="text" name="companyNit" [(ngModel)]="companyNit" />
+          </div>
+          <div class="col-xs-12">
+            <label for="nombre">Nombre de la empresa</label>
+            <input class="form-control input-lg" id="nombre" type="text" name="nombre" [(ngModel)]="companyName" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-lg" (click)="guardarNuevaEmpresa()" data-dismiss="modal">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" tabindex="-1" role="dialog" id="modalDesactivar">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-body">
         <div class="row">
           <div class="col-xs-12">
-            <p>¿Estás seguro de que deseas <b>{{activar ? 'activar' : 'desactivar'}}</b> el usuario <b>{{user.name}}</b>?</p>
+            <p>¿Estás seguro de que deseas
+              <b>{{activar ? 'activar' : 'desactivar'}}</b> el usuario
+              <b>{{user.name}}</b>?</p>
           </div>
         </div>
       </div>
@@ -66,7 +99,7 @@
         <div class="col-xs-12 col-sm-6 col-md-4 ">
           <label for="new_username">Usuario</label>
           <input class="form-control input-lg" id="new_username" placeholder="Ingresa el usuario" type="text" name="new_username" [(ngModel)]="user.username"
-            autocomplete="off" required/>
+            [disabled]="!isAdmin()" autocomplete="off" required/>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-4 ">
           <label for="new_password">Contraseña</label>
@@ -76,13 +109,13 @@
             <span class="input-group-btn">
               <button class="btn btn-default btn-lg" type="button" [disabled]="user._id === '' ? true : false" data-toggle="modal" data-target="#modalPassword">
                 <span class="glyphicon glyphicon-pencil"></span>
-            </button>
+              </button>
             </span>
           </div>
         </div>
       </div>
       <br>
-      <div class="row">
+      <div class="row" *ngIf="isAdmin()">
         <div class="col-xs-12">
           <div class="panel panel-default">
             <div class="panel-heading">Empresas/Perfiles</div>
@@ -90,19 +123,31 @@
               <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-4 ">
                   <label for="drop_perfil">Perfil</label>
-                  <select id="drop_perfil" name="selectedProfile" [(ngModel)]="selectedProfile" (change)="selectedProfileListener()" [disabled]="!isAdmin">
+                  <select id="drop_perfil" name="selectedProfile" [(ngModel)]="selectedProfile" (change)="selectedProfileListener()" [disabled]="!isAdmin()">
                     <option style="display: none" disabled selected value="">Selecciona un perfil</option>
                     <option value="ROLE_ADMIN">Administrador</option>
                     <option value="ROLE_COORD">Coordinador</option>
-                    <option value="ROLE_USER">Asesor</option>
+                    <option value="ROLE_USER_ADV">Asesor avanzado</option>
+                    <option value="ROLE_USER_BAS">Asesor básico</option>
                   </select>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-4 ">
                   <label for="drop_empresa">Empresa</label>
-                  <select id="drop_empresa" name="selectedCompany" [(ngModel)]="selectedCompany" (change)="selectedCompanyListener()" [disabled]="!isAdmin">
-                    <option style="display: none" disabled selected value="">Selecciona una empresa</option>
-                    <option value="{{company._id}}" *ngFor="let company of availableCompanies">{{company.name}}</option>
-                  </select>
+                  <table style="width: 100%;">
+                    <tr>
+                      <td>
+                        <select id="drop_empresa" name="selectedCompany" [(ngModel)]="selectedCompany" (change)="selectedCompanyListener()" [disabled]="!isAdmin()">
+                          <option style="display: none" disabled selected value="">Selecciona una empresa</option>
+                          <option value="{{company._id}}" *ngFor="let company of availableCompanies">{{company.name}}</option>
+                        </select>
+                      </td>
+                      <td style="width: 55px" *ngIf="isAdmin()">
+                        <button class="btn btn-lg btn-default pull-right" type="button">
+                          <span class="glyphicon glyphicon-plus" data-toggle="modal" data-target="#modalCompany"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-4 ">
                   <button class="btn btn-default btn-lg btn-margin-15" (click)="addCompanyToUser()">Agregar</button>
@@ -139,7 +184,7 @@
       </div>
     </form>
   </div>
-  <div *ngIf="isAdmin">
+  <div *ngIf="isAdmin()">
     <hr/>
     <h3>Lista de usuarios</h3>
     <div class="table-responsive">

@@ -82,4 +82,13 @@ export class UserService {
     return this._http.get(this.url + 'user/list/', { headers: headers })
       .map(res => res.json());
   }
+
+  public isAdmin() {
+    try {
+      return JSON.parse(localStorage.getItem("motokob.selectedCompany")).role === 'ROLE_ADMIN';
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
 }

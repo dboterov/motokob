@@ -26,7 +26,7 @@ export class SideNavComponent implements OnInit {
     }
   }
 
-  cerrarSesion() {
+  public cerrarSesion() {
     localStorage.removeItem('motokob.identity');
     localStorage.removeItem('motokob.token');
     localStorage.clear();
@@ -35,7 +35,7 @@ export class SideNavComponent implements OnInit {
     this._router.navigate(['/']);
   }
 
-  openNav() {
+  public openNav() {
     document.getElementById("mySidenav").style.width = "350px";
     document.getElementById("overlay").style.display = "inline-block";
     //$('#overlay').toggleClass('overlay-visible');
@@ -43,8 +43,12 @@ export class SideNavComponent implements OnInit {
     //$('.body-overlay').css('display: inline-block');
   }
 
-  closeNav() {
+  public closeNav() {
     document.getElementById("mySidenav").style.width = "0";
     document.getElementById("overlay").style.display = "none";
+  }
+
+  public isAdmin() {
+    return this._userService.isAdmin();
   }
 }

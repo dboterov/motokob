@@ -54,7 +54,8 @@ export class QuotationService {
   public loadStartedQuotation(token: string) {
     const headers = new Headers({
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': token,
+      'X-Selected-Company': encodeURI(localStorage.getItem('motokob.selectedCompany'))
     });
 
     return this._http.get(this.url + 'quotation?started=yes', { headers: headers })
@@ -64,8 +65,11 @@ export class QuotationService {
   public listQuotations(token: string) {
     const headers = new Headers({
       'Content-Type': 'application/json',
-      'Authorization': token
+      'Authorization': token,
+      'X-Selected-Company': encodeURI(localStorage.getItem('motokob.selectedCompany'))
     });
+
+    console.log(headers);
 
     return this._http.get(this.url + 'quotation', { headers: headers })
       .map(res => res.json());

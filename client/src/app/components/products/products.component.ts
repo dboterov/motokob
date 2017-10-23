@@ -8,6 +8,7 @@ import { BrandService } from '../../services/brand.service';
 import { ProductTypeService } from '../../services/productType.service';
 import { UploadService } from '../../services/upload.service';
 import { ColorService } from '../../services/color.service';
+import { UserService } from '../../services/user.service';
 
 import { Product } from '../../models/product';
 import { Brand } from '../../models/brand';
@@ -20,7 +21,7 @@ declare var $: any;
   selector: 'product',
   templateUrl: './products.html',
   styleUrls: ['./products.css'],
-  providers: [ProductService, BrandService, ProductTypeService, UploadService, ColorService]
+  providers: [ProductService, BrandService, ProductTypeService, UploadService, ColorService, UserService]
 })
 
 export class ProductsComponent implements OnInit {
@@ -51,7 +52,8 @@ export class ProductsComponent implements OnInit {
   public colors: Array<Color>;
 
   constructor(private _productService: ProductService, private _brandService: BrandService, private _productTypeService: ProductTypeService,
-    private _uploadService: UploadService, private _colorService: ColorService, private _route: ActivatedRoute, private _router: Router) {
+    private _uploadService: UploadService, private _colorService: ColorService, private _route: ActivatedRoute, private _userService: UserService,
+    private _router: Router) {
     this.errorMessage = null;
     this.successMessage = null;
     this.marcaSeleccionada = '';
@@ -82,7 +84,6 @@ export class ProductsComponent implements OnInit {
     this.successMessage = null;
     this._brandService.listBrands().subscribe(
       response => {
-        console.log('se encontraron marcas', response);
         for (let i = 0; i < response.length; i++) {
           let newBrand = new Brand();
           newBrand._id = response[i]._id;
@@ -209,7 +210,10 @@ export class ProductsComponent implements OnInit {
     );
   }
 
-  public seleccionarColor(_id) {
+  public seleccionarColor(_id: string, validateAdmin: boolean = true) {
+    if (validateAdmin && !this.isAdmin()) {
+      return;
+    }
     let eliminar: boolean = false;
     let colors = new Color('', '', false);
 
@@ -292,21 +296,27 @@ export class ProductsComponent implements OnInit {
   }
 
   public seleccionarMarca() {
+    if (this.marcaSeleccionada && this.marcaSeleccionada === '0') {
+      this.product.brand = new Brand();
+      return;
+    }
     for (let i = 0; i < this.brands.length; i++) {
       if (this.brands[i]._id === this.marcaSeleccionada) {
         this.product.brand = this.brands[i];
         this.product.brand.logo = this.url + 'brand/get-image/' + this.brands[i].logo;
-        console.log('Se selecciono la marca ' + this.product.brand._id);
         break;
       }
     }
   }
 
   public seleccionarTipoProducto() {
+    if (this.productTypeSeleccionado && this.productTypeSeleccionado === '0') {
+      this.product.productType = new ProductType();
+      return;
+    }
     for (let i = 0; i < this.productTypes.length; i++) {
       if (this.productTypes[i]._id === this.productTypeSeleccionado) {
         this.product.productType = this.productTypes[i];
-        console.log('Se selecciono el tipo de producto ' + this.product.productType._id);
         break;
       }
     }
@@ -464,12 +474,10 @@ export class ProductsComponent implements OnInit {
     this.product.model = producto.model;
     this.product.cylinder = producto.cylinder;
     if (!producto.colors || producto.colors.length <= 0) {
-      console.log('No tengo colores');
       this.product.colors = new Array<any>();
     } else {
-      console.log('Tengo colores');
       for (let i = 0; i < producto.colors.length; i++) {
-        this.seleccionarColor(producto.colors[i]._id);
+        this.seleccionarColor(producto.colors[i]._id, false);
       }
     }
     this.product.price = producto.price;
@@ -484,8 +492,11 @@ export class ProductsComponent implements OnInit {
       this.product.productType.name = producto.productTypeId.name;
       this.productTypeSeleccionado = this.product.productType._id;
     }
-    console.log(this.product);
-    console.log(producto.images);
+    if (!this.isAdmin()) {
+      this.pasoProducto = 6;
+    } else {
+      this.pasoProducto = 1;
+    }
     $('#modalProducto').modal('show');
   }
 
@@ -621,5 +632,19 @@ export class ProductsComponent implements OnInit {
     this.cargarColores();
 
     $('#modalProducto').modal('hide');
+  }
+
+  public isAdmin() {
+    return this._userService.isAdmin();
+  }
+
+  public mostrarOpcionNueva(tipo: string) {
+    if (tipo === 'marca') {
+      return this.isAdmin && this.marcaSeleccionada && this.marcaSeleccionada == "0";
+    } else if (tipo === 'tipo') {
+      return this.isAdmin && this.productTypeSeleccionado && this.productTypeSeleccionado == "0";
+    } else {
+      return false;
+    }
   }
 }

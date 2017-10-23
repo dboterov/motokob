@@ -52,13 +52,8 @@ function save(req, res) {
 }
 
 function list(req, res) {
-  console.log('executing LIST method for user:', req.user);
+  console.log('executing LIST method for user:', req.user._id);
   console.log('queryParams: ', req.query);
-
-  if (req.headers['x-selected-company']) {
-    console.log('selected company: ', req.headers['x-selected-company']);
-    console.log('selected company', JSON.parse(decodeURI(req.headers['x-selected-company'])));
-  }
 
   var queryObject = {};
   if (req.headers['x-selected-company']) {

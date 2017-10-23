@@ -13,7 +13,9 @@ export class Product {
   public colors: Array<Color> = new Array<Color>();
   public images: Array<string> = new Array<string>();
 
-  constructor() { }
+  constructor() {
+    this.initialize();
+  }
 
   public initialize() {
     this._id = '';

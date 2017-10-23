@@ -70,6 +70,7 @@ export class HomeComponent implements OnInit {
         this.selectedCompany = this.identity.permissions[i];
         localStorage.setItem('motokob.selectedCompany', JSON.stringify(this.identity.permissions[i]));
         $("#modal_select_company").modal('hide');
+        this._router.navigate(['/cotizaciones']);
         break;
       }
     }
