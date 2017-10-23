@@ -55,8 +55,10 @@ function list(req, res) {
   console.log('executing LIST method for user:', req.user);
   console.log('queryParams: ', req.query);
   console.log('headers: ', req.headers);
-  console.log('selected company: ', req.headers['x-selected-company']);
-  console.log('selected company', JSON.parse(decodeURI(req.headers['x-selected-company'])));
+  if (req.headers['x-selected-company']) {
+    console.log('selected company: ', req.headers['x-selected-company']);
+    console.log('selected company', JSON.parse(decodeURI(req.headers['x-selected-company'])));
+  }
 
   var queryObject = {};
   if (req.query.started) {
