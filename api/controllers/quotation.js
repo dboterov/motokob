@@ -52,7 +52,7 @@ function save(req, res) {
 }
 
 function list(req, res) {
-  console.log('executing LIST method for user:', req.user.sub);
+  console.log('executing LIST method for user:', req.user);
   console.log('queryParams: ', req.query);
   var queryObject = {};
   if (req.query.started) {
