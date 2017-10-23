@@ -54,15 +54,20 @@ function save(req, res) {
 function list(req, res) {
   console.log('executing LIST method for user:', req.user);
   console.log('queryParams: ', req.query);
-  console.log('headers: ', req.headers);
+
   if (req.headers['x-selected-company']) {
     console.log('selected company: ', req.headers['x-selected-company']);
     console.log('selected company', JSON.parse(decodeURI(req.headers['x-selected-company'])));
   }
 
   var queryObject = {};
+  if (req.headers['x-selected-company']) {
+    var selectedCompanyRole = JSON.parse(decodeURI(req.headers['x-selected-company'])).role;
+    if (selectedCompanyRole.startsWith('ROLE_USER')) {
+      queryObject = { 'seller._id': req.user.sub };
+    }
+  }
   if (req.query.started) {
-    queryObject = { 'seller._id': req.user.sub };
     queryObject.status = 'INICIADA';
   }
   if (req.query) {
