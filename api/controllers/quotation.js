@@ -54,8 +54,8 @@ function save(req, res) {
 function list(req, res) {
   console.log('executing LIST method for user:', req.user);
   console.log('queryParams: ', req.query);
-  console.log('company: ', req.headers.company);
-  
+  console.log('headers: ', req.headers);
+
   var queryObject = {};
   if (req.query.started) {
     queryObject = { 'seller._id': req.user.sub };
