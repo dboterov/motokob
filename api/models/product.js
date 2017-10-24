@@ -1,15 +1,17 @@
 'use strict'
 
 var mongoose = require('mongoose');
+var Brand = require('./brand');
+var ProductType = require('./productType');
 var Schema = mongoose.Schema;
 
 var ProductSchema = Schema({
   name: String,
-  brandId: String,
+  brand: Brand,
   model: Number,
   cylinder: String,
   price: Number,
-  productTypeId: String,
+  productType: ProductType,
   colors: Array,
   images: Array,
   active: Boolean

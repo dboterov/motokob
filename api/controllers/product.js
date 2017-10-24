@@ -34,13 +34,14 @@ function productsList(req, res) {
   console.log('consultando productos', queryObject);
 
   Product.find(queryObject).count({}, (err, count) => {
-    Product.find(queryObject).sort('name').paginate(page, pageSize).populate({
+    Product.find(queryObject).sort('name').paginate(page, pageSize)
+    /*.populate({
       path: 'productTypeId',
       model: 'ProductType'
     }).populate({
       path: 'brandId',
       model: 'Brand'
-    }).exec((err, products) => {
+    })*/.exec((err, products) => {
       if (err) {
         console.error(err);
         res.status(500).send({
@@ -59,9 +60,9 @@ function productsList(req, res) {
         }
       }
     });
-  }).populate({
+  })/*.populate({
     path: 'productType'
-  });
+  })*/;
 }
 
 function saveProduct(req, res) {
@@ -69,10 +70,10 @@ function saveProduct(req, res) {
   var params = req.body;
 
   product.name = params.name;
-  product.brandId = params.brand._id;
+  product.brand = params.brand;
   product.model = params.model;
   product.cylinder = params.cylinder;
-  product.productTypeId = params.productType._id;
+  product.productType = params.productType;
   product.colors = params.colors;
   product.price = params.price;
   product.images = params.images;
@@ -95,16 +96,16 @@ function saveProduct(req, res) {
 }
 
 function updateProduct(req, res) {
-  //console.log(req.body);
+  console.log(req.body);
   var product = new Product();
   var params = req.body;
 
   product._id = params._id;
   product.name = params.name;
-  product.brandId = params.brand._id;
+  product.brand = params.brand;
   product.model = params.model;
   product.cylinder = params.cylinder;
-  product.productTypeId = params.productType._id;
+  product.productType = params.productType;
   product.colors = params.colors;
   product.price = params.price;
   product.images = params.images;
