@@ -12,24 +12,29 @@ function productsList(req, res) {
   var pageSize = parseInt(req.query.pageSize ? req.query.pageSize : 10);
   var strFilter = req.query.strFilter;
 
-  var queryObject = {};
+  var queryObject = { "active": true };
 
   if (strFilter) {
     queryObject = {
-      $or: [{
-        "name": new RegExp(strFilter, "i")
-      }, {
-        "cylinder": new RegExp(strFilter, "i")
-      }, {
-        "brandId": new RegExp(strFilter, "i")
-      }, {
-        "productTypeId": new RegExp(strFilter, "i")
-      }]
+      $and: [
+        {
+          $or: [{
+            "name": new RegExp(strFilter, "i")
+          }, {
+            "cylinder": new RegExp(strFilter, "i")
+          }, {
+            "brandId": new RegExp(strFilter, "i")
+          }, {
+            "productTypeId": new RegExp(strFilter, "i")
+          }]
+        },
+        {
+          "active": true
+        }
+      ]
     }
   }
-
-  //console.log('queryObject');
-  //console.log(queryObject);
+  console.log('consultando productos', queryObject);
 
   Product.find(queryObject).count({}, (err, count) => {
     Product.find(queryObject).sort('name').paginate(page, pageSize).populate({
@@ -106,6 +111,7 @@ function updateProduct(req, res) {
   product.colors = params.colors;
   product.price = params.price;
   product.images = params.images;
+  product.active = params.active;
 
   Product.findByIdAndUpdate(params._id, product, (err, productUpdated) => {
     if (err) {

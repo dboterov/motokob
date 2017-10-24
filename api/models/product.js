@@ -11,7 +11,8 @@ var ProductSchema = Schema({
   price: Number,
   productTypeId: String,
   colors: Array,
-  images: Array
+  images: Array,
+  active: Boolean
 });
 
 module.exports = mongoose.model('Product', ProductSchema);
