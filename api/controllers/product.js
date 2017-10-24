@@ -79,6 +79,7 @@ function saveProduct(req, res) {
   product.colors = params.colors;
   product.price = params.price;
   product.images = params.images;
+  product.active = true;
 
   product.save((err, productStored) => {
     if (err) {
