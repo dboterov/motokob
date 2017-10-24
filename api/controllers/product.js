@@ -16,17 +16,18 @@ function productsList(req, res) {
 
   if (strFilter) {
     var orOptions = [];
-    orOptions.push({"name": new RegExp(strFilter, "i")});
-    orOptions.push({"cylinder": new RegExp(strFilter, "i")});
-    try {
-      orOptions.push({"model": parseInt(strFilter)});
-    } catch (error) {}
-    console.log('opciones or: ', orOptions);
+    orOptions.push({ "name": new RegExp(strFilter, "i") });
+    orOptions.push({ "cylinder": new RegExp(strFilter, "i") });
+    if (isNaN(parseInt(strFilter))) {
+      orOptions.push({ "model": strFilter });
+    }
     
+    console.log('opciones or: ', orOptions);
+
     queryObject = {
       $and: [
-        {"active": true},
-        {$or: orOptions}
+        { "active": true },
+        { $or: orOptions }
       ]
     }
   }
