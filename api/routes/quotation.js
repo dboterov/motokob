@@ -7,6 +7,7 @@ var api = express.Router();
 var md_auth = require('../middlewares/authenticated');
 
 api.get('/', md_auth.ensureAuth, QuotationController.list);
+api.get('/pdf/:quotationNumber', QuotationController.generatePDF);
 api.post('/', md_auth.ensureAuth, QuotationController.save);
 api.put('/:id', md_auth.ensureAuth, QuotationController.save);
 api.put('/create/:id', md_auth.ensureAuth, QuotationController.createDocument);

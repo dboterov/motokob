@@ -2,6 +2,7 @@
 
 var Quotation = require('../models/quotation');
 var mongoose = require('mongoose');
+var fs = require('fs');
 
 function save(req, res) {
   var quotation = new Quotation();
@@ -140,9 +141,21 @@ function createDocument(req, res) {
   });
 }
 
+function generatePDF(req, res) {
+  console.log('generando PDF para cotizacion ' + req.params.quotationNumber);
+  var quotation = new PDFDocument;
+  quotation.pipe(fs.createWriteStream(res));
+  quotation.font('Arial')
+    .fontsize(18)
+    .text('esto es una prueba cot#' + req.params.quotationNumber);
+  quotation.end();
+  res.status(200).send();
+}
+
 module.exports = {
   list,
   save,
   remove,
-  createDocument
+  createDocument,
+  generatePDF
 }
