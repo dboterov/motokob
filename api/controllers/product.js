@@ -18,18 +18,16 @@ function productsList(req, res) {
     queryObject = {
       $and: [
         {
+          "active": true
+        },
+        {
           $or: [{
             "name": new RegExp(strFilter, "i")
           }, {
             "cylinder": new RegExp(strFilter, "i")
           }, {
-            "brandId": new RegExp(strFilter, "i")
-          }, {
-            "productTypeId": new RegExp(strFilter, "i")
+            "model": new RegExp(strFilter, "i")
           }]
-        },
-        {
-          "active": true
         }
       ]
     }
