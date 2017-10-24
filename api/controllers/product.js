@@ -18,10 +18,10 @@ function productsList(req, res) {
     var orOptions = [];
     orOptions.push({ "name": new RegExp(strFilter, "i") });
     orOptions.push({ "cylinder": new RegExp(strFilter, "i") });
-    if (isNaN(parseInt(strFilter))) {
+    if (!isNaN(parseInt(strFilter))) {
       orOptions.push({ "model": strFilter });
     }
-    
+
     console.log('opciones or: ', orOptions);
 
     queryObject = {
