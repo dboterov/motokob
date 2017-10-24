@@ -15,20 +15,18 @@ function productsList(req, res) {
   var queryObject = { "active": true };
 
   if (strFilter) {
+    var orOptions = [];
+    orOptions.push({"name": new RegExp(strFilter, "i")});
+    orOptions.push({"cylinder": new RegExp(strFilter, "i")});
+    try {
+      orOptions.push({"model": new Number(strFilter)});
+    } catch (error) {}
+    console.log('opciones or: ', orOptions);
+    
     queryObject = {
       $and: [
-        {
-          "active": true
-        },
-        {
-          $or: [{
-            "name": new RegExp(strFilter, "i")
-          }, {
-            "cylinder": new RegExp(strFilter, "i")
-          }, {
-            "model": new RegExp(strFilter, "i")
-          }]
-        }
+        {"active": true},
+        {$or: orOptions}
       ]
     }
   }
