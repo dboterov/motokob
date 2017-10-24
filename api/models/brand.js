@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var BrandSchema = Schema({
-  id: String,
+  //id: String,
   name: String,
   logo: String
 });
