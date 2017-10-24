@@ -12,20 +12,20 @@ function productsList(req, res) {
   var pageSize = parseInt(req.query.pageSize ? req.query.pageSize : 10);
   var strFilter = req.query.strFilter;
 
-  var queryObject = { "active": true };
+  var queryObject = { "'active'": true };
 
   if (strFilter) {
     var orOptions = [];
-    orOptions.push({"name": new RegExp(strFilter, "i")});
-    orOptions.push({"cylinder": new RegExp(strFilter, "i")});
+    orOptions.push({"'name'": new RegExp(strFilter, "i")});
+    orOptions.push({"'cylinder'": new RegExp(strFilter, "i")});
     try {
-      orOptions.push({"model": new Number(strFilter)});
+      orOptions.push({"'model'": parseInt(strFilter)});
     } catch (error) {}
     console.log('opciones or: ', orOptions);
     
     queryObject = {
       $and: [
-        {"active": true},
+        {"'active'": true},
         {$or: orOptions}
       ]
     }
