@@ -145,7 +145,7 @@ function createDocument(req, res) {
 function generatePDF(req, res) {
   console.log('generando PDF para cotizacion ' + req.params.quotationNumber);
   var quotation = new PDFDocument;
-  quotation.pipe(fs.createWriteStream(res));
+  quotation.pipe(res);
   quotation.font('Arial')
     .fontsize(18)
     .text('esto es una prueba cot#' + req.params.quotationNumber);
