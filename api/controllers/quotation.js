@@ -3,6 +3,7 @@
 var Quotation = require('../models/quotation');
 var mongoose = require('mongoose');
 var fs = require('fs');
+var PDFDocument = require('pdfkit');
 
 function save(req, res) {
   var quotation = new Quotation();
