@@ -35,13 +35,13 @@ function productsList(req, res) {
 
   Product.find(queryObject).count({}, (err, count) => {
     Product.find(queryObject).sort('name').paginate(page, pageSize)
-    /*.populate({
-      path: 'productTypeId',
-      model: 'ProductType'
-    }).populate({
-      path: 'brandId',
-      model: 'Brand'
-    })*/.exec((err, products) => {
+      .populate({
+        path: 'productType',
+        model: 'ProductType'
+      }).populate({
+        path: 'brand',
+        model: 'Brand'
+      }).exec((err, products) => {
         if (err) {
           console.error(err);
           res.status(500).send({
