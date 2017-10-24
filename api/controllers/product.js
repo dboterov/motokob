@@ -42,24 +42,24 @@ function productsList(req, res) {
       path: 'brandId',
       model: 'Brand'
     })*/.exec((err, products) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send({
-          message: 'error al listar los productos'
-        });
-      } else {
-        if (!products) {
-          res.status(404).send({
-            message: 'no se encontraron productos'
+        if (err) {
+          console.error(err);
+          res.status(500).send({
+            message: 'error al listar los productos'
           });
         } else {
-          return res.status(200).send({
-            records: count,
-            products: products
-          });
+          if (!products) {
+            res.status(404).send({
+              message: 'no se encontraron productos'
+            });
+          } else {
+            return res.status(200).send({
+              records: count,
+              products: products
+            });
+          }
         }
-      }
-    });
+      });
   })/*.populate({
     path: 'productType'
   })*/;
@@ -68,6 +68,8 @@ function productsList(req, res) {
 function saveProduct(req, res) {
   var product = new Product();
   var params = req.body;
+
+  console.log('creando producto: ', params);
 
   product.name = params.name;
   product.brand = params.brand;
