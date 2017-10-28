@@ -6,6 +6,7 @@ var mongoosePaginate = require('mongoose-pagination');
 var Product = require('../models/product');
 var ProductType = require('../models/productType');
 var jwt = require('../services/jwt');
+var mongoose = require('mongoose');
 
 function productsList(req, res) {
   var page = parseInt(req.query.page ? req.query.page : 1);
@@ -35,7 +36,7 @@ function productsList(req, res) {
     queryObject = {
       $and: [
         { "active": true },
-        { "brand": ObjectId(brandId) }
+        { "brand": mongoose.Schema.ObjectId(brandId) }
       ]
     }
   }
