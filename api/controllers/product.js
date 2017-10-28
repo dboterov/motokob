@@ -11,6 +11,7 @@ function productsList(req, res) {
   var page = parseInt(req.query.page ? req.query.page : 1);
   var pageSize = parseInt(req.query.pageSize ? req.query.pageSize : 10);
   var strFilter = req.query.strFilter;
+  var brandId = req.query.brandId;
 
   var queryObject = { "active": true };
 
@@ -28,6 +29,13 @@ function productsList(req, res) {
       $and: [
         { "active": true },
         { $or: orOptions }
+      ]
+    }
+  } else if (brandId) {
+    queryObject = {
+      $and: [
+        { "active": true },
+        { "brand": ObjectId(brandId) }
       ]
     }
   }
