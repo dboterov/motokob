@@ -114,13 +114,14 @@ function createDocument(req, res) {
   console.log('asigning document number to quotation ' + req.params.id);
   Quotation.count({}, function (err, quotations) {
     if (quotations) {
+      console.log('se encontraron ' + quotations + ' cotizaciones');
       Quotation.update(
         {
           _id: req.params.id
         }, {
           $set: {
             status: 'ABIERTA',
-            documentNumber: quotations
+            quotationNumber: quotations + 1
           }
         }, (err, result) => {
           console.log('termino de buscar y actualizar');
