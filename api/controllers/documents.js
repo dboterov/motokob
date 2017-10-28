@@ -3,18 +3,18 @@ var pdf = require('html-pdf');
 
 function createQuotation(req, res) {
     console.log('creando PDF para cotizacion ' + req.body.quotationNumber);
-    if (!req.body.quotationLines || req.body.quotationLines.length == 0) {
+    if (!req.body.items || req.body.items.length == 0) {
         res.status(400).send({ message: 'No se recibieron productos dentro de la cotización' });
     } else {
         try {
             //Process quotation lines and convert them into html code
-            var quotationLines = req.body.quotationLines;
+            var quotationLines = req.body.items;
             var strQuotationLines = '';
-            for (var i = 0; i < quotationLines.length; i++) {
+            for (var i = 0; i < items.length; i++) {
                 strQuotationLines += '<tr><td class="align-left">';
-                strQuotationLines += quotationLines[i].itemName;
+                strQuotationLines += items[i].itemName;
                 strQuotationLines += '</td><td class="align-right">';
-                strQuotationLines += quotationLines[i].price;
+                strQuotationLines += items[i].price;
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += '</td><td class="align-center">';
@@ -24,6 +24,7 @@ function createQuotation(req, res) {
             console.log('quotlines: ' + strQuotationLines);
 
             var html = fs.readFileSync('./templates/quotation.html', 'utf8');
+            console.log('html antes de: ' + html);
             html = html.replace('{docNumber}', req.body.quotationNumber);
             html = html.replace('{customerName}', req.body.customer.name + ' ' + rq.body.customer.surname);
             html = html.replace('{customerPhone}', req.body.customerPhone);
@@ -31,6 +32,7 @@ function createQuotation(req, res) {
             html = html.replace('{salesmanPhone}', req.body.salesmanPhone);
             html = html.replace('{documentDate}', req.body.documentDate);
             html = html.replace('{quotationLines}', strQuotationLines);
+            console.log('html despues de: ' + html);
 
             var options = { height: '5.5in', width: '8.5in' };
             var fileName = 'quotation' + new Date().getTime() + '.pdf';
