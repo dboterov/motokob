@@ -26,7 +26,7 @@ function createQuotation(req, res) {
             var html = fs.readFileSync('./templates/quotation.html', 'utf8');
             console.log('html antes de: ' + html);
             html = html.replace('{docNumber}', req.body.quotationNumber);
-            html = html.replace('{customerName}', req.body.customer.name + ' ' + rq.body.customer.surname);
+            html = html.replace('{customerName}', req.body.customer.name + ' ' + req.body.customer.surname);
             html = html.replace('{customerPhone}', req.body.customerPhone);
             html = html.replace('{salesmanName}', req.body.salesmanName);
             html = html.replace('{salesmanPhone}', req.body.salesmanPhone);
