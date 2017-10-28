@@ -15,6 +15,7 @@ function productsList(req, res) {
   var brandId = req.query.brandId;
 
   var queryObject = { "active": true };
+  console.log("request params: ", req.params);
 
   if (strFilter) {
     var orOptions = [];
@@ -36,7 +37,7 @@ function productsList(req, res) {
     queryObject = {
       $and: [
         { "active": true },
-        { "brand": mongoose.Schema.ObjectId(brandId) }
+        { "brand": brandId }
       ]
     }
   }
