@@ -2,7 +2,7 @@ var fs = require('fs');
 var pdf = require('html-pdf');
 
 function createQuotation(req, res) {
-    console.log('creando PDF para cotizacion ' + req.body.quotationNumber);
+    console.log('creando PDF para cotizacion: ', + req.body);
     if (!req.body.items || req.body.items.length == 0) {
         res.status(400).send({ message: 'No se recibieron productos dentro de la cotización' });
     } else {
