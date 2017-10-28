@@ -2,7 +2,7 @@ var fs = require('fs');
 var pdf = require('html-pdf');
 
 function createQuotation(req, res) {
-    console.log('creando PDF para cotizacion: ', + req.body);
+    console.log('creando PDF para cotizacion: ', req.body);
     if (!req.body.items || req.body.items.length == 0) {
         res.status(400).send({ message: 'No se recibieron productos dentro de la cotización' });
     } else {
@@ -10,7 +10,7 @@ function createQuotation(req, res) {
             //Process quotation lines and convert them into html code
             var quotationLines = req.body.items;
             var strQuotationLines = '';
-            for (var i = 0; i < items.length; i++) {
+            for (var i = 0; i < quotationLines.length; i++) {
                 strQuotationLines += '<tr><td class="align-left">';
                 strQuotationLines += items[i].itemName;
                 strQuotationLines += '</td><td class="align-right">';
