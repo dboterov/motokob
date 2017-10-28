@@ -12,6 +12,7 @@ export class Product {
   public productType: ProductType;
   public colors: Array<Color> = new Array<Color>();
   public images: Array<string> = new Array<string>();
+  public active: boolean = true;
 
   constructor() {
     this.initialize();
@@ -27,6 +28,7 @@ export class Product {
     this.productType = new ProductType();
     this.colors = new Array<Color>();
     this.images = new Array<string>();
+    this.active = true;
 
     return this;
   }

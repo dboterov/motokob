@@ -32,10 +32,21 @@ export class ProductService {
     return this.token;
   }
 
+  listByBrand(page, pageSize, brandId) {
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'Authorization': this.getToken(),
+      'X-Selected-Company': encodeURI(localStorage.getItem('motokob.selectedCompany'))
+    });
+    return this._http.get(this.url + 'product/list/?page=' + page + '&pageSize=' + pageSize + '&brandId=' + brandId, { headers: headers })
+      .map(res => res.json());
+  }
+
   list(page, pageSize, strFilter) {
     const headers = new Headers({
       'Content-Type': 'application/json',
-      'Authorization': this.getToken()
+      'Authorization': this.getToken(),
+      'X-Selected-Company': encodeURI(localStorage.getItem('motokob.selectedCompany'))
     });
     if (strFilter) {
       return this._http.get(this.url + 'product/list/?page=' + page + '&pageSize=' + pageSize + '&strFilter=' + strFilter, { headers: headers })

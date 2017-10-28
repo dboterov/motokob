@@ -1,0 +1,295 @@
+<html>
+
+<head>
+    <meta charset="utf8">
+    <title>Cotización</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 500;
+            -webkit-print-color-adjust: exact;
+            box-sizing: border-box;
+        }
+
+        .page {
+            position: relative;
+            height: 127mm;
+            width: 216mm;
+            display: block;
+            border: 1px dotted orange;
+            page-break-after: auto;
+            margin: 50px;
+            overflow: hidden;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .section-info {
+            font-size: 11px;
+            margin-left: 15px;
+            margin-bottom: 5px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+
+        .section-data {
+            font-weight: lighter;
+            text-transform: uppercase;
+        }
+
+        .quotation-date {
+            position: absolute;
+            /*font-size: 11px;*/
+            right: 15px;
+        }
+
+        .items {
+            width: 90%;
+            margin-top: 15px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 10px;
+        }
+
+        .align-center {
+            text-align: center;
+        }
+
+        .align-left {
+            text-align: left;
+        }
+
+        .align-right {
+            text-align: right;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        th {
+            border-top: 2px solid #555;
+            border-bottom: 2px solid #555;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2
+        }
+
+        .items th,
+        .items td {
+            padding: 2px;
+        }
+
+        .requirements {
+            width: 80%;
+            margin-top: 15px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 8px;
+        }
+
+        @media print {
+            body {
+                /*background: black;*/
+            }
+            .page {
+                margin: 0;
+                height: 100%;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="title">COTIZACIÓN #{docNumber}</div>
+        <div class="section-info">
+            <span class="section-title">cliente:</span>
+            <span class="section-data">{customerName}</span>
+            <span class="section-title">contacto:</span>
+            <span class="section-data">{customerPhone}</span>
+            <span class="quotation-date">
+                <span class="section-title">Fecha:</span>
+                <span class="section-data">{documentDate}</span>
+            </span>
+        </div>
+        <div class="section-info">
+            <span class="section-title">vendedor:</span>
+            <span class="section-data">{salesmanName}</span>
+            <span class="section-title">contacto:</span>
+            <span class="section-data">{salesmanPhone}</span>
+        </div>
+        <table class="items">
+            <thead>
+                <tr class="table-header">
+                    <th class="align-left">MOTOCICLETA</th>
+                    <th class="align-right">VL CONTADO</th>
+                    <th class="align-right">VL TOTAL</th>
+                    <th class="align-right">INICIAL</th>
+                    <th class="align-center">PLAZO</th>
+                    <th class="align-right">CUOTA</th>
+                </tr>
+            </thead>
+            <tbody>
+                {quotationLines}
+                <tr>
+                    <td class="align-left">1</td>
+                    <td class="align-right">2</td>
+                    <td class="align-right">3</td>
+                    <td class="align-right">4</td>
+                    <td class="align-center">5</td>
+                    <td class="align-right">6</td>
+                </tr>
+                <tr>
+                    <td class="align-left">1</td>
+                    <td class="align-right">2</td>
+                    <td class="align-right">3</td>
+                    <td class="align-right">4</td>
+                    <td class="align-center">5</td>
+                    <td class="align-right">6</td>
+                </tr>
+                <tr>
+                    <td class="align-left">1</td>
+                    <td class="align-right">2</td>
+                    <td class="align-right">3</td>
+                    <td class="align-right">4</td>
+                    <td class="align-center">5</td>
+                    <td class="align-right">6</td>
+                </tr>
+                <tr>
+                    <td class="align-left">1</td>
+                    <td class="align-right">2</td>
+                    <td class="align-right">3</td>
+                    <td class="align-right">4</td>
+                    <td class="align-center">5</td>
+                    <td class="align-right">6</td>
+                </tr>
+                <tr>
+                    <td class="align-left">1</td>
+                    <td class="align-right">2</td>
+                    <td class="align-right">3</td>
+                    <td class="align-right">4</td>
+                    <td class="align-center">5</td>
+                    <td class="align-right">6</td>
+                </tr>
+                <tr>
+                    <td class="align-left">1</td>
+                    <td class="align-right">2</td>
+                    <td class="align-right">3</td>
+                    <td class="align-right">4</td>
+                    <td class="align-center">5</td>
+                    <td class="align-right">6</td>
+                </tr>
+                <tr>
+                    <td class="align-left">1</td>
+                    <td class="align-right">2</td>
+                    <td class="align-right">3</td>
+                    <td class="align-right">4</td>
+                    <td class="align-center">5</td>
+                    <td class="align-right">6</td>
+                </tr>
+                <tr>
+                    <td class="align-left">1</td>
+                    <td class="align-right">2</td>
+                    <td class="align-right">3</td>
+                    <td class="align-right">4</td>
+                    <td class="align-center">5</td>
+                    <td class="align-right">6</td>
+                </tr>
+                <tr>
+                    <td class="align-left">1</td>
+                    <td class="align-right">2</td>
+                    <td class="align-right">3</td>
+                    <td class="align-right">4</td>
+                    <td class="align-center">5</td>
+                    <td class="align-right">6</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="requirements">
+            <thead>
+                <tr>
+                    <th class="align-left">REQUERIMIENTOS</th>
+                    <th class="align-center">EMPLEADO</th>
+                    <th class="align-center">INDEPENDIENTE</th>
+                    <th class="align-center">FIADOR INDEP.</th>
+                    <th class="align-center">FIADOR ASAL.</th>
+                    <th class="align-left">BENEFICIOS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="align-left">Fotocopia del documento de identidad</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">X</td>
+                    <td class="align-left">1 año de garantía o 20.000 kilómetros</td>
+                </tr>
+                <tr>
+                    <td class="align-left">Carta laboral en original (sueldo antigüedad, cargo)</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">&nbsp;</td>
+                    <td class="align-center">X</td>
+                    <td class="align-left">Placa</td>
+                </tr>
+                <tr>
+                    <td class="align-left">Fotocopia de recibo de servicios públicos</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">X</td>
+                    <td class="align-left">Tarjeta de propiedad</td>
+                </tr>
+                <tr>
+                    <td class="align-left">Certificado de libertad y tradición</td>
+                    <td class="align-center">&nbsp;</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">&nbsp;</td>
+                    <td class="align-left">SOAT</td>
+                </tr>
+                <tr>
+                    <td class="align-left">Certificado de ingresos</td>
+                    <td class="align-center">&nbsp;</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">&nbsp;</td>
+                    <td class="align-center">&nbsp;</td>
+                    <td class="align-left">1 kit de herramienta</td>
+                </tr>
+                <tr>
+                    <td class="align-left">Tres últimas colillas de pago</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">&nbsp;</td>
+                    <td class="align-center">&nbsp;</td>
+                    <td class="align-center">X</td>
+                    <td class="align-left">3 revisiones gratis, 1 paga</td>
+                </tr>
+                <tr>
+                    <td class="align-left">Certificado de cámara de comercio y tres últimos extractos bancarios</td>
+                    <td class="align-center">&nbsp;</td>
+                    <td class="align-center">X</td>
+                    <td class="align-center">&nbsp;</td>
+                    <td class="align-center">&nbsp;</td>
+                    <td class="align-left">Manual y certificado de gases</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
