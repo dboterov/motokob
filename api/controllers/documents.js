@@ -2,8 +2,7 @@ var fs = require('fs');
 var pdf = require('html-pdf');
 
 function createQuotation(req, res) {
-    console.log('creando cotizacion ' + req.body.id);
-
+    console.log('creando PDF para cotizacion ' + req.body.quotationNumber);
     if (!req.body.quotationLines || req.body.quotationLines.length == 0) {
         res.status(400).send({ message: 'No se recibieron productos dentro de la cotización' });
     } else {
@@ -24,8 +23,8 @@ function createQuotation(req, res) {
         console.log('quotlines: ' + strQuotationLines);
 
         var html = fs.readFileSync('./templates/quotation.html', 'utf8');
-        html = html.replace('{docNumber}', req.body.id);
-        html = html.replace('{customerName}', req.body.customerName);
+        html = html.replace('{docNumber}', req.body.quotationNumber);
+        html = html.replace('{customerName}', req.body.customer.name + ' ' + rq.body.customer.surname);
         html = html.replace('{customerPhone}', req.body.customerPhone);
         html = html.replace('{salesmanName}', req.body.salesmanName);
         html = html.replace('{salesmanPhone}', req.body.salesmanPhone);
