@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers } from '@angular/http';
+import { Http, Response, ResponseContentType, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { GLOBAL } from './global';
@@ -18,7 +18,12 @@ export class DocumentService {
             'Authorization': token
         });
 
-        return this._http.post(this.url + 'document/quotation', quotation, { headers: headers })
-            .map(res => res.json());
+        return this._http.post(this.url + 'document/quotation', quotation,
+            {
+                headers: headers,
+                responseType: ResponseContentType.Blob
+            }).map(res => {
+                return new Blob([res.blob()], { type: 'application/pdf' })
+            });
     }
 }

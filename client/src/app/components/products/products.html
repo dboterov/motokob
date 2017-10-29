@@ -1,11 +1,29 @@
 <motokob-sidenav></motokob-sidenav>
 
+<div id="confirmEliminar" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <p *ngIf="selectedToInactivate">¿Estás seguro de querer desactivar el producto
+              <strong>{{selectedToInactivate.name}}</strong>? Esta opción no se puede deshacer.</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <button class="btn btn-lg btn-primary" type="button" (click)="inactivarItem()">Sí</button>
+            <button class="btn btn-lg btn-primary" type="button" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="modalProducto" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Productos</h4>
-      </div>
       <div class="modal-body">
         <div class="row" *ngIf="pasoProducto === 1">
           <div class="col-xs-12">
@@ -254,9 +272,6 @@
 <div class="container">
   <br>
   <div class="row">
-    <div class="col-xs-12">{{brands}}</div>
-  </div>
-  <div class="row">
     <div class="col-xs-12 col-md-2 center" style="margin-bottom: 10px;" *ngIf="isAdmin()">
       <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modalProducto">Nuevo</button>
     </div>
@@ -274,7 +289,8 @@
     <div class="col-xs-7 col-md-4">
       <form (submit)="listarProductos()">
         <div class="input-group">
-          <input class="form-control input-lg" [(ngModel)]="filtroBusqueda" placeholder="Buscar..." name="busqueda" type="search" />
+          <input class="form-control input-lg" [(ngModel)]="filtroBusqueda" placeholder="Buscar..." name="busqueda" type="search" autocomplete="off"
+          />
           <span class="input-group-btn">
             <button class="btn btn-default btn-lg" type="submit">
               <span class="glyphicon glyphicon-search"></span>
@@ -283,7 +299,7 @@
         </div>
       </form>
     </div>
-    <div class="col-xs-12 col-md-4" style="text-align: center">
+    <div class="col-xs-12 col-md-4" style="text-align: center" *ngIf="pages && pages > 1">
       <ul class="paginador" style="width: 100%">
         <li (click)="mostrarPagina(page - 1)">&laquo;</li>
         <li (click)="mostrarPagina(pagina)" *ngFor="let pagina of pages" [class.active]="pagina == page">{{pagina}}</li>
@@ -304,6 +320,7 @@
             <th>Precio</th>
             <th>Imagenes</th>
             <th>Colores</th>
+            <th *ngIf="isAdmin()">&nbsp;</th>
           </tr>
           <tr *ngFor="let productRow of products; let i = index" [class.info]="productRow._id == product._id" (click)="selectProduct(productRow)">
             <td>{{i + 1}}</td>
@@ -314,10 +331,10 @@
               <div *ngIf=productRow.name>{{productRow.name}}</div>
             </td>
             <td>
-              <div *ngIf="productRow.productTypeId">{{productRow.productTypeId.name}}</div>
+              <div *ngIf="productRow.productType">{{productRow.productType.name}}</div>
             </td>
             <td>
-              <div *ngIf="productRow.brandId">{{productRow.brandId.name}}</div>
+              <div *ngIf="productRow.brand">{{productRow.brand.name}}</div>
             </td>
             <td>
               <div *ngIf="productRow.model">{{productRow.model}}</div>
@@ -333,6 +350,11 @@
             </td>
             <td>
               <div *ngIf="productRow.colors">{{productRow.colors.length}}</div>
+            </td>
+            <td *ngIf="isAdmin()">
+              <button (click)="confirmarDesactivacionItem($event, productRow)" class="btn btn-default" type="button">
+                <span class="glyphicon glyphicon-trash"></span>
+              </button>
             </td>
           </tr>
         </table>

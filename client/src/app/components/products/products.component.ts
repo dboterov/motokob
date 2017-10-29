@@ -42,6 +42,7 @@ export class ProductsComponent implements OnInit {
   public agregarColor = false;
   public valid = true;
   public product: Product;
+  public selectedToInactivate: Product;
   public brand: Brand;
   public productType: ProductType;
   public pages: Array<String>;
@@ -249,6 +250,7 @@ export class ProductsComponent implements OnInit {
     this.products = new Array<Product>();
     this._productService.list(this.page, this.pageSize, this.filtroBusqueda).subscribe(
       response => {
+        console.log(response.products);
         this.products = response.products;
         this.totalRecords = response.records;
         this.calcularPaginas();
@@ -466,6 +468,7 @@ export class ProductsComponent implements OnInit {
 
     this.product._id = producto._id;
     this.product.name = producto.name;
+    this.product.active = producto.active;
     if (producto.brandId) {
       this.product.brand = producto.brandId;
       this.product.brand.logo = this.url + 'brand/get-image/' + producto.brandId.logo;
@@ -646,5 +649,25 @@ export class ProductsComponent implements OnInit {
     } else {
       return false;
     }
+  }
+
+  public confirmarDesactivacionItem(event, productRow) {
+    console.log(productRow);
+    event.stopPropagation();
+    this.selectedToInactivate = productRow;
+    $('#confirmEliminar').modal('show');
+  }
+
+  public inactivarItem() {
+    this.selectedToInactivate.active = false;
+    console.log(this.selectedToInactivate);
+    this._productService.updateProduct(this.selectedToInactivate).subscribe(
+      result => {
+        this.selectedToInactivate = null;
+        $('#confirmEliminar').modal('hide');
+        this.listarProductos();
+      }, error => { console.error(error); }
+    );
+
   }
 }

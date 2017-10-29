@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 import { UserService } from '../../services/user.service';
 import { CustomerService } from '../../services/customer.service';
 import { BrandService } from '../../services/brand.service';
@@ -8,6 +9,7 @@ import { CostService } from '../../services/cost.service';
 import { RestrictionsService } from '../../services/restrictions.service';
 import { FactorService } from '../../services/factor.service';
 import { QuotationService } from '../../services/quotation.service';
+import { DocumentService } from '../../services/document.service';
 import { Customer } from '../../models/customer';
 import { Product } from '../../models/product';
 import { Brand } from '../../models/brand';
@@ -22,7 +24,7 @@ declare var $: any;
   selector: 'motokob-quotations',
   templateUrl: './quotations.component.html',
   styleUrls: ['./quotations.component.css'],
-  providers: [UserService, CustomerService, BrandService, ProductService, CostService, RestrictionsService, FactorService, QuotationService]
+  providers: [UserService, CustomerService, BrandService, ProductService, CostService, RestrictionsService, FactorService, QuotationService, DocumentService]
 })
 export class QuotationsComponent implements OnInit {
   public identity: any;
@@ -49,10 +51,13 @@ export class QuotationsComponent implements OnInit {
   public filteredOptions: Array<Cost>;
   public additionalCosts: Array<any>;
   public userQuotations: Array<any>;
+  public selectedQuotation: Quotation;
   private factors: Array<Factor>;
   private company: any;
+  public pdfUrl: string = '';
 
   constructor(
+    private _sanitizer: DomSanitizer,
     private _productService: ProductService,
     private _brandService: BrandService,
     private _customerService: CustomerService,
@@ -61,6 +66,7 @@ export class QuotationsComponent implements OnInit {
     private _factorsService: FactorService,
     private _quotationsService: QuotationService,
     private _userService: UserService,
+    private _documentService: DocumentService,
     private _route: ActivatedRoute,
     private _router: Router) {
     this.brands = new Array<Brand>();
@@ -187,7 +193,7 @@ export class QuotationsComponent implements OnInit {
 
   public selectBrand(brand) {
     this.selectedBrand = brand;
-    this._productService.list(1, 10000, brand._id).subscribe(
+    this._productService.listByBrand(1, 10000, brand._id).subscribe(
       response => {
         this.bikes = response.products;
         this.panelShown = 'bikes';
@@ -392,5 +398,29 @@ export class QuotationsComponent implements OnInit {
     this.selectedColor = '';
     this.additionalCosts = new Array<Cost>();
     $('#modalNewItem').modal('hide');
+  }
+
+  public generatePDF(quotation: Quotation) {
+    this.selectedQuotation = quotation;
+    console.log('generando PDF de la cotizacion ' + quotation._id);
+    this._documentService.generateQuotationPDF(quotation, this.token).subscribe(
+      result => {
+        console.log('finalizo la descarga ', result);
+        this.pdfUrl = URL.createObjectURL(result);
+        console.log(this.pdfUrl);
+        $('#pdf-viewer').modal('show');
+      }, error => {
+        console.error(error);
+      }
+    );
+  }
+
+  public sanitizeUrl(url) {
+    return this._sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+
+  public startNewQuotation() {
+    this.viewShown = 'singleQuotation';
+    this.initializeNewQuotation();
   }
 }

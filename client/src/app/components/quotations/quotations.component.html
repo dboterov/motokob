@@ -17,6 +17,23 @@
 </div>
 <!-- /.modal -->
 
+<div class="modal fade" tabindex="-1" role="dialog" id="pdf-viewer">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body" *ngIf="pdfUrl">
+        <p>
+          El archivo ha sido generado. Haz clic
+          <a [href]="sanitizeUrl(pdfUrl)" target="_blank" download="cotizacion_{{selectedQuotation.quotationNumber}}.pdf">aquí</a>
+          para descargarlo
+        </p>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
 <div class="modal fade" tabindex="-1" role="dialog" id="modalConfirmCancel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -322,7 +339,7 @@
   <br>
   <div class="row" *ngIf="userQuotations.length > 0">
     <div class="col-xs-12">
-      <button class="btn btn-default btn-lg" type="button" (click)="viewShown = 'singleQuotation'">Crear nueva</button>
+      <button class="btn btn-default btn-lg" type="button" (click)="startNewQuotation()">Crear nueva</button>
     </div>
   </div>
   <br>
@@ -331,14 +348,28 @@
       <div class="table-responsive">
         <table class="table">
           <tr>
+            <th>#</th>
             <th>Estado</th>
             <th>Cliente</th>
             <th>Ítems</th>
+            <th>Acciones</th>
           </tr>
           <tr *ngFor="let quotation of userQuotations">
+            <td>{{quotation.quotationNumber}}</td>
             <td>{{quotation.status}}</td>
-            <td>{{quotation.customer.name}}</td>
+            <td>{{quotation.customer.name}} {{quotation.customer.surname}}</td>
             <td>{{quotation.items.length}}</td>
+            <td>
+              <button type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-pencil"></span>
+              </button>
+              <!--<a style="cursor:pointer" [attr.href]="generatePDF(quotation)" target="_blank">
+                <i class="glyphicon glyphicon-download-alt"></i>
+              </a>-->
+              <button (click)="generatePDF(quotation)" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-download"></span>
+              </button>
+            </td>
           </tr>
         </table>
       </div>
