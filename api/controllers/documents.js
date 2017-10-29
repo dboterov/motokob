@@ -36,7 +36,17 @@ function createQuotation(req, res) {
                     strQuotationLines += 'N/A';
                 }
                 strQuotationLines += '</td><td class="align-center">';
+                if (quotationLines[i].installments && quotationLines[i].installments > 0) {
+                    strQuotationLines += 'Cred-' + quotationLines[i].installments;
+                } else {
+                    strQuotationLines += 'Contado';
+                }
                 strQuotationLines += '</td><td class="align-right">';
+                if (quotationLines[i].paymentValue && quotationLines[i].paymentValue > 0) {
+                    strQuotationLines += String(quotationLines[i].paymentValue).replace(/(.)(?=(\d{3})+$)/g, '$1,');
+                } else {
+                    strQuotationLines += 'N/A';
+                }
                 strQuotationLines += '</td></tr>';
             }
 
