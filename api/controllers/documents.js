@@ -28,8 +28,13 @@ function createQuotation(req, res) {
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += String(quotationLines[i].item.price).replace(/(.)(?=(\d{3})+$)/g, '$1,');
                 strQuotationLines += '</td><td class="align-right">';
-                strQuotationLines += String(quotationLines[i].item.lineTotal).replace(/(.)(?=(\d{3})+$)/g, '$1,');
+                strQuotationLines += String(quotationLines[i].lineTotal).replace(/(.)(?=(\d{3})+$)/g, '$1,');
                 strQuotationLines += '</td><td class="align-right">';
+                if (quotationLines[i].initialPayment && quotationLines[i].initialPayment > 0) {
+                    strQuotationLines += String(quotationLines[i].initialPayment).replace(/(.)(?=(\d{3})+$)/g, '$1,');
+                } else {
+                    strQuotationLines += 'N/A';
+                }
                 strQuotationLines += '</td><td class="align-center">';
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += '</td></tr>';
