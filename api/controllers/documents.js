@@ -19,9 +19,17 @@ function createQuotation(req, res) {
                 if (quotationLines[i].discount) {
                     strQuotationLines += '<br>Descuento: ' + String(quotationLines[i].discount).replace(/(.)(?=(\d{3})+$)/g, '$1,');
                 }
+                if (quotationLines[i].additionalCosts && quotationLines[i].additionalCosts.length > 0) {
+                    for (var j = 0; j < quotationLines[i].additionalCosts.length; j++) {
+                        var addCost = quotationLines[i].additionalCosts[j];
+                        console.log('   ------- costo adicional: ', addCost);
+                        strQuotationLines += '<br>' + addCost.costName;
+                    }
+                }
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += String(quotationLines[i].item.price).replace(/(.)(?=(\d{3})+$)/g, '$1,');
                 strQuotationLines += '</td><td class="align-right">';
+                strQuotationLines += String(quotationLines[i].item.lineTotal).replace(/(.)(?=(\d{3})+$)/g, '$1,');
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += '</td><td class="align-center">';
                 strQuotationLines += '</td><td class="align-right">';
