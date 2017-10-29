@@ -26,10 +26,10 @@ function createQuotation(req, res) {
             var html = fs.readFileSync('./templates/quotation.html', 'utf8');
             html = html.replace('{docNumber}', req.body.quotationNumber);
             html = html.replace('{customerName}', req.body.customer.name + ' ' + req.body.customer.surname);
-            html = html.replace('{customerPhone}', req.body.customerPhone);
-            html = html.replace('{salesmanName}', req.body.salesmanName);
-            html = html.replace('{salesmanPhone}', req.body.salesmanPhone);
-            html = html.replace('{documentDate}', req.body.date.substring(0, 9));
+            html = html.replace('{customerPhone}', req.body.customer.cellphoneNumber);
+            html = html.replace('{salesmanName}', req.body.seller.name + ' ' + req.body.seller.surname);
+            html = html.replace('{salesmanPhone}', req.body.seller.cellphoneNumber ? req.body.seller.cellphoneNumber : 'No disponible');
+            html = html.replace('{documentDate}', req.body.date.substring(0, 10));
             html = html.replace('{quotationLines}', strQuotationLines);
 
             var options = { height: '5.5in', width: '8.5in' };
