@@ -11,6 +11,7 @@ function createQuotation(req, res) {
             var quotationLines = req.body.items;
             var strQuotationLines = '';
             for (var i = 0; i < quotationLines.length; i++) {
+                console.log(quotationLines[i]);
                 strQuotationLines += '<tr><td class="align-left">';
                 strQuotationLines += quotationLines[i].itemName;
                 strQuotationLines += '</td><td class="align-right">';
@@ -21,7 +22,6 @@ function createQuotation(req, res) {
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += '</td></tr>';
             }
-            console.log('quotlines: ' + strQuotationLines);
 
             var html = fs.readFileSync('./templates/quotation.html', 'utf8');
             html = html.replace('{docNumber}', req.body.quotationNumber);
