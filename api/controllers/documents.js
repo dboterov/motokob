@@ -15,7 +15,7 @@ function createQuotation(req, res) {
                 strQuotationLines += '<tr><td class="align-left">';
                 strQuotationLines += quotationLines[i].item.name;
                 strQuotationLines += '</td><td class="align-right">';
-                strQuotationLines += quotationLines[i].item.price.replace(/(.)(?=(\d{3})+$)/g,'$1,');
+                strQuotationLines += String(quotationLines[i].item.price).replace(/(.)(?=(\d{3})+$)/g,'$1,');
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += '</td><td class="align-center">';
