@@ -13,9 +13,11 @@ function createQuotation(req, res) {
             for (var i = 0; i < quotationLines.length; i++) {
                 console.log(quotationLines[i]);
                 strQuotationLines += '<tr><td class="align-left">';
-                strQuotationLines += quotationLines[i].item.name;
+                strQuotationLines += quotationLines[i].brand.name + ' ';
+                strQuotationLines += quotationLines[i].item.name + ' ' + quotationLines[i].item.cylinder + ' ';
+                strQuotationLines += quotationLines[i].color.name;
                 strQuotationLines += '</td><td class="align-right">';
-                strQuotationLines += String(quotationLines[i].item.price).replace(/(.)(?=(\d{3})+$)/g,'$1,');
+                strQuotationLines += String(quotationLines[i].item.price).replace(/(.)(?=(\d{3})+$)/g, '$1,');
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += '</td><td class="align-center">';
