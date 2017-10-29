@@ -22,8 +22,7 @@ function createQuotation(req, res) {
                 if (quotationLines[i].additionalCosts && quotationLines[i].additionalCosts.length > 0) {
                     for (var j = 0; j < quotationLines[i].additionalCosts.length; j++) {
                         var addCost = quotationLines[i].additionalCosts[j];
-                        console.log('   ------- costo adicional: ', addCost);
-                        strQuotationLines += '<br>' + addCost.costName;
+                        strQuotationLines += '<br>' + addCost.costName + ': ' + String(addCost.costOption.value).replace(/(.)(?=(\d{3})+$)/g, '$1,');
                     }
                 }
                 strQuotationLines += '</td><td class="align-right">';
