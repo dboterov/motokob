@@ -584,7 +584,7 @@ export class ProductsComponent implements OnInit {
     } else {
       this.page = pageToShow;
     }
-    this.listarProductos();;
+    this.listarProductos();
   }
 
   cambioTamanoPagina() {
