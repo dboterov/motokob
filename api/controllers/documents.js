@@ -29,7 +29,7 @@ function createQuotation(req, res) {
             html = html.replace('{customerPhone}', req.body.customerPhone);
             html = html.replace('{salesmanName}', req.body.salesmanName);
             html = html.replace('{salesmanPhone}', req.body.salesmanPhone);
-            html = html.replace('{documentDate}', req.body.date);
+            html = html.replace('{documentDate}', req.body.date.substring(0, 9));
             html = html.replace('{quotationLines}', strQuotationLines);
 
             var options = { height: '5.5in', width: '8.5in' };
