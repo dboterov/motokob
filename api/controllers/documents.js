@@ -11,7 +11,7 @@ function createQuotation(req, res) {
             var quotationLines = req.body.items;
             var strQuotationLines = '';
             for (var i = 0; i < quotationLines.length; i++) {
-                console.log(quotationLines[i]);
+                console.log('---------------- linea de cotizacion --------------------', quotationLines[i]);
                 strQuotationLines += '<tr><td class="align-left">';
                 strQuotationLines += quotationLines[i].brand.name + ' ';
                 strQuotationLines += quotationLines[i].item.name + ' ' + quotationLines[i].item.cylinder + ' ';
