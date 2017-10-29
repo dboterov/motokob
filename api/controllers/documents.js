@@ -13,9 +13,9 @@ function createQuotation(req, res) {
             for (var i = 0; i < quotationLines.length; i++) {
                 console.log(quotationLines[i]);
                 strQuotationLines += '<tr><td class="align-left">';
-                strQuotationLines += quotationLines[i].itemName;
+                strQuotationLines += quotationLines[i].item.name;
                 strQuotationLines += '</td><td class="align-right">';
-                strQuotationLines += quotationLines[i].price;
+                strQuotationLines += quotationLines[i].item.price;
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += '</td><td class="align-center">';
