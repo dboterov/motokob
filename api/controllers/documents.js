@@ -16,6 +16,9 @@ function createQuotation(req, res) {
                 strQuotationLines += quotationLines[i].brand.name + ' ';
                 strQuotationLines += quotationLines[i].item.name + ' ' + quotationLines[i].item.cylinder + ' ';
                 strQuotationLines += quotationLines[i].color.name;
+                if (quotationLines[i].discount) {
+                    strQuotationLines += '<br>Descuento: ' + String(quotationLines[i].discount).replace(/(.)(?=(\d{3})+$)/g, '$1,');
+                }
                 strQuotationLines += '</td><td class="align-right">';
                 strQuotationLines += String(quotationLines[i].item.price).replace(/(.)(?=(\d{3})+$)/g, '$1,');
                 strQuotationLines += '</td><td class="align-right">';
