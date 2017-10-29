@@ -29,7 +29,7 @@ function createQuotation(req, res) {
             html = html.replace('{docNumber}', req.body.quotationNumber);
             html = html.replace('{customerName}', req.body.customer.name + ' ' + req.body.customer.surname);
             html = html.replace('{customerPhone}', req.body.customer.cellphoneNumber);
-            html = html.replace('{salesmanName}', req.body.seller.name + ' ' + req.body.seller.surname);
+            html = html.replace('{salesmanName}', req.body.seller ? req.body.seller.name + ' ' + req.body.seller.surname : 'No disponible');
             html = html.replace('{salesmanPhone}', req.body.seller.cellphoneNumber ? req.body.seller.cellphoneNumber : 'No disponible');
             html = html.replace('{documentDate}', req.body.date.substring(0, 10));
             html = html.replace('{quotationLines}', strQuotationLines);

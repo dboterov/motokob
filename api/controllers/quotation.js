@@ -55,9 +55,6 @@ function save(req, res) {
 }
 
 function list(req, res) {
-  console.log('executing LIST method for user:', req.user._id);
-  console.log('queryParams: ', req.query);
-
   var queryObject = {};
   if (req.headers['x-selected-company']) {
     var selectedCompanyRole = JSON.parse(decodeURI(req.headers['x-selected-company'])).role;
@@ -76,12 +73,11 @@ function list(req, res) {
       queryObject.customer._id = req.query.customer;
     }
   }
-  console.log('queryObject: ', queryObject);
+
   Quotation.find(queryObject, (err, result) => {
     if (err) {
       console.error(err);
     } else {
-      console.log('resultado de la busqueda: ', result);
       if (!result) {
         res.status(404).send({ message: 'No se encontraron cotizaciones' });
       } else {
