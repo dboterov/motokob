@@ -13,5 +13,6 @@ api.get('/', md_auth.ensureAuth, CompanyController.list);
 api.post('/', md_auth.ensureAuth, CompanyController.save);
 api.put('/', md_auth.ensureAuth, CompanyController.update);
 api.put('/upload', [md_upload], CompanyController.uploadImage);
+api.get('/get-image/:imageFile', CompanyController.getImageFile);
 
 module.exports = api;

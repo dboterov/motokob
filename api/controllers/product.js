@@ -187,9 +187,6 @@ function getImageFile(req, res) {
   var imageFile = req.params.imageFile;
   var path_file = './uploads/products/' + imageFile;
 
-  //console.log(imageFile);
-  //console.log(path_file);
-
   fs.exists(path_file, function (exists) {
     if (exists) {
       res.sendFile(path.resolve(path_file));
