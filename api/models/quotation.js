@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var QuotationSchema = Schema({
+  company: {},
   customer: {},
   quotationNumber: Number,
   date: Date,

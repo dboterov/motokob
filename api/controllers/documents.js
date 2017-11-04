@@ -57,8 +57,8 @@ function createQuotation(req, res) {
             html = html.replace('{salesmanName}', req.body.seller ? req.body.seller.name + ' ' + req.body.seller.surname : 'No disponible');
             html = html.replace('{salesmanPhone}', req.body.seller.cellphoneNumber ? req.body.seller.cellphoneNumber : 'No disponible');
             html = html.replace('{documentDate}', req.body.date.substring(0, 10));
-            html = html.replace('{companyStores}', req.body.stores);
-            html = html.replace('{companyLogo}', req.body.logo);
+            html = html.replace('{companyStores}', req.body.company.stores);
+            html = html.replace('{companyLogo}', req.body.company.logo);
             html = html.replace('{quotationLines}', strQuotationLines);
 
             var options = { height: '5.5in', width: '8.5in' };

@@ -9,6 +9,7 @@ var moment = require('moment');
 function save(req, res) {
   var quotation = new Quotation();
 
+  quotation.company = req.body.company;
   quotation.items = req.body.items;
   quotation.seller = req.body.seller;
   quotation.customer = req.body.customer;
@@ -138,122 +139,15 @@ function createDocument(req, res) {
         }
       );
     } else {
-      console.error('no se pudo obtener el numero de la siguiente cotizacion');
+      console.error('no se pudo obtener el número de la siguiente cotización');
       console.error(error);
     }
   });
-}
-
-function generateDummyQuotation() {
-  return {
-    customer: {
-      documentNumber: "8356881",
-      name: "Daniel",
-      surname: "Botero",
-      cellphoneNumber: "3148904146"
-    },
-    quotationNumber: 235,
-    date: new Date(),
-    status: 'ABIERTA',
-    seller: {
-      name: "Asesor",
-      surname: "35",
-      cellphoneNumber: "3006092023"
-    },
-    items: [
-      {
-        item: {
-          name: "Moto la moto",
-          price: 2500000,
-          model: 2018,
-          cylinder: "250"
-        },
-        brand: {
-          name: "Marca moto"
-        },
-        installments: 0,
-        initialPayment: 0,
-        discount: 150000,
-        additionalCosts: [
-          {
-            name: "costo 1",
-            value: 350000
-          }, {
-            name: "costo 2",
-            value: 97000
-          }
-        ],
-        paymentValue: 2797000,
-        lineTotal: 2797000,
-        color: {
-          name: "verde fofó"
-        }
-      }
-    ]
-  };
-}
-
-function generatePDF(req, res) {
-  console.log('generando PDF para cotizacion ' + req.params.quotationNumber);
-
-  res.setHeader('Content-disposition', 'attachment; filename="quotation_' + req.params.quotationNumber + '.pdf"')
-  res.setHeader('Content-type', 'application/pdf')
-
-  var quotation = generateDummyQuotation();
-  //Set page size, orientation and margins
-  var pageOptions = {
-    //layout: "landscape",
-    size: [612, 396],
-    margin: 28
-  };
-  var pdf = new PDFDocument(pageOptions);
-  pdf.registerFont('Arial', 'fonts/arial.ttf');
-  pdf.registerFont('Arial Bold', 'fonts/arialbd.ttf');
-
-  //Add centered title
-  pdf.font('Arial Bold').fontSize(16);
-  pdf.text('COTIZACIÓN #' + req.params.quotationNumber, {
-    align: 'center'
-  });
-
-  //Add customer info
-  pdf.fontSize(11);
-  pdf.moveDown();
-  pdf
-    .font('Arial Bold').text('FECHA: ', { continued: true })
-    .font('Arial').text(moment().format('YYYY-MM-DD'), { continued: true })
-    .font('Arial Bold').text('  CLIENTE: ', { continued: true })
-    .font('Arial').text(quotation.customer.name + ' ' + quotation.customer.surname, { continued: true })
-    .font('Arial Bold').text('  TEL: ', { continued: true })
-    .font('Arial').text(quotation.customer.cellphoneNumber);
-
-  //Add salesman info
-  pdf
-    .font('Arial Bold').text('ASESOR: ', { continued: true })
-    .font('Arial').text(quotation.seller.name + ' ' + quotation.seller.surname, { continued: true })
-    .font('Arial Bold').text('  TEL: ', { continued: true })
-    .font('Arial').text(quotation.seller.cellphoneNumber);
-
-  //Add products table header
-  //var x = 36, y = 80;
-  var x = 141;
-  pdf.moveDown();
-  pdf.font('Arial Bold');
-  pdf.text('MOTOCICLETA', { align: 'left', continued: true })
-    .text('VL CONTADO', { align: 'left', width: 150 });
-  //pdf.text('MOTOCICLETA', { align: 'left', width: 150 }, y , x);
-  //x += 150;
-  //pdf.text('VL CONTADO', { align: 'left', width: 100 }, y , x);
-  //pdf.text('VL TOTAL', { align: 'right', width: 100 });
-
-  pdf.pipe(res);
-  pdf.end();
 }
 
 module.exports = {
   list,
   save,
   remove,
-  createDocument,
-  generatePDF
+  createDocument
 }
