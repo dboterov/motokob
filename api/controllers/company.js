@@ -93,10 +93,10 @@ function uploadImage(req, res) {
         images.push(fileName);
       }
     } else {
-      console.log(req.files.image.path.substring(1,18));
+      console.log(req.files.image.path.substring(18));
       //var filePath = req.files.image.path;
       //var fileSplit = filePath.split('\\');
-      var fileName = req.files.image.name;
+      var fileName = req.files.image.path.substring(18);
       var extSplit = fileName.split('\.');
       var fileExt = extSplit[1];
 
