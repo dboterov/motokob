@@ -6,6 +6,7 @@ var Schema = mongoose.Schema;
 var CompanySchema = Schema({
   nit: String,
   name: String,
+  stores: String,
   active: Boolean
 });
 

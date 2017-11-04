@@ -21,6 +21,7 @@ function save(req, res) {
 
   company.nit = params.nit;
   company.name = params.name;
+  company.stores = params.stores;
   company.active = true;
 
   company.save((err, result) => {
