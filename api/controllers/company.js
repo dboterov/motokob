@@ -42,7 +42,36 @@ function save(req, res) {
   });
 }
 
+function update(req, res) {
+  var company = new Company();
+  var params = req.body;
+
+  company._id = params._id;
+  company.nit = params.nit;
+  company.name = params.name;
+  company.stores = params.stores;
+  company.active = params.active;
+
+  Company.findByIdAndUpdate(company._id, company, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send({
+        message: 'error al modificar la empresa. ' + err.message
+      });
+    } else {
+      if (!result) {
+        res.status(404).send({
+          message: 'no se modiicó la empresa'
+        });
+      } else {
+        res.status(200).send(result);
+      }
+    }
+  });
+}
+
 module.exports = {
   list,
-  save
+  save,
+  update
 };

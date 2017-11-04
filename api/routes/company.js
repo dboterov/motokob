@@ -10,5 +10,6 @@ var multipart = require('connect-multiparty');
 
 api.get('/', md_auth.ensureAuth, CompanyController.list);
 api.post('/', md_auth.ensureAuth, CompanyController.save);
+api.put('/', md_auth.ensureAuth, CompanyController.update);
 
 module.exports = api;
