@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { CompanyService } from '../../services/company.service';
+import { UploadService } from '../../services/upload.service';
 import { User, Permission } from '../../models/user';
 import { Company } from '../../models/company';
+import { GLOBAL } from '../../services/global';
 
 declare var $: any;
 
@@ -11,7 +13,7 @@ declare var $: any;
   selector: 'user-admin',
   templateUrl: './users.html',
   styleUrls: ['./users.css'],
-  providers: [UserService, CompanyService]
+  providers: [UserService, CompanyService, UploadService]
 })
 export class UsersComponent implements OnInit {
   public identity;
@@ -27,10 +29,13 @@ export class UsersComponent implements OnInit {
   public password1: string;
   public password2: string;
   public companyName: string = '';
+  public companyStores: string = '';
   public companyNit: string = '';
+  public companyActive: boolean = true;
+  public companyLogo: string = '';
   public availableCompanies: Array<Company>;
 
-  constructor(private _userService: UserService, private _companyService: CompanyService, private _route: ActivatedRoute, private _router: Router) {
+  constructor(private _userService: UserService, private _uploadService: UploadService, private _companyService: CompanyService, private _route: ActivatedRoute, private _router: Router) {
     this.errorMessage = null;
     this.successMessage = null;
     this.errorMessageModal = null;
@@ -55,8 +60,6 @@ export class UsersComponent implements OnInit {
     this.listarEmpresas();
   }
 
-  
-
   public selectedCompanyListener() {
     console.log(this.selectedCompany);
   }
@@ -69,11 +72,14 @@ export class UsersComponent implements OnInit {
     this.availableCompanies = new Array<Company>();
     this._companyService.list(this.token).subscribe(
       response => {
+        console.log(response);
         for (let i = 0; i < response.length; i++) {
           let company = new Company();
           company._id = response[i]._id;
+          company.nit = response[i].nit;
           company.name = response[i].name;
           company.active = response[i].active;
+          company.stores = response[i].stores;
           this.availableCompanies.push(company);
         }
       }, error => { console.error(error); }
@@ -246,11 +252,20 @@ export class UsersComponent implements OnInit {
     this.guardar();
   }
 
-  public guardarNuevaEmpresa() {
+  public guardarEmpresa() {
     let newCompany = new Company();
+    newCompany._id = this.selectedCompany;
     newCompany.name = this.companyName;
     newCompany.nit = this.companyNit;
-    newCompany.active = true;
+    newCompany.stores = this.companyStores;
+    newCompany.logo = this.companyLogo;
+
+    if (newCompany._id) {
+      newCompany.active = this.companyActive;
+    } else {
+      newCompany.active = true;
+    }
+
     this._companyService.save(newCompany, this.token).subscribe(
       result => {
         this.selectedCompany = result._id;
@@ -262,7 +277,54 @@ export class UsersComponent implements OnInit {
     );
   }
 
-  public isAdmin(){
+  public isAdmin() {
     return this._userService.isAdmin();
+  }
+
+  public selectCompany() {
+    if (!this.selectedCompany) {
+      this.companyName = '';
+      this.companyNit = '';
+      this.companyStores = '';
+      this.companyActive = true;
+      this.companyLogo = '';
+      return;
+    }
+    for (let i = 0; i < this.availableCompanies.length; i++) {
+      if (this.availableCompanies[i]._id === this.selectedCompany) {
+        this.companyName = this.availableCompanies[i].name;
+        this.companyNit = this.availableCompanies[i].nit;
+        this.companyStores = this.availableCompanies[i].stores;
+        this.companyActive = this.availableCompanies[i].active;
+        this.companyLogo = this.availableCompanies[i].logo;
+        $('#modalCompany').modal('show');
+        break;
+      }
+    }
+  }
+
+  public imageSelected(fileInput: any) {
+    let images = <Array<File>>(fileInput.target.files);
+    this.uploadCompanyLogo(images);
+  }
+
+  private uploadCompanyLogo(image) {
+    if (image) {
+      this._uploadService.makeFileRequest(GLOBAL.url + 'company/upload', 'PUT', [], image, 'image', null).then(
+        (result: string) => {
+          let respObject = JSON.parse(result);
+          console.log('logo cargado al servidor ', respObject);
+          for (let i = 0; i < respObject.images.length; i++) {
+            let image_path = GLOBAL.url + 'company/get-image/' + respObject.images[i];
+            this.companyLogo = image_path;
+          }
+        }, (error) => {
+          console.error(error);
+          this.errorMessage = 'Error al guardar la imagen ' + JSON.parse(error._body).message;
+        }
+      );
+    } else {
+      console.error('no hay archivos para subir');
+    }
   }
 }

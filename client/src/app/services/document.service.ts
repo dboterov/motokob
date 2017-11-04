@@ -12,7 +12,7 @@ export class DocumentService {
         this.url = GLOBAL.url;
     }
 
-    generateQuotationPDF(quotation, token) {
+    public generateQuotationPDF(quotation, token) {
         const headers = new Headers({
             'Content-Type': 'application/json',
             'Authorization': token

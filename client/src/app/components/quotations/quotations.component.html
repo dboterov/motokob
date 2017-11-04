@@ -349,6 +349,7 @@
         <table class="table">
           <tr>
             <th>#</th>
+            <th>Fecha</th>
             <th>Estado</th>
             <th>Cliente</th>
             <th>Ítems</th>
@@ -356,6 +357,7 @@
           </tr>
           <tr *ngFor="let quotation of userQuotations">
             <td>{{quotation.quotationNumber}}</td>
+            <td>{{quotation.date | date: 'yyyy-MM-dd'}}</td>
             <td>{{quotation.status}}</td>
             <td>{{quotation.customer.name}} {{quotation.customer.surname}}</td>
             <td>{{quotation.items.length}}</td>

@@ -1,5 +1,7 @@
 .modal-content {
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(25,25,25,0.6);
+  -webkit-box-shadow: 0 5px 15px rgba(250,250,250,.5);
+  box-shadow: 0 5px 15px rgba(250,250,250,.5);
 }
 
 .login-bg {
@@ -7,8 +9,8 @@
   top: 0px;
   left: 0px;
 
-  background-image: url('/assets/img/backgrounds/bg_moto.jpg');
-  background-size: cover;
+  background-image: url('/assets/img/backgrounds/squared_metal.png');
+  /*background-size: cover;*/
 
   width: 100%;
   height: 100%;

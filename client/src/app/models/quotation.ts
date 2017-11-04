@@ -1,5 +1,6 @@
 import { Cost } from './cost';
 import { Product } from './product';
+import { Company } from './company';
 import { Brand } from './brand';
 import { Customer } from './customer';
 import { User } from './user';
@@ -7,6 +8,7 @@ import { Color } from './color';
 
 export class Quotation {
   public _id: string;
+  public company: Company;
   public customer: Customer;
   public quotationNumber: number;
   public date: Date;
@@ -17,11 +19,13 @@ export class Quotation {
   constructor() {
     this.items = new Array<QuotationDetail>();
     this.customer = new Customer();
+    this.company = new Company();
   }
 
   public initializeFromJSON(jsonObject: any) {
     this._id = jsonObject._id;
     this.customer = jsonObject.customer;
+    this.company = new Company();
     this.quotationNumber = jsonObject.quotationNumber;
     this.date = jsonObject.date;
     this.status = jsonObject.status;

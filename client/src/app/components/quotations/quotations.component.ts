@@ -10,7 +10,9 @@ import { RestrictionsService } from '../../services/restrictions.service';
 import { FactorService } from '../../services/factor.service';
 import { QuotationService } from '../../services/quotation.service';
 import { DocumentService } from '../../services/document.service';
+import { CompanyService } from '../../services/company.service';
 import { Customer } from '../../models/customer';
+import { Company } from '../../models/company';
 import { Product } from '../../models/product';
 import { Brand } from '../../models/brand';
 import { Cost } from '../../models/cost';
@@ -24,7 +26,7 @@ declare var $: any;
   selector: 'motokob-quotations',
   templateUrl: './quotations.component.html',
   styleUrls: ['./quotations.component.css'],
-  providers: [UserService, CustomerService, BrandService, ProductService, CostService, RestrictionsService, FactorService, QuotationService, DocumentService]
+  providers: [UserService, CustomerService, BrandService, ProductService, CostService, RestrictionsService, FactorService, QuotationService, DocumentService, CompanyService]
 })
 export class QuotationsComponent implements OnInit {
   public identity: any;
@@ -67,6 +69,7 @@ export class QuotationsComponent implements OnInit {
     private _quotationsService: QuotationService,
     private _userService: UserService,
     private _documentService: DocumentService,
+    private _companyService: CompanyService,
     private _route: ActivatedRoute,
     private _router: Router) {
     this.brands = new Array<Brand>();
@@ -137,7 +140,22 @@ export class QuotationsComponent implements OnInit {
 
     this.quotation.date = new Date();
     this.quotation.status = 'INICIADA';
+    this.loadWorkingCompanyData();
     console.log('quotation created: ', this.quotation);
+  }
+
+  private loadWorkingCompanyData() {
+    this._companyService.find(this.company.companyId, this.token).subscribe(
+      result => {
+        console.log(result);
+        this.quotation.company = new Company();
+        this.quotation.company._id = result._id;
+        this.quotation.company.name = result.name;
+        this.quotation.company.nit = result.nit;
+        this.quotation.company.stores = result.stores;
+        this.quotation.company.logo = result.logo;
+      }, error => { console.error(error); }
+    );
   }
 
   private loadFactors() {

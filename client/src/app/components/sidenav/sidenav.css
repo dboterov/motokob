@@ -16,7 +16,7 @@
   /* Stay on top */
   top: 0;
   left: 0;
-  background-color: rgba(100, 100, 100, 1);
+  background-color: rgb(200, 200, 200);
   /* Black*/
   overflow-x: hidden;
   /* Disable horizontal scroll */
@@ -43,6 +43,7 @@
 
 .sidenav a:hover, .offcanvas a:focus {
   color: #f1f1f1;
+  background-color: #999;
 }
 
 
@@ -54,7 +55,7 @@
   right: 25px;
   font-size: 36px;
   margin-left: 50px;
-  color: #eee;
+  color: #888;
 }
 
 
