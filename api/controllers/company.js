@@ -1,5 +1,7 @@
 'use strict'
 
+var fs = require('fs');
+var path = require('path');
 var Company = require('../models/company');
 
 function list(req, res) {
