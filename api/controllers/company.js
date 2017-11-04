@@ -4,8 +4,21 @@ var fs = require('fs');
 var path = require('path');
 var Company = require('../models/company');
 
+function find(req, res) {
+  Company.find({ _id: req.id }).exec((err, company) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send({
+        message: 'error al consultar empresa por ID'
+      });
+    } else {
+      return res.status(200).send(company);
+    }
+  });
+}
+
 function list(req, res) {
-  Company.find({active: true}).sort('name').exec((err, companies) => {
+  Company.find({ active: true }).sort('name').exec((err, companies) => {
     if (err) {
       console.error(err);
       res.status(500).send({
@@ -103,7 +116,7 @@ function uploadImage(req, res) {
       images.push(fileName);
     }
 
-    res.status(200).send({images});
+    res.status(200).send({ images });
   } else {
     res.status(200).send({
       message: 'no subiste ninguna imagen'
@@ -127,6 +140,7 @@ function getImageFile(req, res) {
 }
 
 module.exports = {
+  find,
   list,
   save,
   update,
