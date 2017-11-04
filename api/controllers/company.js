@@ -70,8 +70,42 @@ function update(req, res) {
   });
 }
 
+function uploadImage(req, res) {
+  var companyId = req.params.id;
+
+  if (req.files) {
+    var images = [];
+    if (req.files.image.length > 1) {
+      for (var i = 0; i < req.files.image.length; i++) {
+        var filePath = req.files.image[i].path;
+        var fileSplit = filePath.split('\\');
+        var fileName = fileSplit[2];
+        var extSplit = fileName.split('\.');
+        var fileExt = extSplit[1];
+
+        images.push(fileName);
+      }
+    } else {
+      var filePath = req.files.image.path;
+      var fileSplit = filePath.split('\\');
+      var fileName = fileSplit[2];
+      var extSplit = fileName.split('\.');
+      var fileExt = extSplit[1];
+
+      images.push(fileName);
+    }
+
+    res.status(200).send({images});
+  } else {
+    res.status(200).send({
+      message: 'no subiste ninguna imagen'
+    });
+  }
+}
+
 module.exports = {
   list,
   save,
-  update
+  update,
+  uploadImage
 };
