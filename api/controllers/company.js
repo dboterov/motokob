@@ -5,8 +5,8 @@ var path = require('path');
 var Company = require('../models/company');
 
 function find(req, res) {
-  console.log('consultando empresa con id ' + req.id);
-  Company.findById(req.id).exec((err, company) => {
+  console.log('consultando empresa con id ' + req.params.id);
+  Company.findById(req.params.id).exec((err, company) => {
     if (err) {
       console.error(err);
       res.status(500).send({
