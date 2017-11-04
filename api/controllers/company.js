@@ -73,7 +73,10 @@ function update(req, res) {
 function uploadImage(req, res) {
   var companyId = req.params.id;
 
+  console.log('--------- ');
+
   if (req.files) {
+    console.log(req.files);
     var images = [];
     if (req.files.image.length > 1) {
       for (var i = 0; i < req.files.image.length; i++) {
@@ -86,6 +89,7 @@ function uploadImage(req, res) {
         images.push(fileName);
       }
     } else {
+      console.log(req.files.image.path);
       var filePath = req.files.image.path;
       var fileSplit = filePath.split('\\');
       var fileName = fileSplit[2];
