@@ -23,6 +23,7 @@ function save(req, res) {
   company.name = params.name;
   company.stores = params.stores;
   company.active = true;
+  company.logo = params.logo;
 
   company.save((err, result) => {
     if (err) {
@@ -51,6 +52,7 @@ function update(req, res) {
   company.name = params.name;
   company.stores = params.stores;
   company.active = params.active;
+  company.logo = params.logo;
 
   Company.findByIdAndUpdate(company._id, company, (err, result) => {
     if (err) {

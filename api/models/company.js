@@ -7,6 +7,7 @@ var CompanySchema = Schema({
   nit: String,
   name: String,
   stores: String,
+  logo: String,
   active: Boolean
 });
 
