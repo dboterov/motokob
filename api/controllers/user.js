@@ -186,7 +186,7 @@ function findUser(req, res) {
     } else {
       res.status(200).send(user);
     }
-  }).sort('name').sort('surname').sort('username').paginate(page, pageSize);
+  });
 }
 
 module.exports = {
