@@ -8,7 +8,7 @@ var jwt = require('../services/jwt');
 
 function list(req, res) {
   var page = parseInt(req.query.page ? req.query.page : 1);
-  var pageSize = parseInt(req.query.pageSize ? req.query.pageSize : 10);
+  var pageSize = parseInt(req.query.pageSize ? req.query.pageSize : 10000);
   var showActiveOnly = req.query.showActiveOnly;
 
   var filterObject = {};
