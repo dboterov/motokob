@@ -11,8 +11,10 @@ function list(req, res) {
   var pageSize = parseInt(req.query.pageSize ? req.query.pageSize : 10000);
   var showActiveOnly = req.query.showActiveOnly;
 
+  console.log('listing users. page: ' + page + ', pageSize: ' + pageSize + ', showActiveOnly:' + showActiveOnly);
+
   var filterObject = {};
-  if (showActiveOnly === 'true') {
+  if (showActiveOnly == 'true') {
     filterObject = { active: true };
   }
 
