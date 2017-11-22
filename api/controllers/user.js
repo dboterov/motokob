@@ -9,8 +9,14 @@ var jwt = require('../services/jwt');
 function list(req, res) {
   var page = parseInt(req.query.page ? req.query.page : 1);
   var pageSize = parseInt(req.query.pageSize ? req.query.pageSize : 10);
+  var showActiveOnly = req.query.showActiveOnly;
 
-  User.find({},(err, user) => {
+  var filterObject = {};
+  if (showActiveOnly === 'true') {
+    filterObject = { active: true };
+  }
+
+  User.find(filterObject, (err, user) => {
     if (err) {
       res.status(500).send({
         message: 'ocurrio un error al listar los usuarios'
@@ -29,12 +35,12 @@ function saveUser(req, res) {
 
   user.name = params.name;
   user.surname = params.surname;
-  user.username = params.username;
+  user.username = params.username.toLowerCase();
   user.active = true;
   user.permissions = params.permissions;
 
   if (params.password) {
-    bcrypt.hash(params.password, null, null, function(err, hash) {
+    bcrypt.hash(params.password, null, null, function (err, hash) {
       user.password = hash;
       if (user.name != null && user.surname != null && user.username != null) {
         user.save((err, userStored) => {
@@ -92,7 +98,7 @@ function loginUser(req, res) {
           message: 'usuario no existe'
         });
       } else {
-        bcrypt.compare(password, user.password, function(err, check) {
+        bcrypt.compare(password, user.password, function (err, check) {
           if (check) {
             if (params.gethash) {
               // devolver token jwt
@@ -140,7 +146,7 @@ function updateUser(req, res) {
 function changePassword(req, res) {
   var update = req.body;
   if (update.password) {
-    bcrypt.hash(update.password, null, null, function(err, hash) {
+    bcrypt.hash(update.password, null, null, function (err, hash) {
       update.password = hash;
       if (update.name != null && update.surname != null && update.username != null) {
         User.findByIdAndUpdate(req.params.id, update, (err, userUpdated) => {
@@ -171,10 +177,23 @@ function changePassword(req, res) {
   }
 }
 
+function findUser(req, res) {
+  User.findOne({ username: req.params.username }, (err, user) => {
+    if (err) {
+      res.status(500).send({
+        message: 'ocurrio un error al consultar el usuario'
+      });
+    } else {
+      res.status(200).send(user);
+    }
+  }).sort('name').sort('surname').sort('username').paginate(page, pageSize);
+}
+
 module.exports = {
   saveUser,
   loginUser,
   updateUser,
   list,
-  changePassword
+  changePassword,
+  findUser
 };
