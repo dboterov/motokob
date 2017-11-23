@@ -87,7 +87,7 @@ export class UserService {
     try {
       return JSON.parse(localStorage.getItem("motokob.selectedCompany")).role === 'ROLE_ADMIN';
     } catch (error) {
-      console.error(error);
+      //console.error(error);
       return false;
     }
   }

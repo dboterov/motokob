@@ -18,9 +18,9 @@
           <form>
             <div class="row">
               <div class="col-xs-12">
-                <select name="company" [(ngModel)]="selectedCompanyId">
+                <select name="company" [(ngModel)]="selectedCompanyId" (change)="printSelectedCompany()">
                   <option selected value="" disabled style="display:none">Selecciona una opción</option>
-                  <option *ngFor="let company of identity.companies" [value]="company.company_id">{{company.companyName}}</option>
+                  <option *ngFor="let company of identity.permissions" [value]="company.companyId">{{company.companyName}}</option>
                 </select>
               </div>
             </div>

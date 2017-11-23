@@ -91,7 +91,7 @@ export class UsersComponent implements OnInit {
     this.user = usuario;
   }
 
-  listarUsuarios() {
+  public listarUsuarios() {
     this.users = new Array<User>();
     this._userService.listUsers(this.showActiveOnly, this.token).subscribe(
       response => {
