@@ -101,13 +101,13 @@
         <div class="col-xs-12 col-sm-6 col-md-4 ">
           <label for="new_username">Usuario</label>
           <input class="form-control input-lg" id="new_username" placeholder="Ingresa el usuario" type="text" name="new_username" [(ngModel)]="user.username"
-            [disabled]="!isAdmin()" autocomplete="off" required/>
+            [disabled]="!isAdmin()" autocomplete="new-username" required/>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-4 ">
           <label for="new_password">Contraseña</label>
           <div class="input-group">
             <input class="form-control input-lg" id="new_password" placeholder="Ingresa la contraseña" type="password" name="new_password"
-              [(ngModel)]="user.password" [disabled]="user._id === '' ? false : true" autocomplete="off" required/>
+              [(ngModel)]="user.password" [disabled]="user._id === '' ? false : true" autocomplete="new-password" required/>
             <span class="input-group-btn">
               <button class="btn btn-default btn-lg" type="button" [disabled]="user._id === '' ? true : false" data-toggle="modal" data-target="#modalPassword">
                 <span class="glyphicon glyphicon-pencil"></span>
@@ -167,10 +167,16 @@
                       <tr>
                         <th>Empresa</th>
                         <th>Rol</th>
+                        <th>&nbsp;</th>
                       </tr>
                       <tr *ngFor="let permission of user.permissions">
                         <td>{{permission.companyName}}</td>
                         <td>{{permission.role}}</td>
+                        <td>
+                          <button type="button" class="btn btn-warning" (click)="removePermission(permission)" [disabled]="enableButtonRemovePermission(permission)">
+                            <span class="glyphicon glyphicon-trash"></span>
+                          </button>
+                        </td>
                       </tr>
                     </table>
                   </div>
@@ -191,8 +197,12 @@
     </form>
   </div>
   <div *ngIf="isAdmin()">
-    <hr/>
     <h3>Lista de usuarios</h3>
+    <div style="position: relative; top:-40px; left: 190px">
+      <input id="chk_showAll" type="checkbox" [checked]="!showActiveOnly" (change)="showActiveOnly = !showActiveOnly; listarUsuarios()">
+      <label for="chk_showAll">mostrar inactivos</label>
+    </div>
+
     <div class="table-responsive">
       <table class="table table-hover">
         <tr>

@@ -34,6 +34,7 @@ export class UsersComponent implements OnInit {
   public companyActive: boolean = true;
   public companyLogo: string = '';
   public availableCompanies: Array<Company>;
+  public showActiveOnly: boolean = true;
 
   constructor(private _userService: UserService, private _uploadService: UploadService, private _companyService: CompanyService, private _route: ActivatedRoute, private _router: Router) {
     this.errorMessage = null;
@@ -92,7 +93,7 @@ export class UsersComponent implements OnInit {
 
   listarUsuarios() {
     this.users = new Array<User>();
-    this._userService.listUsers().subscribe(
+    this._userService.listUsers(this.showActiveOnly, this.token).subscribe(
       response => {
         for (let i = 0; i < response.users.length; i++) {
           let usr = new User();
@@ -107,6 +108,7 @@ export class UsersComponent implements OnInit {
         this.users = response.users;
       },
       error => {
+        console.error(error);
         const errorResponse = <any>error;
         if (errorResponse != null) {
           this.errorMessage = JSON.parse(errorResponse._body).message;
@@ -326,5 +328,24 @@ export class UsersComponent implements OnInit {
     } else {
       console.error('no hay archivos para subir');
     }
+  }
+
+  public enableButtonRemovePermission(permission: Permission) {
+    let selectedCompany = JSON.parse(localStorage.getItem('motokob.selectedCompany'));
+    console.log('checking if company ' + permission.companyId + ' = ' + selectedCompany.companyId);
+    return selectedCompany.companyId == permission.companyId;
+  }
+
+  public removePermission(permission: Permission) {
+    console.log('removing permission ', permission);
+    console.log('initial permissions: ', this.user.permissions.length);
+    for (let i = 0; i < this.user.permissions.length; i++) {
+      if (this.user.permissions[i].companyId == permission.companyId &&
+        this.user.permissions[i].role == permission.role) {
+        this.user.permissions.splice(i, 1);
+        break;
+      }
+    }
+    console.log('final permissions: ', this.user.permissions);
   }
 }

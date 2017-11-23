@@ -74,12 +74,12 @@ export class UserService {
       .map(res => res.json());
   }
 
-  public listUsers() {
+  public listUsers(activeOnly: boolean, token) {
     const headers = new Headers({
       'Content-Type': 'application/json',
-      'Authorization': this.getToken()
+      'Authorization': token
     });
-    return this._http.get(this.url + 'user/list/', { headers: headers })
+    return this._http.get(this.url + 'user/list/' + (activeOnly ? '?showActiveOnly=true' : ''), { headers: headers })
       .map(res => res.json());
   }
 
