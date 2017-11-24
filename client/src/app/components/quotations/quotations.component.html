@@ -17,6 +17,50 @@
 </div>
 <!-- /.modal -->
 
+<div class="modal fade" tabindex="-1" role="dialog" id="modalNewCustomer">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="alert alert-danger" *ngIf="errorMessageNewUser">{{errorMessageNewUser}}</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12 col-md-6">
+              <label for="txt_cedula">Cédula</label>
+              <input class="form-control input-lg" type="text" id="txt_cedula" [(ngModel)]="quotation.customer.documentNumber" name="cedula"
+                readonly>
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <label for="txt_nombre">Nombres</label>
+              <input class="form-control input-lg" type="text" id="txt_nombre" [(ngModel)]="quotation.customer.name" name="nombre" placeholder="Ingresa el nombre">
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <label for="txt_apellido">Apellidos</label>
+              <input class="form-control input-lg" type="text" id="txt_apellido" [(ngModel)]="quotation.customer.surname" name="apellido"
+                placeholder="Ingresa el apellido">
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <label for="txt_celular">Celular</label>
+              <input class="form-control input-lg" type="tel" id="txt_celular" [(ngModel)]="quotation.customer.cellphoneNumber" name="celular"
+                placeholder="Ingresa el celular">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-lg" (click)="createSimpleCustomer()">Crear</button>
+        <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
 <div class="modal fade" tabindex="-1" role="dialog" id="pdf-viewer">
   <div class="modal-dialog" role="document">
     <div class="modal-content">

@@ -33,6 +33,7 @@ export class QuotationsComponent implements OnInit {
   public token;
   public errorMessageInstallments: string = '';
   public errorMessageSaving: string = '';
+  public errorMessageNewUser: string = '';
   public items: Array<any>;
   public selectedBrand: Brand;
   public selectedBike: Product;
@@ -197,6 +198,9 @@ export class QuotationsComponent implements OnInit {
         response => {
           this.quotation.customer = response.customer;
         }, error => {
+          let tmpDocNum = this.quotation.customer.documentNumber;
+          this.quotation.customer = new Customer();
+          this.quotation.customer.documentNumber = tmpDocNum;
           if (error.status == 404) {
             $('#modalNavigate').modal('show');
           }
@@ -206,7 +210,8 @@ export class QuotationsComponent implements OnInit {
   }
 
   public navigateToCustomer() {
-    this._router.navigate(['/clientes']);
+    //this._router.navigate(['/clientes']);
+    $('#modalNewCustomer').modal('show');
   }
 
   public selectBrand(brand) {
@@ -440,5 +445,23 @@ export class QuotationsComponent implements OnInit {
   public startNewQuotation() {
     this.viewShown = 'singleQuotation';
     this.initializeNewQuotation();
+  }
+
+  public createSimpleCustomer() {
+    this.errorMessageNewUser = '';
+    if (this.quotation.customer.documentNumber && this.quotation.customer.name &&
+      this.quotation.customer.surname && this.quotation.customer.cellphoneNumber) {
+      this.quotation.customer.documentType = 'CC';
+      this._customerService.save(this.quotation.customer).subscribe(
+        response => {
+          $('#modalNewCustomer').modal('hide');
+        }, error => {
+          console.error(error);
+          this.errorMessageNewUser = 'Ocurrió un error al registrar el usuario. ';
+        }
+      );
+    } else {
+      this.errorMessageNewUser = 'Debes ingresar todos los datos del cliente para poder continuar';
+    }
   }
 }
