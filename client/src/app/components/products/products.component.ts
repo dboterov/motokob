@@ -248,7 +248,8 @@ export class ProductsComponent implements OnInit {
     this.errorMessage = null;
     this.successMessage = null;
     this.products = new Array<Product>();
-    this._productService.list(this.page, this.pageSize, this.filtroBusqueda).subscribe(
+    //this._productService.list(this.page, this.pageSize, this.filtroBusqueda).subscribe(
+    this._productService.list(1, 10000, this.filtroBusqueda).subscribe(
       response => {
         console.log(response.products);
         this.products = response.products;
